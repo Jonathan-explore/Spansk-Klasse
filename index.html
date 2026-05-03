@@ -42,77 +42,36 @@
         /* ==========================================================================
            EFECTOS DE TRANSICIÓN ÉPICA (CYBERPUNK & SUAVE)
            ========================================================================== */
-        /* Overlay para el Rayo */
-        .lightning-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none; z-index: 9999; background-color: transparent;
-        }
-        .lightning-active {
-            animation: lightningFlash 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-        @keyframes lightningFlash {
-            0% { background-color: transparent; }
-            10% { background-color: rgba(0, 242, 255, 0.8); }
-            15% { background-color: transparent; }
-            25% { background-color: rgba(255, 0, 85, 0.7); }
-            30% { background-color: transparent; }
-            45% { background-color: rgba(0, 242, 255, 0.9); }
-            100% { background-color: transparent; }
-        }
+        .lightning-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; background-color: transparent; }
+        .lightning-active { animation: lightningFlash 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        @keyframes lightningFlash { 0%, 15%, 30%, 100% { background-color: transparent; } 10% { background-color: rgba(0, 242, 255, 0.8); } 25% { background-color: rgba(255, 0, 85, 0.7); } 45% { background-color: rgba(0, 242, 255, 0.9); } }
 
-        /* Overlay para el Humo Cyberpunk */
-        .smoke-overlay {
-            position: fixed; bottom: -20vh; left: 0; width: 100vw; height: 120vh;
-            pointer-events: none; z-index: 9998; opacity: 0;
-            background: radial-gradient(circle at 30% 80%, rgba(0, 242, 255, 0.4) 0%, transparent 50%),
-                        radial-gradient(circle at 70% 90%, rgba(255, 0, 85, 0.4) 0%, transparent 50%);
-            filter: blur(40px); mix-blend-mode: screen;
-        }
-        .smoke-active {
-            animation: smokeRise 3s ease-out forwards;
-        }
-        @keyframes smokeRise {
-            0% { transform: translateY(10vh); opacity: 0; }
-            20% { opacity: 1; }
-            100% { transform: translateY(-50vh); opacity: 0; }
-        }
+        .smoke-overlay { position: fixed; bottom: -20vh; left: 0; width: 100vw; height: 120vh; pointer-events: none; z-index: 9998; opacity: 0; background: radial-gradient(circle at 30% 80%, rgba(0, 242, 255, 0.4) 0%, transparent 50%), radial-gradient(circle at 70% 90%, rgba(255, 0, 85, 0.4) 0%, transparent 50%); filter: blur(40px); mix-blend-mode: screen; }
+        .smoke-active { animation: smokeRise 3s ease-out forwards; }
+        @keyframes smokeRise { 0% { transform: translateY(10vh); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(-50vh); opacity: 0; } }
 
-        /* Efecto Glitch para el contenido principal */
-        .glitch-active {
-            animation: glitchEffect 0.4s cubic-bezier(.25, .46, .45, .94) both;
-            filter: drop-shadow(3px 0px 0px rgba(0, 242, 255, 0.8)) drop-shadow(-3px 0px 0px rgba(255, 0, 85, 0.8));
-        }
-        @keyframes glitchEffect {
-            0% { transform: translate(0) }
-            20% { transform: translate(-10px, 5px) skewX(2deg) }
-            40% { transform: translate(-10px, -5px) skewX(-2deg) }
-            60% { transform: translate(10px, 5px) skewX(1deg) }
-            80% { transform: translate(10px, -5px) skewX(-1deg) }
-            100% { transform: translate(0) }
-        }
+        .glitch-active { animation: glitchEffect 0.4s cubic-bezier(.25, .46, .45, .94) both; filter: drop-shadow(3px 0px 0px rgba(0, 242, 255, 0.8)) drop-shadow(-3px 0px 0px rgba(255, 0, 85, 0.8)); }
+        @keyframes glitchEffect { 0%, 100% { transform: translate(0) } 20% { transform: translate(-10px, 5px) skewX(2deg) } 40% { transform: translate(-10px, -5px) skewX(-2deg) } 60% { transform: translate(10px, 5px) skewX(1deg) } 80% { transform: translate(10px, -5px) skewX(-1deg) } }
 
-        /* Transición Suave (Amanecer / Modo Normal) */
-        .soft-fade-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none; z-index: 9999;
-            background-color: #b28cd6; /* Lavanda */
-            opacity: 0; transition: opacity 0.8s ease-in-out;
-        }
+        .soft-fade-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; background-color: #b28cd6; opacity: 0; transition: opacity 0.8s ease-in-out; }
         .soft-fade-active { opacity: 1; }
 
         /* ==========================================================================
-           ESTILOS GLOBALES
+           ESTILOS GLOBALES Y CONTENEDOR PRINCIPAL
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease; }
+        
+        /* El body ya no hace scroll, lo hace el 'main' para no romper menús fijos */
         body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-body); height: 100vh; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+        
         button { cursor: pointer; border: none; outline: none; background: none; font-family: inherit; }
 
         /* ==========================================================================
            INPUTS Y CONTROLES DEL CREADOR
            ========================================================================== */
-        select, input[type="text"] { width: 100%; padding: 12px 20px; border-radius: var(--border-radius-soft); border: 2px solid rgba(255, 255, 255, 0.1); background-color: var(--input-bg); color: var(--dark-color); font-size: 1rem; font-weight: 600; outline: none; cursor: pointer; appearance: none; transition: all 0.3s; }
-        select:hover, input[type="text"]:focus { border-color: var(--accent-color); box-shadow: var(--soft-shadow); transform: translateY(-2px); }
-        body.dark-mode select, body.dark-mode input[type="text"] { color: #ffffff; border-color: var(--dark-color); box-shadow: var(--neon-glow); }
+        select, input[type="text"], textarea { width: 100%; padding: 12px 20px; border-radius: var(--border-radius-soft); border: 2px solid rgba(255, 255, 255, 0.1); background-color: var(--input-bg); color: var(--dark-color); font-size: 1rem; font-weight: 600; outline: none; appearance: none; transition: all 0.3s; font-family: var(--font-body); }
+        select:hover, input[type="text"]:focus, textarea:focus { border-color: var(--accent-color); box-shadow: var(--soft-shadow); transform: translateY(-2px); }
+        body.dark-mode select, body.dark-mode input[type="text"], body.dark-mode textarea { color: #ffffff; border-color: var(--dark-color); box-shadow: var(--neon-glow); background-color: #1a1a2e; }
         
         input[type="color"] { -webkit-appearance: none; border: none; width: 100%; height: 45px; border-radius: var(--border-radius-soft); cursor: pointer; background: none; }
         input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
@@ -128,7 +87,7 @@
         .controls-grid::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 10px; }
 
         /* ==========================================================================
-           COMPONENTES DE INTERFAZ Y AVATAR
+           COMPONENTES DE INTERFAZ Y NAVEGACIÓN
            ========================================================================== */
         .top-banner { position: absolute; top: 20px; right: 20px; background-color: rgba(30, 30, 30, 0.8); color: #ddd; padding: 10px 20px; font-size: 0.85rem; letter-spacing: 1px; z-index: 100; border-left: 3px solid var(--accent-color); border-radius: 4px; display: flex; align-items: center; gap: 15px; }
         .theme-switch { width: 40px; height: 20px; background: #555; border-radius: 20px; position: relative; cursor: pointer; }
@@ -136,7 +95,7 @@
         body.dark-mode .theme-switch { background: var(--accent-color); }
         body.dark-mode .theme-switch::before { left: 22px; }
 
-        .nav-left { position: absolute; left: 30px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 20px; z-index: 100; }
+        .nav-left { position: absolute; left: 30px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 20px; z-index: 1000; }
         .circle-btn { width: 55px; height: 55px; border-radius: 50%; background-color: var(--light-color); color: var(--bg-color); display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 2px solid transparent; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); transform-origin: left center; }
         
         .circle-btn:hover { transform: scale(1.5) !important; z-index: 10; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
@@ -148,10 +107,22 @@
         button:active { transform: scale(0.92) !important; transition: transform 0.1s !important; }
 
         /* ==========================================================================
-           ÁREA DE CONTENIDO Y AVATAR CREATOR
+           ÁREA DE CONTENIDO (CON SCROLL CORREGIDO)
            ========================================================================== */
-        main { flex: 1; display: flex; justify-content: center; align-items: center; padding: 80px; width: 100%; position: relative; z-index: 10; }
-        .tab-content { display: none; width: 100%; max-width: 900px; height: 90%; flex-direction: column; align-items: center; justify-content: center; }
+        main { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            padding: 40px 20px 80px 20px; /* Padding bottom para que el nav no tape */
+            width: 100%; 
+            position: relative; 
+            z-index: 10; 
+            overflow-y: auto; /* SCROLL AQUÍ */
+            overflow-x: hidden;
+        }
+
+        .tab-content { display: none; width: 100%; max-width: 900px; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100%; }
         .tab-content.active { display: flex; animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .sub-view { display: none; width: 100%; }
         .sub-view.active { display: flex; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; flex-direction: column; align-items: center; }
@@ -166,8 +137,7 @@
         .avatar-preview { width: 100%; max-width: 280px; height: 280px; margin: 0 auto; background: rgba(0,0,0,0.1); border-radius: 24px; display: flex; justify-content: center; align-items: center; padding: 10px; box-shadow: inset 0 0 20px rgba(0,0,0,0.2); transition: all 0.5s ease; }
 
         /* ESTILOS DEL DICCIONARIO INTELIGENTE */
-        .vocab-grid::-webkit-scrollbar { width: 6px; }
-        .vocab-grid::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 10px; }
+        .vocab-grid { display: flex; flex-direction: column; align-items: center; gap: 30px; width: 100%; padding: 10px 0; box-sizing: border-box; }
         .vocab-card { background: var(--card-bg); backdrop-filter: blur(15px); border: var(--card-border); padding: 40px; border-radius: 20px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s; display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 850px; text-align: left; margin: 0 auto; box-shadow: var(--soft-shadow); opacity: 0; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; box-sizing: border-box; overflow: hidden; }
         body.dark-mode .vocab-card { border-color: var(--dark-color); box-shadow: var(--soft-shadow); }
         .vocab-card:hover { transform: translateY(-8px) scale(1.02); background: rgba(255, 255, 255, 0.2); }
@@ -248,15 +218,37 @@
         .mini-word { font-weight: bold; color: var(--text-main); font-size: 1.05rem; }
         .icon-svg { width: 24px; height: 24px; fill: currentColor; }
 
+        /* ==========================================================================
+           MODO TELÉFONO MÓVIL (CORRECCIONES)
+           ========================================================================== */
         @media (max-width: 768px) {
             .main-title { font-size: 2.8rem; }
             .vocab-card { padding: 25px; }
             .vocab-card h2 { font-size: 2rem !important; }
             .avatar-creator-grid { grid-template-columns: 1fr; gap: 20px; }
-            .nav-left { bottom: 20px; top: auto; left: 50%; transform: translateX(-50%); flex-direction: row; }
+            
+            /* Menú inferior arreglado para móviles */
+            .nav-left { 
+                position: fixed; bottom: 0; top: auto; left: 0; width: 100%; 
+                transform: none; flex-direction: row; justify-content: space-evenly; 
+                background: rgba(26, 26, 46, 0.95); padding: 15px 10px; 
+                border-top: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px);
+                z-index: 1000;
+            }
+            .circle-btn { width: 45px; height: 45px; }
+            .circle-btn:hover { transform: scale(1.2) !important; }
+            
+            /* Espacio extra abajo para que el menú no tape el contenido */
+            main { padding: 40px 20px 100px 20px; } 
+
             .top-banner { display: none; }
             .muro-paper { padding: 30px 20px 30px 40px; }
             .muro-paper::before { left: 20px; }
+
+            /* Arreglo buscador Diccionario */
+            .search-container { flex-direction: column; }
+            .search-container input, .search-container button { width: 100%; }
+            .dict-avatar { align-self: center; margin-top: 10px; }
         }
     </style>
 </head>
@@ -274,7 +266,7 @@
         <span>¡HOLA CLASE! 🚀</span>
     </div>
 
-    <!-- NAVEGACIÓN IZQUIERDA -->
+    <!-- NAVEGACIÓN IZQUIERDA / INFERIOR (MÓVILES) -->
     <nav class="nav-left">
         <button class="circle-btn nav-btn active" data-tab="inicio" title="Inicio"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 3L4 9v12h16V9l-8-6zm0 2.5l6 4.5v9h-12v-9l6-4.5z"/></svg></button>
         <button class="circle-btn nav-btn" data-tab="diccionario" title="Diccionario"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg></button>
@@ -340,7 +332,7 @@
         </div>
 
         <!-- TAB DICCIONARIO INTELIGENTE -->
-        <div id="diccionario" class="tab-content" style="justify-content: flex-start; padding-top: 20px; overflow-y: auto; overflow-x: hidden;">
+        <div id="diccionario" class="tab-content" style="justify-content: flex-start; padding-top: 20px;">
             <h1 class="main-title" style="font-size: 4rem; margin-bottom: 0;">SMART ORDBOG</h1>
             <p style="text-align: center; margin-bottom: 20px; font-size: 1.1rem; max-width: 600px; opacity: 0.9; font-weight: bold;">
                 Gør din avatar glad ved at søge <span style="display:inline-block; animation: pulseHeart 1.5s infinite; font-size: 1.4rem;">📖</span>
@@ -351,7 +343,7 @@
                 <div id="dict-avatar-widget" class="dict-avatar" onclick="animateAvatarLove()" title="¡Tu Funko se alegra cuando repasas!"></div>
             </div>
             
-            <div class="vocab-grid" id="vocabGrid" style="display: flex; flex-direction: column; align-items: center; gap: 30px; width: 100%; padding: 10px 20px; box-sizing: border-box;"></div>
+            <div class="vocab-grid" id="vocabGrid"></div>
             
             <div class="history-panel" id="historyPanel" style="display: none; margin: 20px auto 40px auto;">
                 <div id="recentSearchesList" style="display: flex; gap: 10px; flex-wrap: wrap; width: 100%;"></div>
@@ -359,7 +351,7 @@
         </div>
 
         <!-- TAB EL TABLÓN -->
-        <div id="notas" class="tab-content" style="justify-content: flex-start; padding-top: 20px; overflow-y: auto;">
+        <div id="notas" class="tab-content" style="justify-content: flex-start; padding-top: 20px;">
             <h1 class="main-title" style="font-size: 4rem; margin-bottom: 0;">EL TABLÓN</h1>
             <p style="text-align: center; margin-bottom: 30px; font-size: 0.95rem; opacity: 0.8;">Novedades de la clase y práctica rápida. 📝</p>
 
@@ -398,9 +390,11 @@
 
     <script>
         // ======================================================================
-        // LA API KEY ES PROPORCIONADA AUTOMÁTICAMENTE POR EL ENTORNO
+        // ¡ATENCIÓN PROFESOR! 
+        // Si exportas esto a GitHub Pages u otro sitio, la IA dejará de funcionar
+        // a menos que pongas tu API Key dentro de las siguientes comillas:
         // ======================================================================
-        const apiKey = ""; 
+        const apiKey = "AIzaSyD5eTOiaxaltAW-3pBUrl2f7oCz0ARFKeQ"; 
 
         /* ==========================================
            LÓGICA DE TRANSICIONES ÉPICAS
@@ -413,42 +407,29 @@
             const mainContent = document.getElementById('main-content');
 
             if (!isCurrentlyDark) {
-                // 1. TRANSICIÓN A CYBERPUNK (ÉPICA)
-                // Arrancar efectos
                 lightning.classList.add('lightning-active');
                 mainContent.classList.add('glitch-active');
                 
-                // Cambiar el tema justo en el medio del flash (150ms)
                 setTimeout(() => {
                     document.body.classList.add('dark-mode');
                     localStorage.setItem('theme', 'dark');
                     updateAvatarPreview(); refreshDictAvatar();
                 }, 150);
 
-                // Activar el humo inmediatamente después
                 smoke.classList.add('smoke-active');
 
-                // Limpiar clases de animación cuando terminen
                 setTimeout(() => {
                     lightning.classList.remove('lightning-active');
                     mainContent.classList.remove('glitch-active');
                 }, 500);
 
-                setTimeout(() => {
-                    smoke.classList.remove('smoke-active');
-                }, 3000); // El humo dura más en disiparse
-
+                setTimeout(() => { smoke.classList.remove('smoke-active'); }, 3000); 
             } else {
-                // 2. TRANSICIÓN A NORMAL (SUAVE Y TRANQUILA)
                 softFade.classList.add('soft-fade-active');
-                
-                // Esperar a que la pantalla se vuelva lavanda para cambiar el fondo real
                 setTimeout(() => {
                     document.body.classList.remove('dark-mode');
                     localStorage.setItem('theme', 'light');
                     updateAvatarPreview(); refreshDictAvatar();
-                    
-                    // Empezar a desvanecer la capa suave
                     softFade.classList.remove('soft-fade-active');
                 }, 800); 
             }
@@ -583,10 +564,17 @@
         }
 
         async function fetchNewWord(term) {
+            if (!apiKey || apiKey === "") {
+                if (window.location.hostname.includes("github.io") || window.location.hostname !== "") {
+                    alert("Profesor: Para que la IA funcione en GitHub Pages u otro sitio, debes poner tu API Key en la variable 'apiKey' dentro del código HTML.");
+                }
+            }
+
             const grid = document.getElementById('vocabGrid');
             grid.innerHTML = `<div class="ai-loading"><div class="spinner"></div><p>Buscando "${term}" en el diccionario... 📖</p></div>`;
             
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const modelName = apiKey ? "gemini-1.5-flash" : "gemini-2.5-flash-preview-09-2025";
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
             
             const prompt = `Eres un profesor de español divertido para adolescentes daneses. El estudiante quiere aprender o traducir la palabra/frase: "${term}". Devuelve ESTRICTAMENTE un JSON (sin markdown, solo las llaves {}): {"es": "Palabra en español (con El/La si aplica)", "da": "Traducción al danés", "gender": "m", "f", o "n", "plural": "Plural en español (o 'N/A')", "emoji": "1 emoji", "def": "Definición muy simple", "chunk": "Frase de ejemplo útil", "chunk_da": "Traducción de la frase", "mnemo": "Mnemotecnia o asociación mental divertida en DANÉS."}`;
             const options = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json" } }) };
@@ -780,11 +768,16 @@
         }
 
         async function publishMuroPost() {
+            if (!apiKey || apiKey === "") {
+                alert("Falta la API Key de Gemini en el código. ¡El Tablón necesita tu clave para crear ejercicios!"); return;
+            }
+
             const text = document.getElementById('adminPostText').value.trim();
             if (!text) return alert("Escribe algunas palabras primero.");
             document.getElementById('admin-loading').style.display = 'block';
 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const modelName = apiKey ? "gemini-1.5-flash" : "gemini-2.5-flash-preview-09-2025";
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
             
             const prompt = `El profesor ha introducido este vocabulario: "${text}".
 Genera un objeto JSON ESTRICTO (NO uses markdown, solo las llaves {}):
