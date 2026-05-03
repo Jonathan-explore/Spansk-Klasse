@@ -40,6 +40,67 @@
         }
 
         /* ==========================================================================
+           EFECTOS DE TRANSICIÓN ÉPICA (CYBERPUNK & SUAVE)
+           ========================================================================== */
+        /* Overlay para el Rayo */
+        .lightning-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 9999; background-color: transparent;
+        }
+        .lightning-active {
+            animation: lightningFlash 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        @keyframes lightningFlash {
+            0% { background-color: transparent; }
+            10% { background-color: rgba(0, 242, 255, 0.8); }
+            15% { background-color: transparent; }
+            25% { background-color: rgba(255, 0, 85, 0.7); }
+            30% { background-color: transparent; }
+            45% { background-color: rgba(0, 242, 255, 0.9); }
+            100% { background-color: transparent; }
+        }
+
+        /* Overlay para el Humo Cyberpunk */
+        .smoke-overlay {
+            position: fixed; bottom: -20vh; left: 0; width: 100vw; height: 120vh;
+            pointer-events: none; z-index: 9998; opacity: 0;
+            background: radial-gradient(circle at 30% 80%, rgba(0, 242, 255, 0.4) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 90%, rgba(255, 0, 85, 0.4) 0%, transparent 50%);
+            filter: blur(40px); mix-blend-mode: screen;
+        }
+        .smoke-active {
+            animation: smokeRise 3s ease-out forwards;
+        }
+        @keyframes smokeRise {
+            0% { transform: translateY(10vh); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(-50vh); opacity: 0; }
+        }
+
+        /* Efecto Glitch para el contenido principal */
+        .glitch-active {
+            animation: glitchEffect 0.4s cubic-bezier(.25, .46, .45, .94) both;
+            filter: drop-shadow(3px 0px 0px rgba(0, 242, 255, 0.8)) drop-shadow(-3px 0px 0px rgba(255, 0, 85, 0.8));
+        }
+        @keyframes glitchEffect {
+            0% { transform: translate(0) }
+            20% { transform: translate(-10px, 5px) skewX(2deg) }
+            40% { transform: translate(-10px, -5px) skewX(-2deg) }
+            60% { transform: translate(10px, 5px) skewX(1deg) }
+            80% { transform: translate(10px, -5px) skewX(-1deg) }
+            100% { transform: translate(0) }
+        }
+
+        /* Transición Suave (Amanecer / Modo Normal) */
+        .soft-fade-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 9999;
+            background-color: #b28cd6; /* Lavanda */
+            opacity: 0; transition: opacity 0.8s ease-in-out;
+        }
+        .soft-fade-active { opacity: 1; }
+
+        /* ==========================================================================
            ESTILOS GLOBALES
            ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease; }
@@ -76,21 +137,25 @@
         body.dark-mode .theme-switch::before { left: 22px; }
 
         .nav-left { position: absolute; left: 30px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 20px; z-index: 100; }
-        .circle-btn { width: 55px; height: 55px; border-radius: 50%; background-color: var(--light-color); color: var(--bg-color); display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 2px solid transparent; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s, color 0.3s; }
-        body.dark-mode .circle-btn { background-color: #1a1a2e; color: var(--dark-color); border-color: var(--dark-color); box-shadow: var(--neon-glow); }
-        .circle-btn.active { background-color: var(--accent-color); color: white; transform: scale(1.15); }
+        .circle-btn { width: 55px; height: 55px; border-radius: 50%; background-color: var(--light-color); color: var(--bg-color); display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 2px solid transparent; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); transform-origin: left center; }
         
-        /* Animación general de clic para botones */
+        .circle-btn:hover { transform: scale(1.5) !important; z-index: 10; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .nav-left:has(.circle-btn:hover) .circle-btn:not(:hover):has(+ .circle-btn:hover) { transform: scale(1.2); }
+        .circle-btn:hover + .circle-btn { transform: scale(1.2); }
+        
+        body.dark-mode .circle-btn { background-color: #1a1a2e; color: var(--dark-color); border-color: var(--dark-color); box-shadow: var(--neon-glow); }
+        .circle-btn.active { background-color: var(--accent-color); color: white; transform: scale(1.1); }
         button:active { transform: scale(0.92) !important; transition: transform 0.1s !important; }
 
         /* ==========================================================================
            ÁREA DE CONTENIDO Y AVATAR CREATOR
            ========================================================================== */
-        main { flex: 1; display: flex; justify-content: center; align-items: center; padding: 80px; width: 100%; }
+        main { flex: 1; display: flex; justify-content: center; align-items: center; padding: 80px; width: 100%; position: relative; z-index: 10; }
         .tab-content { display: none; width: 100%; max-width: 900px; height: 90%; flex-direction: column; align-items: center; justify-content: center; }
         .tab-content.active { display: flex; animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .sub-view.active { display: flex; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        
+        .sub-view { display: none; width: 100%; }
+        .sub-view.active { display: flex; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; flex-direction: column; align-items: center; }
+
         .main-title { font-family: var(--font-title); font-size: 5.5rem; letter-spacing: 4px; margin-bottom: 20px; text-transform: uppercase; text-align: center; }
         body.dark-mode .main-title { text-shadow: var(--neon-glow); }
 
@@ -103,7 +168,7 @@
         /* ESTILOS DEL DICCIONARIO INTELIGENTE */
         .vocab-grid::-webkit-scrollbar { width: 6px; }
         .vocab-grid::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 10px; }
-        .vocab-card { background: var(--card-bg); backdrop-filter: blur(15px); border: var(--card-border); padding: 40px; border-radius: 20px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s; display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 850px; text-align: left; margin: 0 auto; box-shadow: var(--soft-shadow); opacity: 0; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .vocab-card { background: var(--card-bg); backdrop-filter: blur(15px); border: var(--card-border); padding: 40px; border-radius: 20px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s; display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 850px; text-align: left; margin: 0 auto; box-shadow: var(--soft-shadow); opacity: 0; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; box-sizing: border-box; overflow: hidden; }
         body.dark-mode .vocab-card { border-color: var(--dark-color); box-shadow: var(--soft-shadow); }
         .vocab-card:hover { transform: translateY(-8px) scale(1.02); background: rgba(255, 255, 255, 0.2); }
 
@@ -116,90 +181,38 @@
 
         .history-panel { width: 100%; max-width: 850px; margin-top: 20px; }
 
-        /* --- ESTILOS DEL MURO TIPO "PAPEL DE NOTAS" (OBJETIVOS) --- */
-        .muro-paper {
-            background: #fdfbf7; color: #2c2c2c; padding: 40px 50px; border-radius: 8px;
-            box-shadow: var(--soft-shadow); position: relative; margin-bottom: 20px; width: 100%; max-width: 850px; text-align: left;
-            font-family: 'Open Sans', sans-serif;
-        }
+        /* ESTILOS DEL MURO TIPO "PAPEL DE NOTAS" */
+        .muro-paper { background: #fdfbf7; color: #2c2c2c; padding: 40px 50px; border-radius: 8px; box-shadow: var(--soft-shadow); position: relative; margin-bottom: 20px; width: 100%; max-width: 850px; text-align: left; font-family: 'Open Sans', sans-serif; }
         body.dark-mode .muro-paper { background: #1a1a2e; color: #e0e0e0; border: var(--card-border); }
-        
-        .muro-paper::before {
-            content: ''; position: absolute; top: 0; bottom: 0; left: 35px; width: 2px;
-            background: rgba(229, 89, 52, 0.4); /* Línea roja de cuaderno */
-        }
-        
-        .highlight-marker {
-            background: linear-gradient(180deg, transparent 55%, rgba(255, 235, 59, 0.8) 55%);
-            display: inline-block; padding: 0 5px; font-weight: 800; font-size: 2rem; color: inherit;
-        }
+        .muro-paper::before { content: ''; position: absolute; top: 0; bottom: 0; left: 35px; width: 2px; background: rgba(229, 89, 52, 0.4); }
+        .highlight-marker { background: linear-gradient(180deg, transparent 55%, rgba(255, 235, 59, 0.8) 55%); display: inline-block; padding: 0 5px; font-weight: 800; font-size: 2rem; color: inherit; }
         body.dark-mode .highlight-marker { background: linear-gradient(180deg, transparent 55%, rgba(255, 0, 85, 0.6) 55%); }
-
         .vocab-list-item { font-size: 1.3rem; margin-bottom: 12px; font-weight: 600; padding-left: 10px; display: flex; align-items: center; gap: 10px; }
         .vocab-list-item::before { content: '✓'; color: #4caf50; font-weight: bold; font-size: 1.5rem; }
 
-        /* --- ESTILOS DRAG & DROP (ARRASTRAR Y SOLTAR) --- */
-        .word-bank {
-            display: flex; flex-wrap: wrap; gap: 12px; margin: 25px 0; padding: 20px;
-            background: rgba(0,0,0,0.05); border-radius: 16px; min-height: 80px; align-items: center; justify-content: center;
-            border: 2px dashed rgba(0,0,0,0.2);
-        }
+        /* ESTILOS DRAG & DROP */
+        .word-bank { display: flex; flex-wrap: wrap; gap: 12px; margin: 25px 0; padding: 20px; background: rgba(0,0,0,0.05); border-radius: 16px; min-height: 80px; align-items: center; justify-content: center; border: 2px dashed rgba(0,0,0,0.2); }
         body.dark-mode .word-bank { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.2); }
-        
-        .draggable-word {
-            background: var(--bg-color); color: var(--text-main); padding: 10px 20px; border-radius: 20px;
-            cursor: grab; font-weight: bold; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            user-select: none; transition: transform 0.2s;
-        }
+        .draggable-word { background: var(--bg-color); color: var(--text-main); padding: 10px 20px; border-radius: 20px; cursor: grab; font-weight: bold; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); user-select: none; transition: transform 0.2s; }
         .draggable-word:active { cursor: grabbing; transform: scale(0.95); }
         
-        .drop-zone {
-            display: inline-flex; align-items: center; justify-content: center; min-width: 120px; height: 45px;
-            margin: 0 8px; vertical-align: bottom; background: rgba(0,0,0,0.05);
-            border-radius: 20px; transition: all 0.3s; padding: 0 5px;
-        }
+        .drop-zone { display: inline-flex; align-items: center; justify-content: center; min-width: 120px; height: 45px; margin: 0 8px; vertical-align: bottom; background: rgba(0,0,0,0.05); border-radius: 20px; transition: all 0.3s; padding: 0 5px; }
         .drop-zone.drag-over { background: rgba(76, 175, 80, 0.2); animation: pulseGlow 1s infinite; }
         .drop-zone.filled { background: transparent; animation: none; }
         .drop-zone .draggable-word { margin: 0; box-shadow: none; font-size: 1.1rem; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
-        @keyframes popIn {
-            0% { transform: scale(0.5); opacity: 0; }
-            70% { transform: scale(1.1); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
-        }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 70% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); } 100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); } }
 
-        /* CLASES DE EVALUACIÓN (GLOW) */
-        .word-correct {
-            background: transparent !important;
-            border: 2px solid #4caf50 !important;
-            color: #4caf50 !important;
-            box-shadow: 0 0 15px rgba(76, 175, 80, 0.6) !important;
-        }
-        .word-incorrect {
-            background: transparent !important;
-            border: 2px solid #e55934 !important;
-            color: #e55934 !important;
-            box-shadow: 0 0 15px rgba(229, 89, 52, 0.6) !important;
-            animation: shake 0.4s ease-in-out;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
+        .word-correct { background: transparent !important; border: 2px solid #4caf50 !important; color: #4caf50 !important; box-shadow: 0 0 15px rgba(76, 175, 80, 0.6) !important; }
+        .word-incorrect { background: transparent !important; border: 2px solid #e55934 !important; color: #e55934 !important; box-shadow: 0 0 15px rgba(229, 89, 52, 0.6) !important; animation: shake 0.4s ease-in-out; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
 
         .exercise-sentence { font-size: 1.3rem; margin-bottom: 20px; line-height: 2; font-weight: 600; }
         .exercise-da { font-size: 1rem; color: #777; font-style: italic; display: block; margin-top: -5px; margin-bottom: 15px; }
         body.dark-mode .exercise-da { color: #aaa; }
 
-        /* --- OTROS --- */
+        /* OTROS */
         .admin-panel { border: 2px dashed #ff0055; background: rgba(255, 0, 85, 0.05); border-radius: 20px; padding: 30px; margin-bottom: 20px; width: 100%; max-width: 850px; }
         .ai-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; grid-column: 1 / -1; color: var(--accent-color); font-weight: bold; }
         .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent-color); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 10px; }
@@ -212,12 +225,17 @@
         .footer-pill:hover { transform: scale(1.05); filter: brightness(1.1); }
 
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUpFade { 
-            0% { opacity: 0; transform: translateY(40px) scale(0.98); } 
-            100% { opacity: 1; transform: translateY(0) scale(1); } 
-        }
+        @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(40px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
         @keyframes pulseHeart { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+        /* EFECTOS ANIMADOS PARA EMOJIS */
+        .emoji-interactive { display: inline-block; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .vocab-card:hover .emoji-interactive { animation: emojiWiggle 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite; }
+        .mini-vocab-card:hover .mini-icon { animation: emojiBounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite; }
+        .muro-paper:hover .muro-emoji { animation: emojiWiggle 0.6s ease-in-out infinite; }
+        
+        @keyframes emojiWiggle { 0%, 100% { transform: rotate(0deg) scale(1); } 25% { transform: rotate(-20deg) scale(1.2); } 75% { transform: rotate(20deg) scale(1.2); } }
+        @keyframes emojiBounce { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-10px) scale(1.2); } }
 
         .dict-avatar { width: 75px; height: 75px; background: var(--card-bg); border: 2px solid var(--accent-color); border-radius: 50%; padding: 5px; box-shadow: var(--soft-shadow); cursor: pointer; backdrop-filter: blur(10px); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: none; animation: float 4s ease-in-out infinite; flex-shrink: 0; }
         .dict-avatar:hover { transform: scale(1.15) translateY(-5px); }
@@ -226,13 +244,14 @@
         .mini-vocab-card { background: var(--card-bg); border: var(--card-border); border-radius: 16px; padding: 15px; text-align: center; cursor: pointer; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s; box-shadow: var(--soft-shadow); display: flex; flex-direction: column; gap: 8px; align-items: center; opacity: 0; animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         body.dark-mode .mini-vocab-card { border-color: var(--dark-color); box-shadow: var(--soft-shadow); }
         .mini-vocab-card:hover { transform: translateY(-8px) scale(1.08); background: rgba(255, 255, 255, 0.2); }
-        .mini-icon { font-size: 2.2rem; }
+        .mini-icon { font-size: 2.2rem; display: inline-block; }
         .mini-word { font-weight: bold; color: var(--text-main); font-size: 1.05rem; }
-
         .icon-svg { width: 24px; height: 24px; fill: currentColor; }
 
         @media (max-width: 768px) {
-            .main-title { font-size: 3rem; }
+            .main-title { font-size: 2.8rem; }
+            .vocab-card { padding: 25px; }
+            .vocab-card h2 { font-size: 2rem !important; }
             .avatar-creator-grid { grid-template-columns: 1fr; gap: 20px; }
             .nav-left { bottom: 20px; top: auto; left: 50%; transform: translateX(-50%); flex-direction: row; }
             .top-banner { display: none; }
@@ -242,6 +261,11 @@
     </style>
 </head>
 <body id="main-body">
+
+    <!-- CAPAS DE ANIMACIÓN PARA TRANSICIÓN ÉPICA -->
+    <div id="lightning-overlay" class="lightning-overlay"></div>
+    <div id="smoke-overlay" class="smoke-overlay"></div>
+    <div id="soft-fade-overlay" class="soft-fade-overlay"></div>
 
     <!-- BANNER SUPERIOR -->
     <div class="top-banner">
@@ -255,15 +279,14 @@
         <button class="circle-btn nav-btn active" data-tab="inicio" title="Inicio"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 3L4 9v12h16V9l-8-6zm0 2.5l6 4.5v9h-12v-9l6-4.5z"/></svg></button>
         <button class="circle-btn nav-btn" data-tab="diccionario" title="Diccionario"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg></button>
         <button class="circle-btn nav-btn" data-tab="notas" title="El Tablón"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 14H7v-2h10v2zm0-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></button>
-        <!-- NUEVA PESTAÑA: JUEGOS -->
         <button class="circle-btn nav-btn" data-tab="juegos" title="Spil / Juegos"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></button>
     </nav>
 
     <!-- ÁREA CENTRAL -->
-    <main>
+    <main id="main-content">
         <div id="inicio" class="tab-content active">
             <!-- VISTA 1: LOGIN -->
-            <div id="view-login" class="sub-view active" style="display: none;">
+            <div id="view-login" class="sub-view active">
                 <div class="auth-box">
                     <h1 class="main-title" style="font-size: 3.5rem;">BIENVENIDO</h1>
                     <p style="margin-bottom: 25px;">Escribe tu nombre para entrar al sistema</p>
@@ -273,7 +296,7 @@
             </div>
 
             <!-- VISTA 2: FUNKO AVATAR CREATOR -->
-            <div id="view-avatar-creator" class="sub-view" style="display: none; width: 100%;">
+            <div id="view-avatar-creator" class="sub-view" style="width: 100%;">
                 <div class="avatar-creator-box">
                     <h2 style="font-family: var(--font-title); font-size: 2.5rem; margin-bottom: 20px;">CREA TU FUNKO AVATAR</h2>
                     <div class="avatar-creator-grid">
@@ -308,7 +331,7 @@
             </div>
 
             <!-- VISTA 3: DASHBOARD -->
-            <div id="view-dashboard" class="sub-view" style="display: none; flex-direction: column; align-items: center;">
+            <div id="view-dashboard" class="sub-view">
                 <div class="avatar-preview" id="dashboard-avatar" style="width: 250px; height: 250px; animation: float 5s ease-in-out infinite; background: transparent; box-shadow: none;"></div>
                 <h1 class="main-title" id="welcome-text">HOLA</h1>
                 <p id="mood-text" style="font-weight: 800; text-transform: uppercase; letter-spacing: 2px;"></p>
@@ -328,7 +351,6 @@
                 <div id="dict-avatar-widget" class="dict-avatar" onclick="animateAvatarLove()" title="¡Tu Funko se alegra cuando repasas!"></div>
             </div>
             
-            <!-- CORRECCIÓN DEL SCROLLBAR: Se quitó el scroll doble del grid -->
             <div class="vocab-grid" id="vocabGrid" style="display: flex; flex-direction: column; align-items: center; gap: 30px; width: 100%; padding: 10px 20px; box-sizing: border-box;"></div>
             
             <div class="history-panel" id="historyPanel" style="display: none; margin: 20px auto 40px auto;">
@@ -343,7 +365,7 @@
 
             <!-- PANEL DE PROFESOR -->
             <div id="admin-muro-panel" class="admin-panel" style="display: none;">
-                <h3 style="color: #ff0055; margin-bottom: 15px; font-size: 1.2rem;">👨‍🏫 Panel de Profesor</h3>
+                <h3 style="color: #ff0055; margin-bottom: 15px; font-size: 1.4rem;">👨‍🏫 Panel de Profesor</h3>
                 <textarea id="adminPostText" placeholder="Escribe aquí las palabras de hoy separadas por comas (Ej: comida, colores, caminar)..." 
                           style="width: 100%; height: 80px; padding: 15px; border-radius: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.2); color: var(--text-main); font-family: inherit; font-size: 1.1rem; margin-bottom: 15px; resize: none;"></textarea>
                 <button class="footer-pill" onclick="publishMuroPost()" style="background: #ff0055; width: auto; font-size: 0.9rem; padding: 10px 20px;">
@@ -361,12 +383,11 @@
             </div>
         </div>
 
-        <!-- TAB JUEGOS (NUEVO) -->
+        <!-- TAB JUEGOS -->
         <div id="juegos" class="tab-content" style="justify-content: center; padding-top: 20px;">
-            <h1 class="main-title" style="font-size: 4rem; margin-bottom: 20px;">SPIL / JUEGOS 🎮</h1>
-            
+            <h1 class="main-title" style="font-size: 4rem; margin-bottom: 20px;">SPIL / JUEGOS <span class="emoji-interactive" style="animation: emojiWiggle 2.5s infinite;">🎮</span></h1>
             <div class="auth-box" style="max-width: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 40px;">
-                <div style="font-size: 5rem; margin-bottom: 20px; animation: float 4s ease-in-out infinite;">🚧</div>
+                <div class="emoji-interactive" style="font-size: 5rem; margin-bottom: 20px; animation: float 4s ease-in-out infinite, emojiBounce 3s infinite;">🚧</div>
                 <h2 style="font-size: 3rem; color: var(--accent-color); margin-bottom: 10px; text-transform: uppercase;">Kommer Snart!</h2>
                 <p style="font-size: 1.2rem; font-weight: bold; opacity: 0.9; margin-bottom: 10px;">¡Próximamente tendremos juegos interactivos aquí!</p>
                 <p style="font-size: 0.9rem; opacity: 0.7;">Vi bygger noget sjovt til jer...</p>
@@ -375,102 +396,65 @@
 
     </main>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <script>
+        // ======================================================================
+        // LA API KEY ES PROPORCIONADA AUTOMÁTICAMENTE POR EL ENTORNO
+        // ======================================================================
+        const apiKey = ""; 
 
-        // ==========================================
-        // CONFIGURACIÓN CLOUD (FIREBASE ANONIMO - LEGAL RGPD)
-        // ==========================================
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const apiKey = ""; // API Key de Gemini Inyectada
+        /* ==========================================
+           LÓGICA DE TRANSICIONES ÉPICAS
+           ========================================== */
+        function toggleTheme() {
+            const isCurrentlyDark = document.body.classList.contains('dark-mode');
+            const lightning = document.getElementById('lightning-overlay');
+            const smoke = document.getElementById('smoke-overlay');
+            const softFade = document.getElementById('soft-fade-overlay');
+            const mainContent = document.getElementById('main-content');
 
-        let currentUser = null;
-        let globalProfile = null;
-        let customDict = [];
-        let searchHistory = [];
-        let currentMuroPost = null;
-        
-        let unsubMuro = null;
-        let unsubDict = null;
+            if (!isCurrentlyDark) {
+                // 1. TRANSICIÓN A CYBERPUNK (ÉPICA)
+                // Arrancar efectos
+                lightning.classList.add('lightning-active');
+                mainContent.classList.add('glitch-active');
+                
+                // Cambiar el tema justo en el medio del flash (150ms)
+                setTimeout(() => {
+                    document.body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                    updateAvatarPreview(); refreshDictAvatar();
+                }, 150);
 
-        // Base de datos por defecto (Solo se usa de plantilla)
-        let defaultDB = [
-            { es: "El Perro", da: "Hunden", gender: "m", plural: "Los perros", emoji: "🐶", def: "Un animal doméstico de cuatro patas que ladra.", chunk: "El perro juega feliz en el parque.", chunk_da: "Hunden leger glad i parken.", mnemo: "Perro lyder lidt som en kat der spinder meget højt: 'perrrr-ro'." },
-            { es: "La Manzana", da: "Æblet", gender: "f", plural: "Las manzanas", emoji: "🍎", def: "Una fruta redonda, dulce o ácida, de color rojo o verde.", chunk: "Tengo muchas ganas de comer una manzana.", chunk_da: "Jeg har virkelig lyst til at spise et æble.", mnemo: "Manzana lyder som 'mand sana' (En sund mand spiser æbler!)." }
-        ];
-        let dictionaryDB = [];
+                // Activar el humo inmediatamente después
+                smoke.classList.add('smoke-active');
 
-        // 1. INICIALIZAR AUTENTICACIÓN
-        async function initAuth() {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth); // Login anónimo y privado
-                }
-            } catch (e) {
-                console.error("Error de Autenticación", e);
+                // Limpiar clases de animación cuando terminen
+                setTimeout(() => {
+                    lightning.classList.remove('lightning-active');
+                    mainContent.classList.remove('glitch-active');
+                }, 500);
+
+                setTimeout(() => {
+                    smoke.classList.remove('smoke-active');
+                }, 3000); // El humo dura más en disiparse
+
+            } else {
+                // 2. TRANSICIÓN A NORMAL (SUAVE Y TRANQUILA)
+                softFade.classList.add('soft-fade-active');
+                
+                // Esperar a que la pantalla se vuelva lavanda para cambiar el fondo real
+                setTimeout(() => {
+                    document.body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                    updateAvatarPreview(); refreshDictAvatar();
+                    
+                    // Empezar a desvanecer la capa suave
+                    softFade.classList.remove('soft-fade-active');
+                }, 800); 
             }
         }
-        initAuth();
 
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUser = user;
-                const profileSnap = await getDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'profile', 'main'));
-                
-                if (profileSnap.exists()) {
-                    globalProfile = profileSnap.data();
-                    searchHistory = globalProfile.searchHistory || [];
-                    setupListeners();
-                    loadDashboard();
-                } else {
-                    window.showSubView('view-login');
-                }
-            }
-        });
-
-        // 2. ESCUCHAR CAMBIOS EN LA NUBE (TIEMPO REAL)
-        function setupListeners() {
-            if (!currentUser) return;
-            
-            // Escuchar el Muro del Profesor (Datos Públicos)
-            if (unsubMuro) unsubMuro();
-            unsubMuro = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'muro_posts'), (snapshot) => {
-                let posts = [];
-                snapshot.forEach(d => posts.push({id: d.id, ...d.data()}));
-                posts.sort((a, b) => b.timestamp - a.timestamp); // Ordenar por fecha
-                currentMuroPost = posts.length > 0 ? posts[0] : null;
-                
-                if(document.getElementById('student-muro-display')) {
-                    renderMuroData();
-                }
-            }, (error) => console.error(error));
-
-            // Escuchar el Diccionario Personal del Alumno (Datos Privados)
-            if (unsubDict) unsubDict();
-            unsubDict = onSnapshot(collection(db, 'artifacts', appId, 'users', currentUser.uid, 'dictionary'), (snapshot) => {
-                customDict = [];
-                snapshot.forEach(d => customDict.push(d.data()));
-                updateDictionaryDB();
-            }, (error) => console.error(error));
-        }
-
-        // ==========================================
-        // LÓGICA DE INTERFAZ EXPORTADA A WINDOW
-        // ==========================================
-        window.initTheme = function() { if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode'); }
-        window.toggleTheme = function() {
-            const isDark = document.body.classList.toggle('dark-mode');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            window.updateAvatarPreview(); window.refreshDictAvatar();
-        }
+        function initTheme() { if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode'); }
 
         document.querySelectorAll('.nav-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -481,33 +465,206 @@
             });
         });
 
-        window.showSubView = function(viewId) {
-            document.querySelectorAll('.sub-view').forEach(v => v.style.display = 'none');
-            document.getElementById(viewId).style.display = 'flex';
+        function showSubView(viewId) {
+            document.querySelectorAll('.sub-view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
         }
 
-        // CREADOR DE AVATARES Y LOGIN
-        let tempName = "";
-        window.startAvatarCreation = function() {
+        /* ==========================================
+           BASE DE DATOS Y DICCIONARIO
+           ========================================== */
+        let defaultDB = [
+            { es: "El Perro", da: "Hunden", gender: "m", plural: "Los perros", emoji: "🐶", def: "Un animal doméstico de cuatro patas que ladra.", chunk: "El perro juega feliz en el parque.", chunk_da: "Hunden leger glad i parken.", mnemo: "Perro lyder lidt som en kat der spinder meget højt: 'perrrr-ro'." },
+            { es: "La Manzana", da: "Æblet", gender: "f", plural: "Las manzanas", emoji: "🍎", def: "Una fruta redonda, dulce o ácida, de color rojo o verde.", chunk: "Tengo muchas ganas de comer una manzana.", chunk_da: "Jeg har virkelig lyst til at spise et æble.", mnemo: "Manzana lyder som 'mand sana' (En sund mand spiser æbler!)." }
+        ];
+
+        let customDict = JSON.parse(localStorage.getItem('user_custom_dict')) || [];
+        let dictionaryDB = [];
+        let searchHistory = JSON.parse(localStorage.getItem('user_dict_history')) || [];
+
+        function updateDictionaryDB() {
+            dictionaryDB = [];
+            let seenWords = new Set();
+            [...customDict, ...defaultDB].forEach(word => {
+                if (!word || !word.es) return; 
+                const key = word.es.toLowerCase().trim();
+                if (!seenWords.has(key)) {
+                    seenWords.add(key);
+                    dictionaryDB.push(word);
+                }
+            });
+        }
+
+        function renderDictionary(filterText = "") {
+            const grid = document.getElementById('vocabGrid');
+            if(!grid) return;
+            grid.innerHTML = '';
+            let matchFound = false;
+            let cardIndex = 0;
+
+            dictionaryDB.forEach((word) => {
+                const es = word.es || "";
+                const da = word.da || "";
+                
+                if (filterText && !es.toLowerCase().includes(filterText.toLowerCase()) && !da.toLowerCase().includes(filterText.toLowerCase())) return;
+                
+                matchFound = true;
+                const genderClass = word.gender === 'm' ? 'gender-m' : word.gender === 'f' ? 'gender-f' : '';
+                const genderText = word.gender === 'm' ? 'Hankøn' : word.gender === 'f' ? 'Hunkøn' : 'Intetkøn';
+                const badgeColor = word.gender === 'm' ? 'rgba(78,168,222,0.3)' : word.gender === 'f' ? 'rgba(255,123,156,0.3)' : 'rgba(150,150,150,0.3)';
+                const safeChunkEscaped = (word.chunk || "").replace(/'/g, "\\'");
+
+                grid.innerHTML += `
+                    <div class="vocab-card ${genderClass}" style="animation-delay: ${cardIndex * 0.1}s">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 15px;">
+                            <h2 style="font-size: 2.8rem; margin: 0; text-shadow: 2px 2px 0 rgba(0,0,0,0.1);"><span class="emoji-interactive">${word.emoji || "📖"}</span> ${es}</h2>
+                            <button onclick="hablarPalabra('${es}')" style="background:var(--accent-color); color:white; border-radius:50%; width:50px; height:50px; display:flex; justify-content:center; align-items:center; font-size: 1.5rem;" title="Escuchar palabra">▶</button>
+                        </div>
+                        <div style="margin-top: 5px; display: flex; gap: 10px; flex-wrap: wrap;">
+                            <span class="dict-badge" style="background: ${badgeColor}; font-size: 0.9rem; padding: 6px 15px;">${genderText}</span>
+                            <span class="dict-badge" style="background: rgba(255,255,255,0.15); font-size: 0.9rem; padding: 6px 15px;">Flertal: ${word.plural || "N/A"}</span>
+                        </div>
+                        <p style="font-weight:900; color: var(--text-main); font-size: 1.5rem; letter-spacing: 1px; margin-bottom: 10px;">🇩🇰 ${da}</p>
+                        <div class="dict-chunk" style="padding: 20px; font-size: 1.1rem; background: rgba(0,0,0,0.2); border-radius: 12px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                <span style="font-size: 1.2rem;">"${word.chunk || ""}"</span>
+                                <button onclick="hablarPalabra('${safeChunkEscaped}')" style="background:var(--light-color); color:var(--bg-color); border:none; border-radius:50%; width:40px; height:40px; display:flex; justify-content:center; align-items:center; font-size:1.2rem; cursor:pointer;" title="Escuchar frase entera">🔊</button>
+                            </div>
+                            <span style="font-size:1.1rem; color: var(--text-main); font-weight:bold; display:block;">🇩🇰 ${word.chunk_da || ""}</span>
+                        </div>
+                        <div class="dict-mnemo" style="font-size: 1rem; padding: 15px;">🧠 <b>Husk det:</b> ${word.mnemo || ""}</div>
+                    </div>`;
+                cardIndex++;
+            });
+
+            if (!matchFound && filterText !== "") {
+                grid.innerHTML = `<div style="grid-column: 1 / -1; text-align:center; padding: 20px; animation: slideUpFade 0.4s forwards;"><p style="opacity:0.8; font-size: 1.1rem; margin-bottom: 15px;">Pulsa <b>"Buscar"</b> o la tecla <b>Enter</b> para buscar "${filterText}" 📖</p></div>`;
+            }
+        }
+
+        function handleSearchInput(event) { if (event.key === 'Enter') triggerSearch(); else filterVocab(); }
+        
+        function triggerSearch() { 
+            const term = document.getElementById('searchInput').value.trim(); 
+            const exactMatch = dictionaryDB.find(w => {
+                const es = w.es || "";
+                const da = w.da || "";
+                return es.toLowerCase() === term.toLowerCase() || da.toLowerCase() === term.toLowerCase();
+            }); 
+            if (exactMatch) filterVocab(); else if (term.length > 0) fetchNewWord(term); 
+        }
+
+        let typingTimer;
+        function filterVocab() {
+            clearTimeout(typingTimer);
+            const filter = document.getElementById('searchInput').value.trim();
+            renderDictionary(filter);
+            typingTimer = setTimeout(() => {
+                if (filter.length > 2) {
+                    const exactMatch = dictionaryDB.find(w => {
+                        const es = w.es || "";
+                        const da = w.da || "";
+                        return es.toLowerCase().includes(filter.toLowerCase()) || da.toLowerCase().includes(filter.toLowerCase());
+                    });
+                    if (exactMatch) { addToHistory(exactMatch.es); animateAvatarLove(); }
+                }
+            }, 600); 
+        }
+
+        async function fetchWithRetry(url, options, retries = 5) {
+            const delays = [1000, 2000, 4000, 8000, 16000];
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const res = await fetch(url, options);
+                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                    return await res.json();
+                } catch (err) { if (i === retries - 1) throw err; await new Promise(r => setTimeout(r, delays[i])); }
+            }
+        }
+
+        async function fetchNewWord(term) {
+            const grid = document.getElementById('vocabGrid');
+            grid.innerHTML = `<div class="ai-loading"><div class="spinner"></div><p>Buscando "${term}" en el diccionario... 📖</p></div>`;
+            
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            
+            const prompt = `Eres un profesor de español divertido para adolescentes daneses. El estudiante quiere aprender o traducir la palabra/frase: "${term}". Devuelve ESTRICTAMENTE un JSON (sin markdown, solo las llaves {}): {"es": "Palabra en español (con El/La si aplica)", "da": "Traducción al danés", "gender": "m", "f", o "n", "plural": "Plural en español (o 'N/A')", "emoji": "1 emoji", "def": "Definición muy simple", "chunk": "Frase de ejemplo útil", "chunk_da": "Traducción de la frase", "mnemo": "Mnemotecnia o asociación mental divertida en DANÉS."}`;
+            const options = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json" } }) };
+
+            try {
+                const result = await fetchWithRetry(url, options);
+                let aiText = result.candidates[0].content.parts[0].text;
+                
+                const jsonMatch = aiText.match(/\{[\s\S]*\}/);
+                if (!jsonMatch) throw new Error("La IA no devolvió un JSON válido.");
+                
+                const newWord = JSON.parse(jsonMatch[0]);
+                if(!newWord.es) throw new Error("Formato IA incorrecto");
+
+                const wordExists = dictionaryDB.some(w => (w.es || "").toLowerCase().trim() === newWord.es.toLowerCase().trim());
+                
+                if (!wordExists) {
+                    customDict.unshift(newWord);
+                    localStorage.setItem('user_custom_dict', JSON.stringify(customDict));
+                    updateDictionaryDB();
+                }
+                
+                document.getElementById('searchInput').value = newWord.es;
+                filterVocab(); 
+                animateAvatarLove();
+            } catch (error) { 
+                console.error(error);
+                grid.innerHTML = `<p style="color:#ff0055; text-align:center; padding: 20px;">No se pudo conectar al diccionario o la palabra es inválida. ¡Prueba otra vez!</p>`; 
+            }
+        }
+
+        function addToHistory(wordStr) {
+            if (!searchHistory.includes(wordStr)) {
+                searchHistory.unshift(wordStr); if (searchHistory.length > 8) searchHistory.pop();
+                localStorage.setItem('user_dict_history', JSON.stringify(searchHistory)); updateHistoryUI();
+            }
+        }
+
+        function updateHistoryUI() {
+            const panel = document.getElementById('historyPanel');
+            const list = document.getElementById('recentSearchesList');
+            if(!panel || !list) return;
+
+            if (searchHistory.length === 0) { panel.style.display = 'none'; list.innerHTML = ''; return; }
+            panel.style.display = 'block';
+            list.innerHTML = '<div class="mini-card-container">' + searchHistory.map((w, i) => {
+                if(!w) return '';
+                const safeW = w.replace(/'/g, "\\'");
+                const entry = dictionaryDB.find(item => (item.es || "") === w) || { emoji: "📖" };
+                return `<div class="mini-vocab-card" onclick="repasarPalabra('${safeW}')" style="animation-delay: ${i * 0.08}s"><div class="mini-icon emoji-interactive">${entry.emoji || "📖"}</div><div class="mini-word">${w}</div><div style="font-size:0.75rem; color:var(--accent-color); font-weight:bold; margin-top: 5px;">🔄 GENTAG</div></div>`;
+            }).join('') + '</div>';
+        }
+
+        function repasarPalabra(word) { document.getElementById('searchInput').value = word; renderDictionary(word); animateAvatarLove(); }
+
+        /* ==========================================
+           AVATAR CREATOR Y MOOD
+           ========================================== */
+        let globalProfile = JSON.parse(localStorage.getItem('user_profile_funko'));
+
+        function startAvatarCreation() {
             tempName = document.getElementById('username-input').value.trim();
             if(!tempName) return alert("¡Dime tu nombre!");
             if (tempName === "AdminProfe") {
-                globalProfile = { name: "Profesor", is_admin: true, lastTime: new Date().getTime(), searchHistory: [] };
-                window.saveProfile();
-                return;
+                globalProfile = { name: "Profesor", is_admin: true, lastTime: new Date().getTime() };
+                localStorage.setItem('user_profile_funko', JSON.stringify(globalProfile));
+                loadDashboard(); return;
             }
-            window.showSubView('view-avatar-creator'); 
-            window.handleSpeciesChange();
+            showSubView('view-avatar-creator'); handleSpeciesChange();
         }
 
-        window.handleSpeciesChange = function() {
+        function handleSpeciesChange() {
             const species = document.getElementById('av-species').value;
             document.querySelectorAll('.person-only').forEach(el => el.style.display = species === 'person' ? 'flex' : 'none');
             document.getElementById('skin-label').innerText = species === 'person' ? "Color de Piel:" : "Color de Pelaje:";
-            window.updateAvatarPreview();
+            updateAvatarPreview();
         }
 
-        // --- Generación del SVG (Se mantiene idéntico) ---
         function generateFunkoSVG(config, mood = 'happy') {
             const isDark = document.body.classList.contains('dark-mode'); const isSad = mood === 'sad'; const isLove = mood === 'love';
             let svg = `<svg viewBox="0 0 100 100" style="width:100%; height:100%; drop-shadow: 0px 10px 10px rgba(0,0,0,0.3);">`;
@@ -556,43 +713,33 @@
             return svg + `</svg>`;
         }
 
-        window.updateAvatarPreview = function() {
+        function updateAvatarPreview() {
             if(!document.getElementById('av-species')) return null;
             const config = { species: document.getElementById('av-species').value, skinColor: document.getElementById('av-skin-color').value, hairStyle: document.getElementById('av-hair-style').value, hairColor: document.getElementById('av-hair-color').value, eyeColor: document.getElementById('av-eye-color').value, eyeSize: parseInt(document.getElementById('av-eye-size').value), mouthColor: document.getElementById('av-mouth-color').value, mouthSize: parseInt(document.getElementById('av-mouth-size').value), earrings: document.getElementById('av-earrings').checked, necklace: document.getElementById('av-necklace').checked };
-            document.getElementById('live-avatar-preview').innerHTML = generateFunkoSVG(config, 'happy'); 
-            return config;
+            document.getElementById('live-avatar-preview').innerHTML = generateFunkoSVG(config, 'happy'); return config;
         }
 
-        window.saveProfile = async function() {
-            if(!currentUser) return;
-            const config = tempName === "AdminProfe" ? null : window.updateAvatarPreview();
-            globalProfile = {
-                name: tempName,
-                avatar: config,
-                lastTime: new Date().getTime(),
-                is_admin: tempName === "AdminProfe",
-                searchHistory: []
-            };
-            // Guardar en Firebase de forma segura
-            await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'profile', 'main'), globalProfile);
-            setupListeners();
-            loadDashboard();
+        function saveProfile() { 
+            globalProfile = { name: tempName, avatar: updateAvatarPreview(), lastTime: new Date().getTime(), is_admin: false };
+            localStorage.setItem('user_profile_funko', JSON.stringify(globalProfile)); 
+            loadDashboard(); 
         }
 
         function loadDashboard() {
-            if(!globalProfile) return window.showSubView('view-login');
-            window.showSubView('view-dashboard');
+            if(!globalProfile) {
+                document.getElementById('dict-avatar-widget').style.display = 'none';
+                return showSubView('view-login');
+            }
             
-            const now = new Date().getTime(); 
-            const diff = (now - globalProfile.lastTime) / (1000 * 3600); 
-            const mood = diff > 24 ? 'sad' : 'happy';
+            showSubView('view-dashboard');
+            const now = new Date().getTime(); const diff = (now - globalProfile.lastTime) / (1000 * 3600); const mood = diff > 24 ? 'sad' : 'happy';
 
             const dictAvatarWidget = document.getElementById('dict-avatar-widget');
 
             if (globalProfile.is_admin) {
-                document.getElementById('dashboard-avatar').innerHTML = `<div style="font-size: 6rem;">👨‍🏫</div>`;
+                document.getElementById('dashboard-avatar').innerHTML = `<div style="font-size: 6rem;" class="emoji-interactive" style="animation: emojiBounce 2s infinite;">👨‍🏫</div>`;
                 document.getElementById('welcome-text').innerHTML = `HOLA, <span style="color:#ff0055">PROFESOR</span>`;
-                document.getElementById('mood-text').innerText = 'Panel de Control Activado (Nube conectada).';
+                document.getElementById('mood-text').innerText = 'Panel de Control Activado.';
                 document.getElementById('admin-muro-panel').style.display = 'block';
                 if(dictAvatarWidget) dictAvatarWidget.style.display = 'none';
             } else {
@@ -604,222 +751,45 @@
                 document.getElementById('admin-muro-panel').style.display = 'none';
             }
             
-            updateDictionaryDB(); 
-            window.updateHistoryUI(); 
-            renderMuroData();
+            globalProfile.lastTime = now; 
+            localStorage.setItem('user_profile_funko', JSON.stringify(globalProfile));
+            updateDictionaryDB(); updateHistoryUI(); loadMuroData();
         }
 
-        // ==========================================
-        // DICCIONARIO INTELIGENTE EN LA NUBE
-        // ==========================================
-        function updateDictionaryDB() {
-            dictionaryDB = [];
-            let seenWords = new Set();
-            [...customDict, ...defaultDB].forEach(word => {
-                if (!word || !word.es) return; // ESCUDO DE SEGURIDAD: Ignorar palabras corruptas o vacías
-                const key = word.es.toLowerCase().trim();
-                if (!seenWords.has(key)) {
-                    seenWords.add(key);
-                    dictionaryDB.push(word);
-                }
-            });
-            const inputVal = document.getElementById('searchInput') ? document.getElementById('searchInput').value.trim() : "";
-            window.renderDictionary(inputVal);
-        }
-
-        window.renderDictionary = function(filterText = "") {
-            const grid = document.getElementById('vocabGrid');
-            if(!grid) return;
-            grid.innerHTML = '';
-            let matchFound = false;
-            let cardIndex = 0;
-
-            dictionaryDB.forEach((word) => {
-                // ESCUDOS DE SEGURIDAD: Evitar errores de "undefined"
-                const es = word.es || "";
-                const da = word.da || "";
-                
-                if (filterText && !es.toLowerCase().includes(filterText.toLowerCase()) && !da.toLowerCase().includes(filterText.toLowerCase())) return;
-                
-                matchFound = true;
-                const genderClass = word.gender === 'm' ? 'gender-m' : word.gender === 'f' ? 'gender-f' : '';
-                const genderText = word.gender === 'm' ? 'Hankøn' : word.gender === 'f' ? 'Hunkøn' : 'Intetkøn';
-                const badgeColor = word.gender === 'm' ? 'rgba(78,168,222,0.3)' : word.gender === 'f' ? 'rgba(255,123,156,0.3)' : 'rgba(150,150,150,0.3)';
-                const safeChunkEscaped = (word.chunk || "").replace(/'/g, "\\'");
-
-                grid.innerHTML += `
-                    <div class="vocab-card ${genderClass}" style="animation-delay: ${cardIndex * 0.1}s">
-                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 15px;">
-                            <h2 style="font-size: 2.8rem; margin: 0; text-shadow: 2px 2px 0 rgba(0,0,0,0.1);">${word.emoji || "📖"} ${es}</h2>
-                            <button onclick="window.hablarPalabra('${es}')" style="background:var(--accent-color); color:white; border-radius:50%; width:50px; height:50px; display:flex; justify-content:center; align-items:center; font-size: 1.5rem;" title="Escuchar palabra">▶</button>
-                        </div>
-                        <div style="margin-top: 5px; display: flex; gap: 10px; flex-wrap: wrap;">
-                            <span class="dict-badge" style="background: ${badgeColor}; font-size: 0.9rem; padding: 6px 15px;">${genderText}</span>
-                            <span class="dict-badge" style="background: rgba(255,255,255,0.15); font-size: 0.9rem; padding: 6px 15px;">Flertal: ${word.plural || "N/A"}</span>
-                        </div>
-                        <p style="font-weight:900; color: var(--text-main); font-size: 1.5rem; letter-spacing: 1px; margin-bottom: 10px;">🇩🇰 ${da}</p>
-                        <div class="dict-chunk" style="padding: 20px; font-size: 1.1rem; background: rgba(0,0,0,0.2); border-radius: 12px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                                <span style="font-size: 1.2rem;">"${word.chunk || ""}"</span>
-                                <button onclick="window.hablarPalabra('${safeChunkEscaped}')" style="background:var(--light-color); color:var(--bg-color); border:none; border-radius:50%; width:40px; height:40px; display:flex; justify-content:center; align-items:center; font-size:1.2rem; cursor:pointer;" title="Escuchar frase entera">🔊</button>
-                            </div>
-                            <span style="font-size:1.1rem; color: var(--text-main); font-weight:bold; display:block;">🇩🇰 ${word.chunk_da || ""}</span>
-                        </div>
-                        <div class="dict-mnemo" style="font-size: 1rem; padding: 15px;">🧠 <b>Husk det:</b> ${word.mnemo || ""}</div>
-                    </div>`;
-                cardIndex++;
-            });
-
-            if (!matchFound && filterText !== "") {
-                grid.innerHTML = `<div style="grid-column: 1 / -1; text-align:center; padding: 20px; animation: slideUpFade 0.4s forwards;"><p style="opacity:0.8; font-size: 1.1rem; margin-bottom: 15px;">Pulsa <b>"Buscar"</b> o la tecla <b>Enter</b> para buscar "${filterText}" 📖</p></div>`;
-            }
-        }
-
-        window.handleSearchInput = function(event) { if (event.key === 'Enter') window.triggerSearch(); else filterVocab(); }
-        
-        window.triggerSearch = function() { 
-            const term = document.getElementById('searchInput').value.trim(); 
-            const exactMatch = dictionaryDB.find(w => {
-                const es = w.es || "";
-                const da = w.da || "";
-                return es.toLowerCase() === term.toLowerCase() || da.toLowerCase() === term.toLowerCase();
-            }); 
-            if (exactMatch) filterVocab(); else if (term.length > 0) fetchNewWord(term); 
-        }
-
-        let typingTimer;
-        function filterVocab() {
-            clearTimeout(typingTimer);
-            const filter = document.getElementById('searchInput').value.trim();
-            window.renderDictionary(filter);
-            typingTimer = setTimeout(() => {
-                if (filter.length > 2) {
-                    const exactMatch = dictionaryDB.find(w => {
-                        const es = w.es || "";
-                        const da = w.da || "";
-                        return es.toLowerCase().includes(filter.toLowerCase()) || da.toLowerCase().includes(filter.toLowerCase());
-                    });
-                    if (exactMatch) { window.addToHistory(exactMatch.es); window.animateAvatarLove(); }
-                }
-            }, 600); 
-        }
-
-        async function fetchWithRetry(url, options, retries = 5) {
-            const delays = [1000, 2000, 4000, 8000, 16000];
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const res = await fetch(url, options);
-                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-                    return await res.json();
-                } catch (err) { if (i === retries - 1) throw err; await new Promise(r => setTimeout(r, delays[i])); }
-            }
-        }
-
-        async function fetchNewWord(term) {
-            const grid = document.getElementById('vocabGrid');
-            grid.innerHTML = `<div class="ai-loading"><div class="spinner"></div><p>Buscando "${term}" en el diccionario... 📖</p></div>`;
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            const prompt = `Eres un profesor de español divertido para adolescentes daneses. El estudiante quiere aprender o traducir la palabra/frase: "${term}". Devuelve ESTRICTAMENTE un JSON (sin markdown, solo las llaves {}): {"es": "Palabra en español (con El/La si aplica)", "da": "Traducción al danés", "gender": "m", "f", o "n", "plural": "Plural en español (o 'N/A')", "emoji": "1 emoji", "def": "Definición muy simple", "chunk": "Frase de ejemplo útil", "chunk_da": "Traducción de la frase", "mnemo": "Mnemotecnia o asociación mental divertida en DANÉS."}`;
-            const options = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json" } }) };
-
-            try {
-                const result = await fetchWithRetry(url, options);
-                let aiText = result.candidates[0].content.parts[0].text;
-                
-                // EXTRACCIÓN ROBUSTA DE JSON: Ignora cualquier texto extra que mande la IA
-                const jsonMatch = aiText.match(/\{[\s\S]*\}/);
-                if (!jsonMatch) throw new Error("La IA no devolvió un JSON válido.");
-                
-                const newWord = JSON.parse(jsonMatch[0]);
-                if(!newWord.es) throw new Error("Formato IA incorrecto");
-
-                // Comprobar si ya existe para evitar duplicados
-                const wordExists = dictionaryDB.some(w => (w.es || "").toLowerCase().trim() === newWord.es.toLowerCase().trim());
-                
-                if (!wordExists) {
-                    dictionaryDB.unshift(newWord); // Actualización instantánea local
-                    if (currentUser) {
-                        await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'dictionary', newWord.es), newWord);
-                    }
-                }
-                
-                document.getElementById('searchInput').value = newWord.es;
-                filterVocab(); 
-                window.animateAvatarLove();
-            } catch (error) { 
-                console.error(error);
-                grid.innerHTML = `<p style="color:#ff0055; text-align:center; padding: 20px;">No se pudo conectar al diccionario o la palabra es inválida. ¡Prueba otra vez!</p>`; 
-            }
-        }
-
-        window.addToHistory = async function(wordStr) {
-            if (!searchHistory.includes(wordStr)) {
-                searchHistory.unshift(wordStr); if (searchHistory.length > 8) searchHistory.pop();
-                window.updateHistoryUI();
-                
-                // Actualizar historial en la nube
-                if (currentUser && globalProfile) {
-                    globalProfile.searchHistory = searchHistory;
-                    await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'profile', 'main'), globalProfile, {merge: true});
-                }
-            }
-        }
-
-        window.updateHistoryUI = function() {
-            const panel = document.getElementById('historyPanel');
-            const list = document.getElementById('recentSearchesList');
-            if(!panel || !list) return;
-
-            if (searchHistory.length === 0) { panel.style.display = 'none'; list.innerHTML = ''; return; }
-            panel.style.display = 'block';
-            list.innerHTML = '<div class="mini-card-container">' + searchHistory.map((w, i) => {
-                if(!w) return '';
-                const safeW = w.replace(/'/g, "\\'");
-                const entry = dictionaryDB.find(item => (item.es || "") === w) || { emoji: "📖" };
-                return `<div class="mini-vocab-card" onclick="window.repasarPalabra('${safeW}')" style="animation-delay: ${i * 0.08}s"><div class="mini-icon">${entry.emoji || "📖"}</div><div class="mini-word">${w}</div><div style="font-size:0.75rem; color:var(--accent-color); font-weight:bold; margin-top: 5px;">🔄 GENTAG</div></div>`;
-            }).join('') + '</div>';
-        }
-
-        window.repasarPalabra = function(word) { document.getElementById('searchInput').value = word; window.renderDictionary(word); window.animateAvatarLove(); }
-
-        // ==========================================
-        // ANIMACIONES AVATAR GLOBAL
-        // ==========================================
         let loveTimer;
-        window.animateAvatarLove = function() {
-            if (!globalProfile || !globalProfile.avatar) return; 
+        function animateAvatarLove() {
+            if (!globalProfile || !globalProfile.avatar || globalProfile.is_admin) return;
             clearTimeout(loveTimer); const dictAvatarWidget = document.getElementById('dict-avatar-widget');
             if(dictAvatarWidget) dictAvatarWidget.innerHTML = generateFunkoSVG(globalProfile.avatar, 'love');
             loveTimer = setTimeout(() => { if(dictAvatarWidget) dictAvatarWidget.innerHTML = generateFunkoSVG(globalProfile.avatar, 'happy'); }, 2500);
         }
-        
-        window.refreshDictAvatar = function() { 
-            if (globalProfile && globalProfile.avatar) { 
+        function refreshDictAvatar() { 
+            if (globalProfile && globalProfile.avatar && !globalProfile.is_admin) { 
                 const dictAvatarWidget = document.getElementById('dict-avatar-widget'); 
                 if(dictAvatarWidget) dictAvatarWidget.innerHTML = generateFunkoSVG(globalProfile.avatar, 'happy'); 
             } 
         }
-        
-        window.resetProfile = function() { if(confirm("¿Quieres volver al creador y editar tu Avatar o Nombre?")) { window.location.reload(); } }
+        function resetProfile() { if(confirm("¿Quieres volver al creador y editar tu Avatar o Nombre?")) { localStorage.removeItem('user_profile_funko'); localStorage.removeItem('user_dict_history'); location.reload(); } }
 
-        // ==========================================
-        // EL TABLÓN (MURO) PROFESOR EN LA NUBE
-        // ==========================================
-        window.getFormattedDate = function() {
+        /* ==========================================
+           EL TABLÓN - NOTAS Y DRAG & DROP IA
+           ========================================== */
+        function getFormattedDate() {
             const today = new Date(); const yyyy = today.getFullYear(); let mm = today.getMonth() + 1; let dd = today.getDate();
             if (dd < 10) dd = '0' + dd; if (mm < 10) mm = '0' + mm; return dd + '.' + mm + '.' + yyyy;
         }
 
-        window.publishMuroPost = async function() {
+        async function publishMuroPost() {
             const text = document.getElementById('adminPostText').value.trim();
             if (!text) return alert("Escribe algunas palabras primero.");
             document.getElementById('admin-loading').style.display = 'block';
 
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            
             const prompt = `El profesor ha introducido este vocabulario: "${text}".
-Genera un objeto JSON ESTRICTO con la siguiente estructura (NO uses markdown, solo el JSON):
+Genera un objeto JSON ESTRICTO (NO uses markdown, solo las llaves {}):
 { "vocab": ["palabra1", "palabra2", "palabra3"], "exercises": [ { "da": "Frase completa en danés", "es_before": "Inicio de frase española ", "es_after": " fin de la frase.", "answer": "palabra1" } ] }
-Asegúrate de que 'vocab' sea un array limpio con las palabras clave en español. En 'exercises', genera 3 frases de rellenar huecos. La propiedad 'answer' DEBE ser exactamente una de las palabras del array 'vocab'.`;
+'vocab' es un array con las palabras en español. Genera 3 frases de rellenar huecos. 'answer' DEBE ser exactamente una de las palabras de 'vocab'.`;
 
             try {
                 const result = await fetchWithRetry(url, {
@@ -828,48 +798,46 @@ Asegúrate de que 'vocab' sea un array limpio con las palabras clave en español
                 });
 
                 let aiDataText = result.candidates[0].content.parts[0].text;
-                aiDataText = aiDataText.replace(/```json/gi, '').replace(/```/g, '').trim(); // LIMPIEZA DE MARKDOWN
-                const aiData = JSON.parse(aiDataText);
                 
-                const postData = { date: window.getFormattedDate(), vocab: aiData.vocab, exercises: aiData.exercises, timestamp: new Date().getTime() };
+                const jsonMatch = aiDataText.match(/\{[\s\S]*\}/);
+                if (!jsonMatch) throw new Error("La IA no devolvió un JSON válido.");
+
+                const aiData = JSON.parse(jsonMatch[0]);
                 
-                // Guardar en Nube Pública
-                if (currentUser) {
-                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'muro_posts'), postData);
-                }
+                const postData = { date: getFormattedDate(), vocab: aiData.vocab, exercises: aiData.exercises, timestamp: new Date().getTime() };
+                localStorage.setItem('muro_latest_post', JSON.stringify(postData));
                 
                 document.getElementById('adminPostText').value = '';
                 document.getElementById('admin-loading').style.display = 'none';
-                alert("¡Pizarra interactiva enviada a todos los alumnos!");
+                loadMuroData(); alert("¡Pizarra interactiva generada con éxito!");
 
-            } catch (e) { console.error(e); alert("Hubo un error conectando con la IA."); document.getElementById('admin-loading').style.display = 'none'; }
+            } catch (e) { 
+                console.error(e); 
+                alert("Hubo un error conectando con la IA. Asegúrate de poner palabras clave válidas."); 
+                document.getElementById('admin-loading').style.display = 'none'; 
+            }
         }
 
-        function renderMuroData() {
+        function loadMuroData() {
+            const postData = JSON.parse(localStorage.getItem('muro_latest_post'));
             const display = document.getElementById('student-muro-display');
-            if (!currentMuroPost) { display.innerHTML = '<div style="text-align: center; opacity: 0.6; padding: 40px;">No hay mensajes nuevos del profesor hoy.</div>'; return; }
+            if (!postData) { display.innerHTML = '<div style="text-align: center; opacity: 0.6; padding: 40px;">No hay mensajes nuevos del profesor hoy.</div>'; return; }
 
-            const postData = currentMuroPost;
             let html = `
                 <div class="muro-paper">
                     <div style="font-size: 1rem; color: #888; font-weight: bold; margin-bottom: 5px; margin-left: 10px;">I dag ${postData.date}</div>
                     <div class="highlight-marker" style="margin-bottom: 25px;">Mål (Objetivos)</div>
-                    
-                    <p style="font-size: 1.4rem; font-weight: bold; margin-bottom: 20px; margin-left: 10px;">Tak for i dag! I er meget dygtige 🌟</p>
+                    <p style="font-size: 1.4rem; font-weight: bold; margin-bottom: 20px; margin-left: 10px;">Tak for i dag! I er meget dygtige <span class="emoji-interactive muro-emoji">🌟</span></p>
                     <p style="font-size: 1.1rem; margin-bottom: 15px; margin-left: 10px; opacity: 0.8;">Her er ordforråd fra i dag:</p>
-                    
                     <div style="margin-bottom: 30px;">
                         ${postData.vocab.map(v => `<div class="vocab-list-item">${v}</div>`).join('')}
                     </div>
-
-                    <h4 style="margin-top: 40px; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 20px; font-size: 1.5rem;">🎮 Træk og slip (Arrastra y suelta)</h4>
-                    
-                    <div class="word-bank" id="word-bank" ondrop="window.drop(event)" ondragover="window.allowDrop(event)">
+                    <h4 style="margin-top: 40px; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 20px; font-size: 1.5rem;"><span class="emoji-interactive muro-emoji">🎮</span> Træk og slip (Arrastra y suelta)</h4>
+                    <div class="word-bank" id="word-bank" ondrop="drop(event)" ondragover="allowDrop(event)">
                         ${postData.vocab.sort(() => Math.random() - 0.5).map((v, i) => `
-                            <span class="draggable-word" draggable="true" id="drag-word-${i}" ondragstart="window.drag(event)" onclick="window.handleWordClick(event)">${v}</span>
+                            <span class="draggable-word" draggable="true" id="drag-word-${i}" ondragstart="drag(event)" onclick="handleWordClick(event)">${v}</span>
                         `).join('')}
                     </div>
-
                     <div id="muro-exercises-container">
             `;
 
@@ -879,11 +847,11 @@ Asegúrate de que 'vocab' sea un array limpio con las palabras clave en español
                     <div style="margin-bottom: 25px; position: relative;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                             <span class="exercise-da" style="margin: 0;">🇩🇰 ${ex.da}</span>
-                            <button onclick="window.hablarPalabra('${safeFullSentence}')" style="background:var(--light-color); color:var(--bg-color); border:none; border-radius:50%; width:32px; height:32px; display:flex; justify-content:center; align-items:center; font-size:1rem; cursor:pointer; box-shadow: var(--soft-shadow);" title="Escuchar frase completa">🔊</button>
+                            <button onclick="hablarPalabra('${safeFullSentence}')" style="background:var(--light-color); color:var(--bg-color); border:none; border-radius:50%; width:32px; height:32px; display:flex; justify-content:center; align-items:center; font-size:1rem; cursor:pointer; box-shadow: var(--soft-shadow);" title="Escuchar frase completa">🔊</button>
                         </div>
                         <div class="exercise-sentence">
                             ${ex.es_before}
-                            <span class="drop-zone" id="drop-zone-${idx}" ondrop="window.drop(event)" ondragover="window.allowDrop(event)" data-answer="${ex.answer}"></span>
+                            <span class="drop-zone" id="drop-zone-${idx}" ondrop="drop(event)" ondragover="allowDrop(event)" data-answer="${ex.answer}"></span>
                             ${ex.es_after}
                         </div>
                         <div id="ex-result-${idx}" style="margin-top: 5px; font-weight: bold; font-size: 0.9rem; display: none;"></div>
@@ -891,76 +859,42 @@ Asegúrate de que 'vocab' sea un array limpio con las palabras clave en español
                 `;
             });
 
-            html += `
-                    </div>
-                    <div style="display:flex; gap: 15px;">
-                        <button class="footer-pill" onclick="window.checkDragExercises()" style="margin-top: 10px; width: auto; font-size: 1rem;">✅ Tjek Svar (Comprobar)</button>
-                    </div>
-                </div>
-            `;
+            html += `</div><div style="display:flex; gap: 15px;"><button class="footer-pill" onclick="checkDragExercises()" style="margin-top: 10px; width: auto; font-size: 1rem;">✅ Tjek Svar (Comprobar)</button></div></div>`;
             display.innerHTML = html;
         }
 
-        window.allowDrop = function(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); }
-        window.drag = function(ev) { ev.dataTransfer.setData("text", ev.target.id); }
-        window.drop = function(ev) {
+        function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); }
+        function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+        function drop(ev) {
             ev.preventDefault(); ev.currentTarget.classList.remove('drag-over');
-            var data = ev.dataTransfer.getData("text");
-            var draggedEl = document.getElementById(data);
+            var data = ev.dataTransfer.getData("text"); var draggedEl = document.getElementById(data);
             draggedEl.classList.remove('word-correct', 'word-incorrect');
-            
-            if (ev.currentTarget.classList.contains('drop-zone') && ev.currentTarget.children.length === 0) {
-                ev.currentTarget.appendChild(draggedEl);
-                ev.currentTarget.classList.add('filled');
-            } else if (ev.currentTarget.id === 'word-bank') {
-                ev.currentTarget.appendChild(draggedEl);
-                document.querySelectorAll('.drop-zone').forEach(z => { if(z.children.length===0) z.classList.remove('filled'); });
-            }
+            if (ev.currentTarget.classList.contains('drop-zone') && ev.currentTarget.children.length === 0) { ev.currentTarget.appendChild(draggedEl); ev.currentTarget.classList.add('filled'); } 
+            else if (ev.currentTarget.id === 'word-bank') { ev.currentTarget.appendChild(draggedEl); document.querySelectorAll('.drop-zone').forEach(z => { if(z.children.length===0) z.classList.remove('filled'); }); }
         }
 
-        window.handleWordClick = function(ev) {
-            const wordEl = ev.currentTarget;
-            wordEl.classList.remove('word-correct', 'word-incorrect');
-
-            if (wordEl.parentElement.classList.contains('drop-zone')) {
-                document.getElementById('word-bank').appendChild(wordEl);
-                wordEl.parentElement.classList.remove('filled');
-            } else {
-                const emptyZone = Array.from(document.querySelectorAll('.drop-zone')).find(z => z.children.length === 0);
-                if (emptyZone) { emptyZone.appendChild(wordEl); emptyZone.classList.add('filled'); }
-            }
+        function handleWordClick(ev) {
+            const wordEl = ev.currentTarget; wordEl.classList.remove('word-correct', 'word-incorrect');
+            if (wordEl.parentElement.classList.contains('drop-zone')) { document.getElementById('word-bank').appendChild(wordEl); wordEl.parentElement.classList.remove('filled'); } 
+            else { const emptyZone = Array.from(document.querySelectorAll('.drop-zone')).find(z => z.children.length === 0); if (emptyZone) { emptyZone.appendChild(wordEl); emptyZone.classList.add('filled'); } }
         }
 
-        window.checkDragExercises = function() {
-            if (!currentMuroPost) return;
-
-            currentMuroPost.exercises.forEach((ex, idx) => {
-                const dropZone = document.getElementById(`drop-zone-${idx}`);
-                const resultDiv = document.getElementById(`ex-result-${idx}`);
-                
-                if (dropZone.children.length === 0) {
-                    resultDiv.innerHTML = 'Falta rellenar este hueco 💡'; resultDiv.style.color = '#e55934'; resultDiv.style.display = 'block';
-                    return;
-                }
-
-                const wordEl = dropZone.children[0];
-                const answerGiven = wordEl.innerText.trim().toLowerCase();
+        function checkDragExercises() {
+            const postData = JSON.parse(localStorage.getItem('muro_latest_post')); if (!postData) return;
+            postData.exercises.forEach((ex, idx) => {
+                const dropZone = document.getElementById(`drop-zone-${idx}`); const resultDiv = document.getElementById(`ex-result-${idx}`);
+                if (dropZone.children.length === 0) { resultDiv.innerHTML = 'Falta rellenar este hueco 💡'; resultDiv.style.color = '#e55934'; resultDiv.style.display = 'block'; return; }
+                const wordEl = dropZone.children[0]; const answerGiven = wordEl.innerText.trim().toLowerCase();
                 wordEl.classList.remove('word-correct', 'word-incorrect');
-
-                if (answerGiven === ex.answer.toLowerCase()) {
-                    wordEl.classList.add('word-correct');
-                    resultDiv.innerHTML = '¡Correcto! Rigtigt godt! 🎉'; resultDiv.style.color = '#4caf50'; resultDiv.style.display = 'block';
-                } else {
-                    wordEl.classList.add('word-incorrect');
-                    resultDiv.innerHTML = 'Casi. Inténtalo de nuevo. 💡'; resultDiv.style.color = '#e55934'; resultDiv.style.display = 'block';
-                }
+                if (answerGiven === ex.answer.toLowerCase()) { wordEl.classList.add('word-correct'); resultDiv.innerHTML = '¡Correcto! Rigtigt godt! 🎉'; resultDiv.style.color = '#4caf50'; resultDiv.style.display = 'block'; } 
+                else { wordEl.classList.add('word-incorrect'); resultDiv.innerHTML = 'Casi. Inténtalo de nuevo. 💡'; resultDiv.style.color = '#e55934'; resultDiv.style.display = 'block'; }
             });
-            window.animateAvatarLove();
+            animateAvatarLove();
         }
 
-        window.hablarPalabra = function(texto) { if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); const mensaje = new SpeechSynthesisUtterance(texto); mensaje.lang = 'es-ES'; window.speechSynthesis.speak(mensaje); } }
+        function hablarPalabra(texto) { if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); const mensaje = new SpeechSynthesisUtterance(texto); mensaje.lang = 'es-ES'; window.speechSynthesis.speak(mensaje); } }
 
-        window.onload = () => { window.initTheme(); };
+        window.onload = () => { initTheme(); loadDashboard(); updateDictionaryDB(); };
     </script>
 </body>
 </html>
