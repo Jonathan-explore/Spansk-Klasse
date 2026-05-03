@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Español para Jóvenes | Edición Cyberpunk</title>
+    <!-- Fuentes de Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* ==========================================================================
+           VARIABLES DE DISEÑO Y TEMAS
+           ========================================================================== */
+        :root {
+            --bg-color: #b28cd6;
+            --dark-color: #3b3247;
+            --light-color: #ffffff;
+            --accent-color: #e55934;
+            --card-bg: rgba(255, 255, 255, 0.15);
+            --text-main: #ffffff;
+            --input-bg: rgba(255, 255, 255, 0.9);
+            --font-title: 'Bebas Neue', sans-serif;
+            --font-body: 'Open Sans', sans-serif;
+            --border-radius-soft: 16px;
+            --neon-glow: none;
+            --soft-shadow: 0 8px 30px rgba(255, 255, 255, 0.3), 0 0 15px rgba(255, 255, 255, 0.15);
+            --card-border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        body.dark-mode {
+            --bg-color: #0d0221;
+            --dark-color: #00f2ff;
+            --light-color: #1a1a2e;
+            --accent-color: #ff0055;
+            --card-bg: rgba(0, 242, 255, 0.05);
+            --text-main: #00f2ff;
+            --input-bg: #1a1a2e;
+            --neon-glow: 0 0 10px rgba(0, 242, 255, 0.5), 0 0 20px rgba(0, 242, 255, 0.2);
+            --soft-shadow: 0 8px 30px rgba(0, 242, 255, 0.15), 0 0 20px rgba(0, 242, 255, 0.2);
+            --card-border: 1px solid rgba(0, 242, 255, 0.3);
+        }
+
+        /* ==========================================================================
+           ESTILOS GLOBALES
+           ========================================================================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-body); height: 100vh; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+        button { cursor: pointer; border: none; outline: none; background: none; font-family: inherit; }
+
+        /* ==========================================================================
+           INPUTS Y CONTROLES DEL CREADOR
+           ========================================================================== */
+        select, input[type="text"] { width: 100%; padding: 12px 20px; border-radius: var(--border-radius-soft); border: 2px solid rgba(255, 255, 255, 0.1); background-color: var(--input-bg); color: var(--dark-color); font-size: 1rem; font-weight: 600; outline: none; cursor: pointer; appearance: none; transition: all 0.3s; }
+        select:hover, input[type="text"]:focus { border-color: var(--accent-color); box-shadow: var(--soft-shadow); transform: translateY(-2px); }
+        body.dark-mode select, body.dark-mode input[type="text"] { color: #ffffff; border-color: var(--dark-color); box-shadow: var(--neon-glow); }
+        
+        input[type="color"] { -webkit-appearance: none; border: none; width: 100%; height: 45px; border-radius: var(--border-radius-soft); cursor: pointer; background: none; }
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: 2px solid rgba(255,255,255,0.2); border-radius: var(--border-radius-soft); }
+        input[type="range"] { width: 100%; accent-color: var(--accent-color); cursor: pointer; }
+
+        .option-group { display: flex; flex-direction: column; gap: 5px; }
+        .option-group label { font-size: 0.85rem; text-transform: uppercase; font-weight: bold; color: var(--accent-color); }
+
+        .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; max-height: 40vh; overflow-y: auto; padding-right: 10px; }
+        .controls-grid::-webkit-scrollbar { width: 6px; }
+        .controls-grid::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        .controls-grid::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 10px; }
+
+        /* ==========================================================================
+           COMPONENTES DE INTERFAZ Y AVATAR
+           ========================================================================== */
+        .top-banner { position: absolute; top: 20px; right: 20px; background-color: rgba(30, 30, 30, 0.8); color: #ddd; padding: 10px 20px; font-size: 0.85rem; letter-spacing: 1px; z-index: 100; border-left: 3px solid var(--accent-color); border-radius: 4px; display: flex; align-items: center; gap: 15px; }
+        .theme-switch { width: 40px; height: 20px; background: #555; border-radius: 20px; position: relative; cursor: pointer; }
+        .theme-switch::before { content: ''; position: absolute; width: 16px; height: 16px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; }
+        body.dark-mode .theme-switch { background: var(--accent-color); }
+        body.dark-mode .theme-switch::before { left: 22px; }
+
+        .nav-left { position: absolute; left: 30px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 20px; z-index: 100; }
+        .circle-btn { width: 55px; height: 55px; border-radius: 50%; background-color: var(--light-color); color: var(--bg-color); display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 2px solid transparent; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s, color 0.3s; }
+        body.dark-mode .circle-btn { background-color: #1a1a2e; color: var(--dark-color); border-color: var(--dark-color); box-shadow: var(--neon-glow); }
+        .circle-btn.active { background-color: var(--accent-color); color: white; transform: scale(1.15); }
+        
+        /* Animación general de clic para botones */
+        button:active { transform: scale(0.92) !important; transition: transform 0.1s !important; }
+
+        /* ==========================================================================
+           ÁREA DE CONTENIDO Y AVATAR CREATOR
+           ========================================================================== */
+        main { flex: 1; display: flex; justify-content: center; align-items: center; padding: 80px; width: 100%; }
+        .tab-content { display: none; width: 100%; max-width: 900px; height: 90%; flex-direction: column; align-items: center; justify-content: center; }
+        .tab-content.active { display: flex; animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .sub-view.active { display: flex; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        .main-title { font-family: var(--font-title); font-size: 5.5rem; letter-spacing: 4px; margin-bottom: 20px; text-transform: uppercase; text-align: center; }
+        body.dark-mode .main-title { text-shadow: var(--neon-glow); }
+
+        .auth-box, .avatar-creator-box { background: var(--card-bg); backdrop-filter: blur(15px); padding: 40px; border-radius: 24px; border: var(--card-border); text-align: center; box-shadow: var(--soft-shadow); width: 100%; }
+        body.dark-mode .auth-box, body.dark-mode .avatar-creator-box { border-color: var(--dark-color); box-shadow: var(--soft-shadow); }
+
+        .avatar-creator-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; align-items: start; }
+        .avatar-preview { width: 100%; max-width: 280px; height: 280px; margin: 0 auto; background: rgba(0,0,0,0.1); border-radius: 24px; display: flex; justify-content: center; align-items: center; padding: 10px; box-shadow: inset 0 0 20px rgba(0,0,0,0.2); transition: all 0.5s ease; }
+
+        /* ESTILOS DEL DICCIONARIO INTELIGENTE */
+        .vocab-grid::-webkit-scrollbar { width: 6px; }
+        .vocab-grid::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 10px; }
+        .vocab-card { background: var(--card-bg); backdrop-filter: blur(15px); border: var(--card-border); padding: 40px; border-radius: 20px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s; display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 850px; text-align: left; margin: 0 auto; box-shadow: var(--soft-shadow); opacity: 0; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        body.dark-mode .vocab-card { border-color: var(--dark-color); box-shadow: var(--soft-shadow); }
+        .vocab-card:hover { transform: translateY(-8px) scale(1.02); background: rgba(255, 255, 255, 0.2); }
+
+        .gender-m { border-left: 8px solid #4ea8de; }
+        .gender-f { border-left: 8px solid #ff7b9c; }
+        .dict-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; margin-right: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .dict-def { font-size: 0.95rem; opacity: 0.9; }
+        .dict-chunk { font-style: italic; color: var(--accent-color); background: rgba(0,0,0,0.1); padding: 10px; border-radius: 8px; font-weight: 600; }
+        .dict-mnemo { background: rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; font-size: 0.85rem; border-left: 3px solid #fcd000;}
+
+        .history-panel { width: 100%; max-width: 850px; margin-top: 20px; }
+
+        /* --- ESTILOS DEL MURO TIPO "PAPEL DE NOTAS" (OBJETIVOS) --- */
+        .muro-paper {
+            background: #fdfbf7; color: #2c2c2c; padding: 40px 50px; border-radius: 8px;
+            box-shadow: var(--soft-shadow); position: relative; margin-bottom: 20px; width: 100%; max-width: 850px; text-align: left;
+            font-family: 'Open Sans', sans-serif;
+        }
+        body.dark-mode .muro-paper { background: #1a1a2e; color: #e0e0e0; border: var(--card-border); }
+        
+        .muro-paper::before {
+            content: ''; position: absolute; top: 0; bottom: 0; left: 35px; width: 2px;
+            background: rgba(229, 89, 52, 0.4); /* Línea roja de cuaderno */
+        }
+        
+        .highlight-marker {
+            background: linear-gradient(180deg, transparent 55%, rgba(255, 235, 59, 0.8) 55%);
+            display: inline-block; padding: 0 5px; font-weight: 800; font-size: 2rem; color: inherit;
+        }
+        body.dark-mode .highlight-marker { background: linear-gradient(180deg, transparent 55%, rgba(255, 0, 85, 0.6) 55%); }
+
+        .vocab-list-item { font-size: 1.3rem; margin-bottom: 12px; font-weight: 600; padding-left: 10px; display: flex; align-items: center; gap: 10px; }
+        .vocab-list-item::before { content: '✓'; color: #4caf50; font-weight: bold; font-size: 1.5rem; }
+
+        /* --- ESTILOS DRAG & DROP (ARRASTRAR Y SOLTAR) --- */
+        .word-bank {
+            display: flex; flex-wrap: wrap; gap: 12px; margin: 25px 0; padding: 20px;
+            background: rgba(0,0,0,0.05); border-radius: 16px; min-height: 80px; align-items: center; justify-content: center;
+            border: 2px dashed rgba(0,0,0,0.2);
+        }
+        body.dark-mode .word-bank { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.2); }
+        
+        .draggable-word {
+            background: var(--bg-color); color: var(--text-main); padding: 10px 20px; border-radius: 20px;
+            cursor: grab; font-weight: bold; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            user-select: none; transition: transform 0.2s;
+        }
+        .draggable-word:active { cursor: grabbing; transform: scale(0.95); }
+        
+        .drop-zone {
+            display: inline-flex; align-items: center; justify-content: center; min-width: 120px; height: 45px;
+            margin: 0 8px; vertical-align: bottom; background: rgba(0,0,0,0.05);
+            border-radius: 20px; transition: all 0.3s; padding: 0 5px;
+        }
+        .drop-zone.drag-over { background: rgba(76, 175, 80, 0.2); animation: pulseGlow 1s infinite; }
+        .drop-zone.filled { background: transparent; animation: none; }
+        .drop-zone .draggable-word { margin: 0; box-shadow: none; font-size: 1.1rem; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+        }
+
+        /* CLASES DE EVALUACIÓN (GLOW) */
+        .word-correct {
+            background: transparent !important;
+            border: 2px solid #4caf50 !important;
+            color: #4caf50 !important;
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.6) !important;
+        }
+        .word-incorrect {
+            background: transparent !important;
+            border: 2px solid #e55934 !important;
+            color: #e55934 !important;
+            box-shadow: 0 0 15px rgba(229, 89, 52, 0.6) !important;
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .exercise-sentence { font-size: 1.3rem; margin-bottom: 20px; line-height: 2; font-weight: 600; }
+        .exercise-da { font-size: 1rem; color: #777; font-style: italic; display: block; margin-top: -5px; margin-bottom: 15px; }
+        body.dark-mode .exercise-da { color: #aaa; }
+
+        /* --- OTROS --- */
+        .admin-panel { border: 2px dashed #ff0055; background: rgba(255, 0, 85, 0.05); border-radius: 20px; padding: 30px; margin-bottom: 20px; width: 100%; max-width: 850px; }
+        .ai-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; grid-column: 1 / -1; color: var(--accent-color); font-weight: bold; }
+        .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent-color); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .search-container { display: flex; gap: 15px; width: 100%; max-width: 850px; margin-bottom: 20px; align-items: center; justify-content: center; }
+        .search-container input { margin-bottom: 0; flex: 1; }
+
+        .footer-pill { background-color: var(--accent-color); color: white; padding: 15px 40px; border-radius: 30px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 5px 15px rgba(229, 89, 52, 0.3); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.2s; width: 100%; margin-top: 20px; font-size: 1.1rem; }
+        .footer-pill:hover { transform: scale(1.05); filter: brightness(1.1); }
+
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUpFade { 
+            0% { opacity: 0; transform: translateY(40px) scale(0.98); } 
+            100% { opacity: 1; transform: translateY(0) scale(1); } 
+        }
+        @keyframes pulseHeart { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+        .dict-avatar { width: 75px; height: 75px; background: var(--card-bg); border: 2px solid var(--accent-color); border-radius: 50%; padding: 5px; box-shadow: var(--soft-shadow); cursor: pointer; backdrop-filter: blur(10px); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: none; animation: float 4s ease-in-out infinite; flex-shrink: 0; }
+        .dict-avatar:hover { transform: scale(1.15) translateY(-5px); }
+
+        .mini-card-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; margin-top: 15px; width: 100%; }
+        .mini-vocab-card { background: var(--card-bg); border: var(--card-border); border-radius: 16px; padding: 15px; text-align: center; cursor: pointer; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s; box-shadow: var(--soft-shadow); display: flex; flex-direction: column; gap: 8px; align-items: center; opacity: 0; animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        body.dark-mode .mini-vocab-card { border-color: var(--dark-color); box-shadow: var(--soft-shadow); }
+        .mini-vocab-card:hover { transform: translateY(-8px) scale(1.08); background: rgba(255, 255, 255, 0.2); }
+        .mini-icon { font-size: 2.2rem; }
+        .mini-word { font-weight: bold; color: var(--text-main); font-size: 1.05rem; }
+
+        .icon-svg { width: 24px; height: 24px; fill: currentColor; }
+
+        @media (max-width: 768px) {
+            .main-title { font-size: 3rem; }
+            .avatar-creator-grid { grid-template-columns: 1fr; gap: 20px; }
+            .nav-left { bottom: 20px; top: auto; left: 50%; transform: translateX(-50%); flex-direction: row; }
+            .top-banner { display: none; }
+            .muro-paper { padding: 30px 20px 30px 40px; }
+            .muro-paper::before { left: 20px; }
+        }
+    </style>
+</head>
+<body id="main-body">
+
+    <!-- BANNER SUPERIOR -->
+    <div class="top-banner">
+        <span>CYBERPUNK MODE:</span>
+        <div class="theme-switch" onclick="toggleTheme()"></div>
+        <span>¡HOLA CLASE! 🚀</span>
+    </div>
+
+    <!-- NAVEGACIÓN IZQUIERDA -->
+    <nav class="nav-left">
+        <button class="circle-btn nav-btn active" data-tab="inicio" title="Inicio"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 3L4 9v12h16V9l-8-6zm0 2.5l6 4.5v9h-12v-9l6-4.5z"/></svg></button>
+        <button class="circle-btn nav-btn" data-tab="diccionario" title="Diccionario"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg></button>
+        <button class="circle-btn nav-btn" data-tab="notas" title="El Tablón"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 14H7v-2h10v2zm0-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></button>
+        <!-- NUEVA PESTAÑA: JUEGOS -->
+        <button class="circle-btn nav-btn" data-tab="juegos" title="Spil / Juegos"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></button>
+    </nav>
+
+    <!-- ÁREA CENTRAL -->
+    <main>
+        <div id="inicio" class="tab-content active">
+            <!-- VISTA 1: LOGIN -->
+            <div id="view-login" class="sub-view active" style="display: none;">
+                <div class="auth-box">
+                    <h1 class="main-title" style="font-size: 3.5rem;">BIENVENIDO</h1>
+                    <p style="margin-bottom: 25px;">Escribe tu nombre para entrar al sistema</p>
+                    <input type="text" id="username-input" placeholder="Tu nombre aquí (Eks: Jens)...">
+                    <button class="footer-pill" onclick="startAvatarCreation()">Siguiente ➡️</button>
+                </div>
+            </div>
+
+            <!-- VISTA 2: FUNKO AVATAR CREATOR -->
+            <div id="view-avatar-creator" class="sub-view" style="display: none; width: 100%;">
+                <div class="avatar-creator-box">
+                    <h2 style="font-family: var(--font-title); font-size: 2.5rem; margin-bottom: 20px;">CREA TU FUNKO AVATAR</h2>
+                    <div class="avatar-creator-grid">
+                        <div class="avatar-preview" id="live-avatar-preview"></div>
+                        <div style="text-align: left;">
+                            <div class="option-group" style="margin-bottom: 15px;">
+                                <label>Especie Base:</label>
+                                <select id="av-species" onchange="handleSpeciesChange()">
+                                    <option value="person">Persona</option>
+                                    <option value="cat">Gato</option>
+                                    <option value="dog">Perro</option>
+                                    <option value="bear">Oso</option>
+                                    <option value="bunny">Conejo</option>
+                                    <option value="fox">Zorro</option>
+                                </select>
+                            </div>
+                            <div class="controls-grid">
+                                <div class="option-group"><label id="skin-label">Color de Piel:</label><input type="color" id="av-skin-color" value="#ffdfc4" oninput="updateAvatarPreview()"></div>
+                                <div class="option-group person-only"><label>Estilo de Pelo:</label><select id="av-hair-style" onchange="updateAvatarPreview()"><option value="short">Corto / Liso</option><option value="spiky">Puntiagudo</option><option value="long">Largo</option><option value="bald">Sin pelo</option></select></div>
+                                <div class="option-group person-only"><label>Color de Pelo:</label><input type="color" id="av-hair-color" value="#3b3247" oninput="updateAvatarPreview()"></div>
+                                <div class="option-group"><label>Color de Ojos:</label><input type="color" id="av-eye-color" value="#111111" oninput="updateAvatarPreview()"></div>
+                                <div class="option-group"><label>Tamaño de Ojos:</label><input type="range" id="av-eye-size" min="4" max="14" value="10" oninput="updateAvatarPreview()"></div>
+                                <div class="option-group"><label>Color de Boca:</label><input type="color" id="av-mouth-color" value="#e55934" oninput="updateAvatarPreview()"></div>
+                                <div class="option-group"><label>Ancho de Boca:</label><input type="range" id="av-mouth-size" min="2" max="15" value="6" oninput="updateAvatarPreview()"></div>
+                                <div class="option-group"><label style="display:flex; align-items:center; gap:10px; cursor:pointer; margin-top: 15px;"><input type="checkbox" id="av-earrings" onchange="updateAvatarPreview()" style="width:20px; height:20px;"> Pendientes</label></div>
+                                <div class="option-group"><label style="display:flex; align-items:center; gap:10px; cursor:pointer; margin-top: 15px;"><input type="checkbox" id="av-necklace" onchange="updateAvatarPreview()" style="width:20px; height:20px;"> Collar</label></div>
+                            </div>
+                            <button class="footer-pill" onclick="saveProfile()">Guardar Funko 💾</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA 3: DASHBOARD -->
+            <div id="view-dashboard" class="sub-view" style="display: none; flex-direction: column; align-items: center;">
+                <div class="avatar-preview" id="dashboard-avatar" style="width: 250px; height: 250px; animation: float 5s ease-in-out infinite; background: transparent; box-shadow: none;"></div>
+                <h1 class="main-title" id="welcome-text">HOLA</h1>
+                <p id="mood-text" style="font-weight: 800; text-transform: uppercase; letter-spacing: 2px;"></p>
+                <button onclick="resetProfile()" style="margin-top: 30px; opacity: 0.5; font-size: 0.7rem; text-decoration: underline;">EDITAR AVATAR / REINICIAR</button>
+            </div>
+        </div>
+
+        <!-- TAB DICCIONARIO INTELIGENTE -->
+        <div id="diccionario" class="tab-content" style="justify-content: flex-start; padding-top: 20px; overflow-y: auto; overflow-x: hidden;">
+            <h1 class="main-title" style="font-size: 4rem; margin-bottom: 0;">SMART ORDBOG</h1>
+            <p style="text-align: center; margin-bottom: 20px; font-size: 1.1rem; max-width: 600px; opacity: 0.9; font-weight: bold;">
+                Gør din avatar glad ved at søge <span style="display:inline-block; animation: pulseHeart 1.5s infinite; font-size: 1.4rem;">📖</span>
+            </p>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Buscar palabra / Søg efter ord..." onkeyup="handleSearchInput(event)" style="font-size: 1.2rem;">
+                <button class="footer-pill" onclick="triggerSearch()" style="margin-top: 0; width: auto; padding: 12px 25px;">🔍 Buscar</button>
+                <div id="dict-avatar-widget" class="dict-avatar" onclick="animateAvatarLove()" title="¡Tu Funko se alegra cuando repasas!"></div>
+            </div>
+            
+            <!-- CORRECCIÓN DEL SCROLLBAR: Se quitó el scroll doble del grid -->
+            <div class="vocab-grid" id="vocabGrid" style="display: flex; flex-direction: column; align-items: center; gap: 30px; width: 100%; padding: 10px 20px; box-sizing: border-box;"></div>
+            
+            <div class="history-panel" id="historyPanel" style="display: none; margin: 20px auto 40px auto;">
+                <div id="recentSearchesList" style="display: flex; gap: 10px; flex-wrap: wrap; width: 100%;"></div>
+            </div>
+        </div>
+
+        <!-- TAB EL TABLÓN -->
+        <div id="notas" class="tab-content" style="justify-content: flex-start; padding-top: 20px; overflow-y: auto;">
+            <h1 class="main-title" style="font-size: 4rem; margin-bottom: 0;">EL TABLÓN</h1>
+            <p style="text-align: center; margin-bottom: 30px; font-size: 0.95rem; opacity: 0.8;">Novedades de la clase y práctica rápida. 📝</p>
+
+            <!-- PANEL DE PROFESOR -->
+            <div id="admin-muro-panel" class="admin-panel" style="display: none;">
+                <h3 style="color: #ff0055; margin-bottom: 15px; font-size: 1.2rem;">👨‍🏫 Panel de Profesor</h3>
+                <textarea id="adminPostText" placeholder="Escribe aquí las palabras de hoy separadas por comas (Ej: comida, colores, caminar)..." 
+                          style="width: 100%; height: 80px; padding: 15px; border-radius: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.2); color: var(--text-main); font-family: inherit; font-size: 1.1rem; margin-bottom: 15px; resize: none;"></textarea>
+                <button class="footer-pill" onclick="publishMuroPost()" style="background: #ff0055; width: auto; font-size: 0.9rem; padding: 10px 20px;">
+                    📢 Generar Resumen y Ejercicios (IA)
+                </button>
+                <div id="admin-loading" style="display: none; margin-top: 15px; color: #ff0055; font-weight: bold;">
+                    <div class="spinner" style="border-top-color: #ff0055; width: 20px; height: 20px; display: inline-block; vertical-align: middle; margin-right: 10px;"></div>
+                    Construyendo la pizarra y ejercicios interactivos...
+                </div>
+            </div>
+
+            <!-- TABLÓN DE ALUMNOS (Vista Paper Note) -->
+            <div id="student-muro-display" style="width: 100%; max-width: 850px; display: flex; flex-direction: column; align-items: center;">
+                <div style="text-align: center; opacity: 0.6; padding: 40px;">No hay mensajes nuevos del profesor hoy.</div>
+            </div>
+        </div>
+
+        <!-- TAB JUEGOS (NUEVO) -->
+        <div id="juegos" class="tab-content" style="justify-content: center; padding-top: 20px;">
+            <h1 class="main-title" style="font-size: 4rem; margin-bottom: 20px;">SPIL / JUEGOS 🎮</h1>
+            
+            <div class="auth-box" style="max-width: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 40px;">
+                <div style="font-size: 5rem; margin-bottom: 20px; animation: float 4s ease-in-out infinite;">🚧</div>
+                <h2 style="font-size: 3rem; color: var(--accent-color); margin-bottom: 10px; text-transform: uppercase;">Kommer Snart!</h2>
+                <p style="font-size: 1.2rem; font-weight: bold; opacity: 0.9; margin-bottom: 10px;">¡Próximamente tendremos juegos interactivos aquí!</p>
+                <p style="font-size: 0.9rem; opacity: 0.7;">Vi bygger noget sjovt til jer...</p>
+            </div>
+        </div>
+
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // ==========================================
+        // CONFIGURACIÓN CLOUD (FIREBASE ANONIMO - LEGAL RGPD)
+        // ==========================================
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const apiKey = ""; // API Key de Gemini Inyectada
+
+        let currentUser = null;
+        let globalProfile = null;
+        let customDict = [];
+        let searchHistory = [];
+        let currentMuroPost = null;
+        
+        let unsubMuro = null;
+        let unsubDict = null;
+
+        // Base de datos por defecto (Solo se usa de plantilla)
+        let defaultDB = [
+            { es: "El Perro", da: "Hunden", gender: "m", plural: "Los perros", emoji: "🐶", def: "Un animal doméstico de cuatro patas que ladra.", chunk: "El perro juega feliz en el parque.", chunk_da: "Hunden leger glad i parken.", mnemo: "Perro lyder lidt som en kat der spinder meget højt: 'perrrr-ro'." },
+            { es: "La Manzana", da: "Æblet", gender: "f", plural: "Las manzanas", emoji: "🍎", def: "Una fruta redonda, dulce o ácida, de color rojo o verde.", chunk: "Tengo muchas ganas de comer una manzana.", chunk_da: "Jeg har virkelig lyst til at spise et æble.", mnemo: "Manzana lyder som 'mand sana' (En sund mand spiser æbler!)." }
+        ];
+        let dictionaryDB = [];
+
+        // 1. INICIALIZAR AUTENTICACIÓN
+        async function initAuth() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth); // Login anónimo y privado
+                }
+            } catch (e) {
+                console.error("Error de Autenticación", e);
+            }
+        }
+        initAuth();
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                const profileSnap = await getDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'profile', 'main'));
+                
+                if (profileSnap.exists()) {
+                    globalProfile = profileSnap.data();
+                    searchHistory = globalProfile.searchHistory || [];
+                    setupListeners();
+                    loadDashboard();
+                } else {
+                    window.showSubView('view-login');
+                }
+            }
+        });
+
+        // 2. ESCUCHAR CAMBIOS EN LA NUBE (TIEMPO REAL)
+        function setupListeners() {
+            if (!currentUser) return;
+            
+            // Escuchar el Muro del Profesor (Datos Públicos)
+            if (unsubMuro) unsubMuro();
+            unsubMuro = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'muro_posts'), (snapshot) => {
+                let posts = [];
+                snapshot.forEach(d => posts.push({id: d.id, ...d.data()}));
+                posts.sort((a, b) => b.timestamp - a.timestamp); // Ordenar por fecha
+                currentMuroPost = posts.length > 0 ? posts[0] : null;
+                
+                if(document.getElementById('student-muro-display')) {
+                    renderMuroData();
+                }
+            }, (error) => console.error(error));
+
+            // Escuchar el Diccionario Personal del Alumno (Datos Privados)
+            if (unsubDict) unsubDict();
+            unsubDict = onSnapshot(collection(db, 'artifacts', appId, 'users', currentUser.uid, 'dictionary'), (snapshot) => {
+                customDict = [];
+                snapshot.forEach(d => customDict.push(d.data()));
+                updateDictionaryDB();
+            }, (error) => console.error(error));
+        }
+
+        // ==========================================
+        // LÓGICA DE INTERFAZ EXPORTADA A WINDOW
+        // ==========================================
+        window.initTheme = function() { if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode'); }
+        window.toggleTheme = function() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            window.updateAvatarPreview(); window.refreshDictAvatar();
+        }
+
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.getAttribute('data-tab')).classList.add('active');
+            });
+        });
+
+        window.showSubView = function(viewId) {
+            document.querySelectorAll('.sub-view').forEach(v => v.style.display = 'none');
+            document.getElementById(viewId).style.display = 'flex';
+        }
+
+        // CREADOR DE AVATARES Y LOGIN
+        let tempName = "";
+        window.startAvatarCreation = function() {
+            tempName = document.getElementById('username-input').value.trim();
+            if(!tempName) return alert("¡Dime tu nombre!");
+            if (tempName === "AdminProfe") {
+                globalProfile = { name: "Profesor", is_admin: true, lastTime: new Date().getTime(), searchHistory: [] };
+                window.saveProfile();
+                return;
+            }
+            window.showSubView('view-avatar-creator'); 
+            window.handleSpeciesChange();
+        }
+
+        window.handleSpeciesChange = function() {
+            const species = document.getElementById('av-species').value;
+            document.querySelectorAll('.person-only').forEach(el => el.style.display = species === 'person' ? 'flex' : 'none');
+            document.getElementById('skin-label').innerText = species === 'person' ? "Color de Piel:" : "Color de Pelaje:";
+            window.updateAvatarPreview();
+        }
+
+        // --- Generación del SVG (Se mantiene idéntico) ---
+        function generateFunkoSVG(config, mood = 'happy') {
+            const isDark = document.body.classList.contains('dark-mode'); const isSad = mood === 'sad'; const isLove = mood === 'love';
+            let svg = `<svg viewBox="0 0 100 100" style="width:100%; height:100%; drop-shadow: 0px 10px 10px rgba(0,0,0,0.3);">`;
+
+            if (config.species === 'cat') { svg += `<polygon points="10,40 15,5 35,20" fill="${config.skinColor}" /><polygon points="90,40 85,5 65,20" fill="${config.skinColor}" /><polygon points="15,35 18,12 30,22" fill="#ffb6c1" /><polygon points="85,35 82,12 70,22" fill="#ffb6c1" />`; } 
+            else if (config.species === 'dog') { svg += `<path d="M15,30 Q-10,50 15,80 Q25,40 25,30 Z" fill="${config.skinColor}" /><path d="M85,30 Q110,50 85,80 Q75,40 75,30 Z" fill="${config.skinColor}" />`; } 
+            else if (config.species === 'bear') { svg += `<circle cx="15" cy="20" r="14" fill="${config.skinColor}" /><circle cx="85" cy="20" r="14" fill="${config.skinColor}" /><circle cx="15" cy="20" r="7" fill="#ffb6c1" /><circle cx="85" cy="20" r="7" fill="#ffb6c1" />`; } 
+            else if (config.species === 'bunny') { svg += `<ellipse cx="25" cy="5" rx="8" ry="30" fill="${config.skinColor}" transform="rotate(-15 25 5)"/><ellipse cx="75" cy="5" rx="8" ry="30" fill="${config.skinColor}" transform="rotate(15 75 5)"/><ellipse cx="25" cy="5" rx="4" ry="20" fill="#ffb6c1" transform="rotate(-15 25 5)"/><ellipse cx="75" cy="5" rx="4" ry="20" fill="#ffb6c1" transform="rotate(15 75 5)"/>`; } 
+            else if (config.species === 'fox') { svg += `<polygon points="10,35 5,0 40,20" fill="${config.skinColor}" /><polygon points="90,35 95,0 60,20" fill="${config.skinColor}" /><polygon points="12,30 8,8 32,22" fill="#ffffff" />`; } 
+            else if (config.species === 'person') { svg += `<circle cx="12" cy="55" r="7" fill="${config.skinColor}" /><circle cx="88" cy="55" r="7" fill="${config.skinColor}" />`; }
+
+            svg += `<rect x="15" y="20" width="70" height="60" rx="22" fill="${config.skinColor}" />`;
+
+            if (config.species === 'person' && config.hairStyle !== 'bald') {
+                const hc = config.hairColor;
+                if (config.hairStyle === 'short') svg += `<path d="M10,40 C10,0 90,0 90,40 C80,20 20,20 10,40 Z" fill="${hc}" />`;
+                else if (config.hairStyle === 'spiky') svg += `<polygon points="12,40 5,15 25,25 40,5 60,25 80,10 95,35 85,25 50,20 25,30" fill="${hc}" />`;
+                else if (config.hairStyle === 'long') svg += `<path d="M12,40 C10,5 90,5 88,40 L92,85 L78,85 L75,40 C50,20 30,30 25,40 L22,85 L8,85 Z" fill="${hc}" />`;
+            }
+
+            if (config.species !== 'person') {
+                svg += `<circle cx="50" cy="65" r="4" fill="#111" />`; 
+                if (config.species === 'cat') svg += `<line x1="15" y1="60" x2="35" y2="65" stroke="#111" stroke-width="1.5" /><line x1="15" y1="70" x2="35" y2="68" stroke="#111" stroke-width="1.5" /><line x1="85" y1="60" x2="65" y2="65" stroke="#111" stroke-width="1.5" /><line x1="85" y1="70" x2="65" y2="68" stroke="#111" stroke-width="1.5" />`;
+            }
+
+            const eSize = config.eyeSize; let eyeY = 55;
+            if (isLove) {
+                svg += `<path d="M ${32-eSize} ${eyeY} Q 32 ${eyeY-eSize} ${32+eSize} ${eyeY}" stroke="${config.eyeColor}" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M ${68-eSize} ${eyeY} Q 68 ${eyeY-eSize} ${68+eSize} ${eyeY}" stroke="${config.eyeColor}" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+                svg += `<g style="animation: pulseHeart 1s infinite;"><path d="M 12 15 Q 17 5 22 15 Q 27 5 32 15 Q 22 30 22 30 Z" fill="#ff0055" /><path d="M 68 15 Q 73 5 78 15 Q 83 5 88 15 Q 78 30 78 30 Z" fill="#ff0055" /></g>`;
+            } else {
+                svg += `<circle cx="32" cy="${eyeY}" r="${eSize}" fill="${config.eyeColor}" /><circle cx="68" cy="${eyeY}" r="${eSize}" fill="${config.eyeColor}" />`;
+                if (eSize > 6) svg += `<circle cx="${32 + eSize/3}" cy="${eyeY - eSize/3}" r="${eSize/3}" fill="white" opacity="0.8"/><circle cx="${68 + eSize/3}" cy="${eyeY - eSize/3}" r="${eSize/3}" fill="white" opacity="0.8"/>`;
+                if (isSad) svg += `<path d="M ${32-eSize} ${eyeY-2} Q 32 ${eyeY+eSize} ${32+eSize} ${eyeY-2} Z" fill="${config.skinColor}"/><path d="M ${68-eSize} ${eyeY-2} Q 68 ${eyeY+eSize} ${68+eSize} ${eyeY-2} Z" fill="${config.skinColor}"/><path d="M 32 ${eyeY+eSize+2} Q 35 ${eyeY+eSize+10} 32 ${eyeY+eSize+15} Q 29 ${eyeY+eSize+10} 32 ${eyeY+eSize+2} Z" fill="#00f2ff"/>`;
+            }
+
+            const mSize = config.mouthSize; let mPath = "";
+            if (config.species === 'person') {
+                if (isLove) svg += `<path d="M ${50 - mSize} 68 Q 50 ${68 + mSize*2.5} ${50 + mSize} 68 Z" fill="${config.mouthColor}" />`;
+                else if (isSad) svg += `<path d="M ${50 - mSize} 75 Q 50 ${75 - mSize/2} ${50 + mSize} 75" stroke="${config.mouthColor}" stroke-width="3" stroke-linecap="round" fill="none" />`;
+                else svg += `<path d="M ${50 - mSize} 72 Q 50 ${72 + mSize} ${50 + mSize} 72" stroke="${config.mouthColor}" stroke-width="3" stroke-linecap="round" fill="none" />`;
+            }
+
+            if (config.earrings) svg += `<circle cx="12" cy="${config.species === 'person' ? 60 : 75}" r="3" fill="gold" /><circle cx="88" cy="${config.species === 'person' ? 60 : 75}" r="3" fill="gold" />`;
+            if (config.necklace) svg += `<path d="M 25 80 Q 50 95 75 80" ${isDark ? 'stroke="#00f2ff" filter="drop-shadow(0 0 5px #00f2ff)"' : 'stroke="gold"'} stroke-width="3" fill="none" /><circle cx="50" cy="88" r="4" fill="${isDark ? '#ff0055' : 'red'}" />`;
+
+            return svg + `</svg>`;
+        }
+
+        window.updateAvatarPreview = function() {
+            if(!document.getElementById('av-species')) return null;
+            const config = { species: document.getElementById('av-species').value, skinColor: document.getElementById('av-skin-color').value, hairStyle: document.getElementById('av-hair-style').value, hairColor: document.getElementById('av-hair-color').value, eyeColor: document.getElementById('av-eye-color').value, eyeSize: parseInt(document.getElementById('av-eye-size').value), mouthColor: document.getElementById('av-mouth-color').value, mouthSize: parseInt(document.getElementById('av-mouth-size').value), earrings: document.getElementById('av-earrings').checked, necklace: document.getElementById('av-necklace').checked };
+            document.getElementById('live-avatar-preview').innerHTML = generateFunkoSVG(config, 'happy'); 
+            return config;
+        }
+
+        window.saveProfile = async function() {
+            if(!currentUser) return;
+            const config = tempName === "AdminProfe" ? null : window.updateAvatarPreview();
+            globalProfile = {
+                name: tempName,
+                avatar: config,
+                lastTime: new Date().getTime(),
+                is_admin: tempName === "AdminProfe",
+                searchHistory: []
+            };
+            // Guardar en Firebase de forma segura
+            await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'profile', 'main'), globalProfile);
+            setupListeners();
+            loadDashboard();
+        }
+
+        function loadDashboard() {
+            if(!globalProfile) return window.showSubView('view-login');
+            window.showSubView('view-dashboard');
+            
+            const now = new Date().getTime(); 
+            const diff = (now - globalProfile.lastTime) / (1000 * 3600); 
+            const mood = diff > 24 ? 'sad' : 'happy';
+
+            const dictAvatarWidget = document.getElementById('dict-avatar-widget');
+
+            if (globalProfile.is_admin) {
+                document.getElementById('dashboard-avatar').innerHTML = `<div style="font-size: 6rem;">👨‍🏫</div>`;
+                document.getElementById('welcome-text').innerHTML = `HOLA, <span style="color:#ff0055">PROFESOR</span>`;
+                document.getElementById('mood-text').innerText = 'Panel de Control Activado (Nube conectada).';
+                document.getElementById('admin-muro-panel').style.display = 'block';
+                if(dictAvatarWidget) dictAvatarWidget.style.display = 'none';
+            } else {
+                const svgCode = generateFunkoSVG(globalProfile.avatar, mood);
+                document.getElementById('dashboard-avatar').innerHTML = svgCode;
+                if(dictAvatarWidget) { dictAvatarWidget.style.display = 'flex'; dictAvatarWidget.innerHTML = svgCode; }
+                document.getElementById('welcome-text').innerHTML = `HOLA, <span style="color:var(--accent-color)">${globalProfile.name.toUpperCase()}</span>`;
+                document.getElementById('mood-text').innerText = mood === 'sad' ? '¡Tu Funko te echaba de menos! 👾' : '¡Listo para aprender! ⚡';
+                document.getElementById('admin-muro-panel').style.display = 'none';
+            }
+            
+            updateDictionaryDB(); 
+            window.updateHistoryUI(); 
+            renderMuroData();
+        }
+
+        // ==========================================
+        // DICCIONARIO INTELIGENTE EN LA NUBE
+        // ==========================================
+        function updateDictionaryDB() {
+            dictionaryDB = [];
+            let seenWords = new Set();
+            [...customDict, ...defaultDB].forEach(word => {
+                if (!word || !word.es) return; // ESCUDO DE SEGURIDAD: Ignorar palabras corruptas o vacías
+                const key = word.es.toLowerCase().trim();
+                if (!seenWords.has(key)) {
+                    seenWords.add(key);
+                    dictionaryDB.push(word);
+                }
+            });
+            const inputVal = document.getElementById('searchInput') ? document.getElementById('searchInput').value.trim() : "";
+            window.renderDictionary(inputVal);
+        }
+
+        window.renderDictionary = function(filterText = "") {
+            const grid = document.getElementById('vocabGrid');
+            if(!grid) return;
+            grid.innerHTML = '';
+            let matchFound = false;
+            let cardIndex = 0;
+
+            dictionaryDB.forEach((word) => {
+                // ESCUDOS DE SEGURIDAD: Evitar errores de "undefined"
+                const es = word.es || "";
+                const da = word.da || "";
+                
+                if (filterText && !es.toLowerCase().includes(filterText.toLowerCase()) && !da.toLowerCase().includes(filterText.toLowerCase())) return;
+                
+                matchFound = true;
+                const genderClass = word.gender === 'm' ? 'gender-m' : word.gender === 'f' ? 'gender-f' : '';
+                const genderText = word.gender === 'm' ? 'Hankøn' : word.gender === 'f' ? 'Hunkøn' : 'Intetkøn';
+                const badgeColor = word.gender === 'm' ? 'rgba(78,168,222,0.3)' : word.gender === 'f' ? 'rgba(255,123,156,0.3)' : 'rgba(150,150,150,0.3)';
+                const safeChunkEscaped = (word.chunk || "").replace(/'/g, "\\'");
+
+                grid.innerHTML += `
+                    <div class="vocab-card ${genderClass}" style="animation-delay: ${cardIndex * 0.1}s">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 15px;">
+                            <h2 style="font-size: 2.8rem; margin: 0; text-shadow: 2px 2px 0 rgba(0,0,0,0.1);">${word.emoji || "📖"} ${es}</h2>
+                            <button onclick="window.hablarPalabra('${es}')" style="background:var(--accent-color); color:white; border-radius:50%; width:50px; height:50px; display:flex; justify-content:center; align-items:center; font-size: 1.5rem;" title="Escuchar palabra">▶</button>
+                        </div>
+                        <div style="margin-top: 5px; display: flex; gap: 10px; flex-wrap: wrap;">
+                            <span class="dict-badge" style="background: ${badgeColor}; font-size: 0.9rem; padding: 6px 15px;">${genderText}</span>
+                            <span class="dict-badge" style="background: rgba(255,255,255,0.15); font-size: 0.9rem; padding: 6px 15px;">Flertal: ${word.plural || "N/A"}</span>
+                        </div>
+                        <p style="font-weight:900; color: var(--text-main); font-size: 1.5rem; letter-spacing: 1px; margin-bottom: 10px;">🇩🇰 ${da}</p>
+                        <div class="dict-chunk" style="padding: 20px; font-size: 1.1rem; background: rgba(0,0,0,0.2); border-radius: 12px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                <span style="font-size: 1.2rem;">"${word.chunk || ""}"</span>
+                                <button onclick="window.hablarPalabra('${safeChunkEscaped}')" style="background:var(--light-color); color:var(--bg-color); border:none; border-radius:50%; width:40px; height:40px; display:flex; justify-content:center; align-items:center; font-size:1.2rem; cursor:pointer;" title="Escuchar frase entera">🔊</button>
+                            </div>
+                            <span style="font-size:1.1rem; color: var(--text-main); font-weight:bold; display:block;">🇩🇰 ${word.chunk_da || ""}</span>
+                        </div>
+                        <div class="dict-mnemo" style="font-size: 1rem; padding: 15px;">🧠 <b>Husk det:</b> ${word.mnemo || ""}</div>
+                    </div>`;
+                cardIndex++;
+            });
+
+            if (!matchFound && filterText !== "") {
+                grid.innerHTML = `<div style="grid-column: 1 / -1; text-align:center; padding: 20px; animation: slideUpFade 0.4s forwards;"><p style="opacity:0.8; font-size: 1.1rem; margin-bottom: 15px;">Pulsa <b>"Buscar"</b> o la tecla <b>Enter</b> para buscar "${filterText}" 📖</p></div>`;
+            }
+        }
+
+        window.handleSearchInput = function(event) { if (event.key === 'Enter') window.triggerSearch(); else filterVocab(); }
+        
+        window.triggerSearch = function() { 
+            const term = document.getElementById('searchInput').value.trim(); 
+            const exactMatch = dictionaryDB.find(w => {
+                const es = w.es || "";
+                const da = w.da || "";
+                return es.toLowerCase() === term.toLowerCase() || da.toLowerCase() === term.toLowerCase();
+            }); 
+            if (exactMatch) filterVocab(); else if (term.length > 0) fetchNewWord(term); 
+        }
+
+        let typingTimer;
+        function filterVocab() {
+            clearTimeout(typingTimer);
+            const filter = document.getElementById('searchInput').value.trim();
+            window.renderDictionary(filter);
+            typingTimer = setTimeout(() => {
+                if (filter.length > 2) {
+                    const exactMatch = dictionaryDB.find(w => {
+                        const es = w.es || "";
+                        const da = w.da || "";
+                        return es.toLowerCase().includes(filter.toLowerCase()) || da.toLowerCase().includes(filter.toLowerCase());
+                    });
+                    if (exactMatch) { window.addToHistory(exactMatch.es); window.animateAvatarLove(); }
+                }
+            }, 600); 
+        }
+
+        async function fetchWithRetry(url, options, retries = 5) {
+            const delays = [1000, 2000, 4000, 8000, 16000];
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const res = await fetch(url, options);
+                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                    return await res.json();
+                } catch (err) { if (i === retries - 1) throw err; await new Promise(r => setTimeout(r, delays[i])); }
+            }
+        }
+
+        async function fetchNewWord(term) {
+            const grid = document.getElementById('vocabGrid');
+            grid.innerHTML = `<div class="ai-loading"><div class="spinner"></div><p>Buscando "${term}" en el diccionario... 📖</p></div>`;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const prompt = `Eres un profesor de español divertido para adolescentes daneses. El estudiante quiere aprender o traducir la palabra/frase: "${term}". Devuelve ESTRICTAMENTE un JSON (sin markdown, solo las llaves {}): {"es": "Palabra en español (con El/La si aplica)", "da": "Traducción al danés", "gender": "m", "f", o "n", "plural": "Plural en español (o 'N/A')", "emoji": "1 emoji", "def": "Definición muy simple", "chunk": "Frase de ejemplo útil", "chunk_da": "Traducción de la frase", "mnemo": "Mnemotecnia o asociación mental divertida en DANÉS."}`;
+            const options = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json" } }) };
+
+            try {
+                const result = await fetchWithRetry(url, options);
+                let aiText = result.candidates[0].content.parts[0].text;
+                
+                // EXTRACCIÓN ROBUSTA DE JSON: Ignora cualquier texto extra que mande la IA
+                const jsonMatch = aiText.match(/\{[\s\S]*\}/);
+                if (!jsonMatch) throw new Error("La IA no devolvió un JSON válido.");
+                
+                const newWord = JSON.parse(jsonMatch[0]);
+                if(!newWord.es) throw new Error("Formato IA incorrecto");
+
+                // Comprobar si ya existe para evitar duplicados
+                const wordExists = dictionaryDB.some(w => (w.es || "").toLowerCase().trim() === newWord.es.toLowerCase().trim());
+                
+                if (!wordExists) {
+                    dictionaryDB.unshift(newWord); // Actualización instantánea local
+                    if (currentUser) {
+                        await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'dictionary', newWord.es), newWord);
+                    }
+                }
+                
+                document.getElementById('searchInput').value = newWord.es;
+                filterVocab(); 
+                window.animateAvatarLove();
+            } catch (error) { 
+                console.error(error);
+                grid.innerHTML = `<p style="color:#ff0055; text-align:center; padding: 20px;">No se pudo conectar al diccionario o la palabra es inválida. ¡Prueba otra vez!</p>`; 
+            }
+        }
+
+        window.addToHistory = async function(wordStr) {
+            if (!searchHistory.includes(wordStr)) {
+                searchHistory.unshift(wordStr); if (searchHistory.length > 8) searchHistory.pop();
+                window.updateHistoryUI();
+                
+                // Actualizar historial en la nube
+                if (currentUser && globalProfile) {
+                    globalProfile.searchHistory = searchHistory;
+                    await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'profile', 'main'), globalProfile, {merge: true});
+                }
+            }
+        }
+
+        window.updateHistoryUI = function() {
+            const panel = document.getElementById('historyPanel');
+            const list = document.getElementById('recentSearchesList');
+            if(!panel || !list) return;
+
+            if (searchHistory.length === 0) { panel.style.display = 'none'; list.innerHTML = ''; return; }
+            panel.style.display = 'block';
+            list.innerHTML = '<div class="mini-card-container">' + searchHistory.map((w, i) => {
+                if(!w) return '';
+                const safeW = w.replace(/'/g, "\\'");
+                const entry = dictionaryDB.find(item => (item.es || "") === w) || { emoji: "📖" };
+                return `<div class="mini-vocab-card" onclick="window.repasarPalabra('${safeW}')" style="animation-delay: ${i * 0.08}s"><div class="mini-icon">${entry.emoji || "📖"}</div><div class="mini-word">${w}</div><div style="font-size:0.75rem; color:var(--accent-color); font-weight:bold; margin-top: 5px;">🔄 GENTAG</div></div>`;
+            }).join('') + '</div>';
+        }
+
+        window.repasarPalabra = function(word) { document.getElementById('searchInput').value = word; window.renderDictionary(word); window.animateAvatarLove(); }
+
+        // ==========================================
+        // ANIMACIONES AVATAR GLOBAL
+        // ==========================================
+        let loveTimer;
+        window.animateAvatarLove = function() {
+            if (!globalProfile || !globalProfile.avatar) return; 
+            clearTimeout(loveTimer); const dictAvatarWidget = document.getElementById('dict-avatar-widget');
+            if(dictAvatarWidget) dictAvatarWidget.innerHTML = generateFunkoSVG(globalProfile.avatar, 'love');
+            loveTimer = setTimeout(() => { if(dictAvatarWidget) dictAvatarWidget.innerHTML = generateFunkoSVG(globalProfile.avatar, 'happy'); }, 2500);
+        }
+        
+        window.refreshDictAvatar = function() { 
+            if (globalProfile && globalProfile.avatar) { 
+                const dictAvatarWidget = document.getElementById('dict-avatar-widget'); 
+                if(dictAvatarWidget) dictAvatarWidget.innerHTML = generateFunkoSVG(globalProfile.avatar, 'happy'); 
+            } 
+        }
+        
+        window.resetProfile = function() { if(confirm("¿Quieres volver al creador y editar tu Avatar o Nombre?")) { window.location.reload(); } }
+
+        // ==========================================
+        // EL TABLÓN (MURO) PROFESOR EN LA NUBE
+        // ==========================================
+        window.getFormattedDate = function() {
+            const today = new Date(); const yyyy = today.getFullYear(); let mm = today.getMonth() + 1; let dd = today.getDate();
+            if (dd < 10) dd = '0' + dd; if (mm < 10) mm = '0' + mm; return dd + '.' + mm + '.' + yyyy;
+        }
+
+        window.publishMuroPost = async function() {
+            const text = document.getElementById('adminPostText').value.trim();
+            if (!text) return alert("Escribe algunas palabras primero.");
+            document.getElementById('admin-loading').style.display = 'block';
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const prompt = `El profesor ha introducido este vocabulario: "${text}".
+Genera un objeto JSON ESTRICTO con la siguiente estructura (NO uses markdown, solo el JSON):
+{ "vocab": ["palabra1", "palabra2", "palabra3"], "exercises": [ { "da": "Frase completa en danés", "es_before": "Inicio de frase española ", "es_after": " fin de la frase.", "answer": "palabra1" } ] }
+Asegúrate de que 'vocab' sea un array limpio con las palabras clave en español. En 'exercises', genera 3 frases de rellenar huecos. La propiedad 'answer' DEBE ser exactamente una de las palabras del array 'vocab'.`;
+
+            try {
+                const result = await fetchWithRetry(url, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json" } })
+                });
+
+                let aiDataText = result.candidates[0].content.parts[0].text;
+                aiDataText = aiDataText.replace(/```json/gi, '').replace(/```/g, '').trim(); // LIMPIEZA DE MARKDOWN
+                const aiData = JSON.parse(aiDataText);
+                
+                const postData = { date: window.getFormattedDate(), vocab: aiData.vocab, exercises: aiData.exercises, timestamp: new Date().getTime() };
+                
+                // Guardar en Nube Pública
+                if (currentUser) {
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'muro_posts'), postData);
+                }
+                
+                document.getElementById('adminPostText').value = '';
+                document.getElementById('admin-loading').style.display = 'none';
+                alert("¡Pizarra interactiva enviada a todos los alumnos!");
+
+            } catch (e) { console.error(e); alert("Hubo un error conectando con la IA."); document.getElementById('admin-loading').style.display = 'none'; }
+        }
+
+        function renderMuroData() {
+            const display = document.getElementById('student-muro-display');
+            if (!currentMuroPost) { display.innerHTML = '<div style="text-align: center; opacity: 0.6; padding: 40px;">No hay mensajes nuevos del profesor hoy.</div>'; return; }
+
+            const postData = currentMuroPost;
+            let html = `
+                <div class="muro-paper">
+                    <div style="font-size: 1rem; color: #888; font-weight: bold; margin-bottom: 5px; margin-left: 10px;">I dag ${postData.date}</div>
+                    <div class="highlight-marker" style="margin-bottom: 25px;">Mål (Objetivos)</div>
+                    
+                    <p style="font-size: 1.4rem; font-weight: bold; margin-bottom: 20px; margin-left: 10px;">Tak for i dag! I er meget dygtige 🌟</p>
+                    <p style="font-size: 1.1rem; margin-bottom: 15px; margin-left: 10px; opacity: 0.8;">Her er ordforråd fra i dag:</p>
+                    
+                    <div style="margin-bottom: 30px;">
+                        ${postData.vocab.map(v => `<div class="vocab-list-item">${v}</div>`).join('')}
+                    </div>
+
+                    <h4 style="margin-top: 40px; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 20px; font-size: 1.5rem;">🎮 Træk og slip (Arrastra y suelta)</h4>
+                    
+                    <div class="word-bank" id="word-bank" ondrop="window.drop(event)" ondragover="window.allowDrop(event)">
+                        ${postData.vocab.sort(() => Math.random() - 0.5).map((v, i) => `
+                            <span class="draggable-word" draggable="true" id="drag-word-${i}" ondragstart="window.drag(event)" onclick="window.handleWordClick(event)">${v}</span>
+                        `).join('')}
+                    </div>
+
+                    <div id="muro-exercises-container">
+            `;
+
+            postData.exercises.forEach((ex, idx) => {
+                const safeFullSentence = (ex.es_before + ex.answer + ex.es_after).replace(/'/g, "\\'");
+                html += `
+                    <div style="margin-bottom: 25px; position: relative;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                            <span class="exercise-da" style="margin: 0;">🇩🇰 ${ex.da}</span>
+                            <button onclick="window.hablarPalabra('${safeFullSentence}')" style="background:var(--light-color); color:var(--bg-color); border:none; border-radius:50%; width:32px; height:32px; display:flex; justify-content:center; align-items:center; font-size:1rem; cursor:pointer; box-shadow: var(--soft-shadow);" title="Escuchar frase completa">🔊</button>
+                        </div>
+                        <div class="exercise-sentence">
+                            ${ex.es_before}
+                            <span class="drop-zone" id="drop-zone-${idx}" ondrop="window.drop(event)" ondragover="window.allowDrop(event)" data-answer="${ex.answer}"></span>
+                            ${ex.es_after}
+                        </div>
+                        <div id="ex-result-${idx}" style="margin-top: 5px; font-weight: bold; font-size: 0.9rem; display: none;"></div>
+                    </div>
+                `;
+            });
+
+            html += `
+                    </div>
+                    <div style="display:flex; gap: 15px;">
+                        <button class="footer-pill" onclick="window.checkDragExercises()" style="margin-top: 10px; width: auto; font-size: 1rem;">✅ Tjek Svar (Comprobar)</button>
+                    </div>
+                </div>
+            `;
+            display.innerHTML = html;
+        }
+
+        window.allowDrop = function(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); }
+        window.drag = function(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+        window.drop = function(ev) {
+            ev.preventDefault(); ev.currentTarget.classList.remove('drag-over');
+            var data = ev.dataTransfer.getData("text");
+            var draggedEl = document.getElementById(data);
+            draggedEl.classList.remove('word-correct', 'word-incorrect');
+            
+            if (ev.currentTarget.classList.contains('drop-zone') && ev.currentTarget.children.length === 0) {
+                ev.currentTarget.appendChild(draggedEl);
+                ev.currentTarget.classList.add('filled');
+            } else if (ev.currentTarget.id === 'word-bank') {
+                ev.currentTarget.appendChild(draggedEl);
+                document.querySelectorAll('.drop-zone').forEach(z => { if(z.children.length===0) z.classList.remove('filled'); });
+            }
+        }
+
+        window.handleWordClick = function(ev) {
+            const wordEl = ev.currentTarget;
+            wordEl.classList.remove('word-correct', 'word-incorrect');
+
+            if (wordEl.parentElement.classList.contains('drop-zone')) {
+                document.getElementById('word-bank').appendChild(wordEl);
+                wordEl.parentElement.classList.remove('filled');
+            } else {
+                const emptyZone = Array.from(document.querySelectorAll('.drop-zone')).find(z => z.children.length === 0);
+                if (emptyZone) { emptyZone.appendChild(wordEl); emptyZone.classList.add('filled'); }
+            }
+        }
+
+        window.checkDragExercises = function() {
+            if (!currentMuroPost) return;
+
+            currentMuroPost.exercises.forEach((ex, idx) => {
+                const dropZone = document.getElementById(`drop-zone-${idx}`);
+                const resultDiv = document.getElementById(`ex-result-${idx}`);
+                
+                if (dropZone.children.length === 0) {
+                    resultDiv.innerHTML = 'Falta rellenar este hueco 💡'; resultDiv.style.color = '#e55934'; resultDiv.style.display = 'block';
+                    return;
+                }
+
+                const wordEl = dropZone.children[0];
+                const answerGiven = wordEl.innerText.trim().toLowerCase();
+                wordEl.classList.remove('word-correct', 'word-incorrect');
+
+                if (answerGiven === ex.answer.toLowerCase()) {
+                    wordEl.classList.add('word-correct');
+                    resultDiv.innerHTML = '¡Correcto! Rigtigt godt! 🎉'; resultDiv.style.color = '#4caf50'; resultDiv.style.display = 'block';
+                } else {
+                    wordEl.classList.add('word-incorrect');
+                    resultDiv.innerHTML = 'Casi. Inténtalo de nuevo. 💡'; resultDiv.style.color = '#e55934'; resultDiv.style.display = 'block';
+                }
+            });
+            window.animateAvatarLove();
+        }
+
+        window.hablarPalabra = function(texto) { if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); const mensaje = new SpeechSynthesisUtterance(texto); mensaje.lang = 'es-ES'; window.speechSynthesis.speak(mensaje); } }
+
+        window.onload = () => { window.initTheme(); };
+    </script>
+</body>
+</html>
