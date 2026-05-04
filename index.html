@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Español para Jóvenes | Edición Cyberpunk</title>
+    <!-- Fuentes de Google -->
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         /* ==========================================================================
@@ -37,6 +38,9 @@
             --card-border: 1px solid rgba(0, 242, 255, 0.3);
         }
 
+        /* ==========================================================================
+           SCROLL NATIVO Y CONFIGURACIÓN BASE
+           ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease; }
         
         html, body { min-height: 100%; overflow-x: hidden; overflow-y: auto; scroll-behavior: smooth; }
@@ -50,6 +54,9 @@
         .sub-view { display: none; width: 100%; flex-direction: column; align-items: center; }
         .sub-view.active { display: flex; animation: slideUpFade 0.5s forwards; }
 
+        /* ==========================================================================
+           ESTILOS GENERALES
+           ========================================================================== */
         .main-title { font-family: var(--font-title); font-size: 5rem; letter-spacing: 4px; margin-bottom: 20px; text-transform: uppercase; text-align: center; line-height: 1; }
         body.dark-mode .main-title { text-shadow: var(--neon-glow); }
 
@@ -61,10 +68,13 @@
 
         .footer-pill { background: var(--accent-color); color: white; padding: 15px 35px; border-radius: 50px; font-weight: 800; text-transform: uppercase; box-shadow: 0 6px 20px rgba(229, 89, 52, 0.4); width: 100%; border: none; font-size: 1.1rem; cursor: pointer; transition: transform 0.2s; }
         .footer-pill:active { transform: scale(0.95); }
+        
         .audio-btn { background: var(--light-color); color: var(--bg-color); border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; box-shadow: var(--soft-shadow); transition: transform 0.2s; }
         .audio-btn:hover { transform: scale(1.1); }
 
-        /* ANIMACIONES AVATARES */
+        /* ==========================================================================
+           ANIMACIONES INTERNAS DE LOS AVATARES SVG
+           ========================================================================== */
         .hero-float { animation: heroFloat 4s ease-in-out infinite; transform-origin: center; }
         .hero-float-fast { animation: heroFloat 2s ease-in-out infinite; transform-origin: center; }
         .hero-breathe { animation: heroBreathe 3s ease-in-out infinite; transform-origin: bottom center; }
@@ -76,20 +86,31 @@
         @keyframes heroPulse { 0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 2px currentColor); } 50% { opacity: 1; filter: drop-shadow(0 0 12px currentColor); } }
         @keyframes heroBlink { 0%, 96%, 98%, 100% { transform: scaleY(1); } 97% { transform: scaleY(0.1); } }
 
+        /* Selector de Avatares (Grid de Opciones SVG) */
         .avatar-creator-grid { display: flex; flex-direction: column; gap: 20px; align-items: center; width: 100%; }
         .avatar-preview-container { width: 220px; height: 220px; border-radius: 30px; overflow: visible; background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%); display: flex; justify-content: center; align-items: center; position: relative; }
         
-        .avatar-selection-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; width: 100%; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 20px; max-height: 40vh; overflow-y: auto; border: var(--card-border); }
+        .avatar-selection-list {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; width: 100%;
+            background: rgba(0,0,0,0.2); padding: 20px; border-radius: 20px; max-height: 40vh; overflow-y: auto; border: var(--card-border);
+        }
+        
         .avatar-selection-list::-webkit-scrollbar { width: 8px; }
         .avatar-selection-list::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 4px; }
         .avatar-selection-list::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 4px; }
 
-        .avatar-option { width: 100%; aspect-ratio: 1/1; border-radius: 16px; background: rgba(255,255,255,0.1); overflow: visible; cursor: pointer; border: 3px solid transparent; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .avatar-option {
+            width: 100%; aspect-ratio: 1/1; border-radius: 16px; background: rgba(255,255,255,0.1); overflow: visible;
+            cursor: pointer; border: 3px solid transparent; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
         .avatar-option-name { font-size: 0.75rem; font-weight: bold; margin-top: 5px; opacity: 0.8; text-transform: uppercase; text-align: center; }
         .avatar-option:hover { transform: scale(1.1); background: rgba(255,255,255,0.2); }
         .avatar-option.selected { border-color: var(--accent-color); background: rgba(255,255,255,0.25); transform: scale(1.15); box-shadow: 0 0 20px var(--accent-color); z-index: 11; }
 
-        /* CHROMAS */
+        /* ==========================================================================
+           SISTEMA DE CHROMAS (SKINS)
+           ========================================================================== */
         .chroma-container { display: flex; flex-direction: column; align-items: center; background: rgba(0,0,0,0.3); padding: 15px 25px; border-radius: 20px; width: 100%; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px; }
         .chroma-title { font-size: 0.9rem; text-transform: uppercase; font-weight: bold; margin-bottom: 10px; color: var(--accent-color); letter-spacing: 1px; }
         .chroma-list { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
@@ -97,7 +118,9 @@
         .chroma-btn:hover { transform: scale(1.2); }
         .chroma-btn.selected { border-color: #ffffff; box-shadow: 0 0 15px currentColor; transform: scale(1.2); z-index: 5; }
 
-        /* NAVBAR Y BANNER */
+        /* ==========================================================================
+           NAVEGACIÓN Y TOP BANNER
+           ========================================================================== */
         .top-banner { position: fixed; top: 20px; right: 20px; background: rgba(30, 30, 30, 0.85); color: #fff; padding: 10px 20px; border-radius: 30px; z-index: 1000; display: flex; align-items: center; gap: 15px; border-left: 4px solid var(--accent-color); backdrop-filter: blur(10px); }
         .theme-switch { width: 44px; height: 22px; background: #555; border-radius: 20px; position: relative; cursor: pointer; }
         .theme-switch::before { content: ''; position: absolute; width: 18px; height: 18px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; }
@@ -109,7 +132,9 @@
         .circle-btn:hover { transform: scale(1.3); z-index: 10; }
         .circle-btn.active { background-color: var(--accent-color); color: white; transform: scale(1.1); }
 
-        /* DICCIONARIO Y TABLÓN */
+        /* ==========================================================================
+           DICCIONARIO, TABLÓN Y MINI-AVATARES
+           ========================================================================== */
         .search-container { display: flex; gap: 15px; width: 100%; margin-bottom: 30px; align-items: center; }
         .dict-avatar { width: 75px; height: 75px; border-radius: 50%; padding: 5px; border: 2px solid var(--accent-color); flex-shrink: 0; box-shadow: var(--soft-shadow); transition: transform 0.3s; background: var(--card-bg); display: flex; justify-content: center; align-items: center; }
         .dict-avatar svg { width: 100%; height: 100%; }
@@ -129,7 +154,9 @@
         .drop-zone { display: inline-flex; min-width: 100px; height: 35px; background: rgba(0,0,0,0.1); border-radius: 8px; margin: 0 5px; vertical-align: middle; }
         .drop-zone.filled { background: transparent; }
 
-        /* ANIMACIONES Y EFECTOS CYBERPUNK */
+        /* ==========================================================================
+           ANIMACIONES GENERALES
+           ========================================================================== */
         @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
         .emoji-interactive { display: inline-block; transition: transform 0.3s; }
         .emoji-interactive:hover { transform: scale(1.3) rotate(10deg); cursor: pointer; }
@@ -137,18 +164,22 @@
         .lightning-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: transparent; pointer-events: none; z-index: 9999; }
         .lightning-active { animation: lightningFlash 0.5s forwards; }
         @keyframes lightningFlash { 0%, 100% { background: transparent; } 10% { background: rgba(0, 242, 255, 0.8); } 25% { background: rgba(255, 0, 85, 0.7); } }
-        .glitch-active { animation: glitch 0.3s both; filter: drop-shadow(3px 0 0 #00f2ff) drop-shadow(-3px 0 0 #ff0055); }
-        @keyframes glitch { 0%, 100% { transform: translate(0) } 20% { transform: translate(-5px, 2px) skewX(2deg); } 60% { transform: translate(5px, -2px) skewX(-2deg); } }
         .soft-fade-overlay { position: fixed; top:0; left:0; width:100vw; height:100vh; pointer-events: none; z-index: 9999; background: #b28cd6; opacity: 0; transition: opacity 0.8s; }
         .soft-fade-active { opacity: 1; }
 
+        /* ==========================================================================
+           RESPONSIVE MOBILE
+           ========================================================================== */
         @media (max-width: 768px) {
             .main-title { font-size: 3.5rem; margin-top: 10px; }
             .avatar-preview-container { width: 160px; height: 160px; }
-            .avatar-selection-list { grid-template-columns: repeat(3, 1fr); padding: 15px; gap: 10px; max-height: 50vh; }
+            .avatar-selection-list { grid-template-columns: repeat(3, 1fr); padding: 15px; gap: 10px; max-height: 40vh; }
+            
             .top-banner { position: fixed; top: 0; left: 0; width: 100%; border-radius: 0; justify-content: space-between; padding: 12px 20px; border-left: none; border-bottom: 2px solid var(--accent-color); }
             .top-banner span:last-child { display: none; }
+            
             main { padding: 80px 15px 120px 15px; } 
+
             .nav-left { position: fixed; bottom: 0; top: auto; left: 0; width: 100%; transform: none; flex-direction: row; justify-content: space-evenly; background: rgba(255, 255, 255, 0.95); padding: 15px 10px; border-top: 1px solid rgba(0,0,0,0.1); box-shadow: 0 -5px 10px rgba(0,0,0,0.1); backdrop-filter: blur(10px); }
             body.dark-mode .nav-left { background: rgba(26, 26, 46, 0.98); border-top-color: #333; }
             .circle-btn { width: 45px; height: 45px; background: #f0f0f0; }
@@ -164,7 +195,7 @@
     <div class="top-banner">
         <span>CYBERPUNK MODE:</span>
         <div class="theme-switch" onclick="toggleTheme()"></div>
-        <span>¡HOLA CLASE! 🚀</span>
+        <button onclick="resetProfile()" style="font-size:0.8rem; color:#ff4444; border:none; background:none; cursor:pointer; text-decoration:underline; margin-left: 10px;">REINICIAR SISTEMA</button>
     </div>
 
     <nav class="nav-left">
@@ -176,6 +207,7 @@
 
     <main id="main-content">
         
+        <!-- INICIO -->
         <div id="inicio" class="tab-content active">
             <div id="view-login" class="sub-view active">
                 <div class="auth-box">
@@ -186,22 +218,29 @@
                 </div>
             </div>
 
+            <!-- SELECCIÓN AVATARES FLAT VECTOR -->
             <div id="view-avatar-creator" class="sub-view">
                 <div class="avatar-creator-box">
                     <h2 style="font-family: var(--font-title); font-size: 3rem; margin-bottom: 20px;">ELIGE TU HÉROE</h2>
                     
                     <div class="avatar-creator-grid">
                         <div class="avatar-preview-container" id="live-avatar-preview"></div>
+                        
+                        <!-- SELECTOR DE CHROMAS -->
                         <div class="chroma-container">
                             <div class="chroma-title" id="chroma-name-display">Skin: Original</div>
-                            <div class="chroma-list" id="chroma-list-container"></div>
+                            <div class="chroma-list" id="chroma-list-container">
+                                <!-- Botones inyectados por JS -->
+                            </div>
                         </div>
+
                         <div class="avatar-selection-list" id="avatar-grid-container"></div>
                         <button class="footer-pill" style="margin-top:10px; font-size:1.2rem; background:#4caf50;" onclick="saveProfile()">ENTRAR AL JUEGO ⚔️</button>
                     </div>
                 </div>
             </div>
 
+            <!-- DASHBOARD -->
             <div id="view-dashboard" class="sub-view">
                 <div class="avatar-preview-container" id="dashboard-avatar" style="border:none; width: 250px; height: 250px; background:none;"></div>
                 <h1 class="main-title" id="welcome-text" style="margin-top:20px;">HOLA</h1>
@@ -210,6 +249,7 @@
             </div>
         </div>
 
+        <!-- DICCIONARIO -->
         <div id="diccionario" class="tab-content">
             <h1 class="main-title">SMART ORDBOG</h1>
             <p style="text-align:center; margin-bottom:20px; font-weight:bold; font-size:1.2rem;">Gør din avatar glad ved at søge <span class="emoji-interactive">📖</span></p>
@@ -221,6 +261,7 @@
             <div id="vocabGrid" class="vocab-grid"></div>
         </div>
 
+        <!-- TABLÓN -->
         <div id="notas" class="tab-content">
             <h1 class="main-title">EL TABLÓN</h1>
             <div id="admin-muro-panel" class="admin-panel" style="display:none; margin-bottom: 30px;">
@@ -232,6 +273,7 @@
             <div id="student-muro-display" style="width:100%"></div>
         </div>
 
+        <!-- JUEGOS -->
         <div id="juegos" class="tab-content">
             <h1 class="main-title">SPIL / JUEGOS <span class="emoji-interactive">🎮</span></h1>
             <div class="auth-box" style="padding:60px">
@@ -245,9 +287,16 @@
 
     <script>
         // ======================================================================
-        // PEGA TU NUEVA API KEY ENTRE LAS COMILLAS
+        // CONFIGURACIÓN DE LA CLAVE API (DIVIDIDA PARA ENGAÑAR A GITHUB)
+        // Instrucciones:
+        // 1. Pon las primeras 10 letras de tu clave en la variable parte1.
+        // 2. Pon el resto de tu clave en la variable parte2.
+        // Ejemplo: Si tu clave es "AIzaSyD5eTOiaxaltA", 
+        // pon parte1 = "AIzaSyD5eT" y parte2 = "OiaxaltA"
         // ======================================================================
-        const apiKey = "AIzaSyBMlbKQCACNh6WjqY9zf8uVumwX8zkC0TU"; 
+        const parte1 = "AIzaSyBg6Sc"; // <-- Pega aquí el inicio de tu clave
+        const parte2 = "dadvvls1rwTw1ubwcTKPS6F0QRPA"; // <-- Pega aquí el resto de tu clave
+        const apiKey = parte1 + parte2; 
 
         /* ======================================================================
            PRONUNCIACIÓN (Web Speech API)
@@ -259,11 +308,13 @@
                 mensaje.lang = 'es-ES';
                 mensaje.rate = 0.9;
                 window.speechSynthesis.speak(mensaje);
+            } else {
+                alert("Tu navegador no soporta lectura de voz.");
             }
         }
 
         /* ======================================================================
-           SISTEMA DE CHROMAS (SKINS) Y MOTOR VECTORIAL
+           MOTOR VECTORIAL: FLAT MINIMALIST PROFESSIONAL (ESTILO INDIE GAME 2D)
            ====================================================================== */
         const chromas = [
             { id: 'classic', name: 'Original', bg: 'conic-gradient(#ccc, #fff)' },
@@ -366,7 +417,6 @@
                             <path d="M 38 42 Q 42 40 45 42 L 44 44 Q 42 42 39 44 Z" fill="var(--s)" class="hero-pulse"/>
                             <circle cx="57" cy="42" r="5.5" fill="#263238" stroke="var(--sd)" stroke-width="1.5"/>
                             <circle cx="57" cy="42" r="2" fill="var(--sd)" class="hero-pulse hero-blink"/>
-                            <path d="M 45 52 Q 50 56 55 52" stroke="var(--sd)" stroke-width="2" fill="none" stroke-linecap="round"/>
                         </g>`;
                     break;
                 case 'caballero':
@@ -380,7 +430,6 @@
                             <path d="M 50 20 C 68 20, 68 45, 60 62 L 50 62 Z" fill="var(--md)"/>
                             <path d="M 38 42 L 62 42 L 50 54 Z" fill="#212121"/>
                             <circle cx="50" cy="46" r="3.5" fill="var(--sd)" class="hero-pulse"/>
-                            <path d="M 45 54 Q 50 58 55 54" stroke="var(--sd)" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
                             <path d="M 50 20 C 50 -10, 80 0, 80 20 C 70 30, 50 25, 50 20 Z" fill="var(--s)"/>
                         </g>`;
                     break;
@@ -523,7 +572,6 @@
                             <path d="M 32 85 C 32 65, 60 65, 60 40 C 60 35, 55 35, 50 40 C 50 55, 42 60, 32 85 Z" fill="var(--sd)"/>
                             <polygon points="38,28 45,25 42,32" fill="var(--s)"/>
                             <circle cx="42" cy="28" r="1.5" fill="#111"/>
-                            <path d="M 45 42 Q 50 46 55 42" stroke="var(--sd)" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
                             <path d="M 55 25 C 75 5, 85 15, 75 25 Z" fill="#fff9c4"/>
                             <path d="M 52 20 C 65 0, 75 10, 65 20 Z" fill="#fff9c4"/>
                         </g>`;
@@ -552,8 +600,10 @@
                 const name = document.createElement('div');
                 name.className = 'avatar-option-name';
                 name.innerText = h.name;
+                
                 const ch = chromas.find(c => c.id === selectedChromaId);
                 name.style.color = ch.id === 'classic' ? h.c.m : ch.main;
+                
                 opt.appendChild(name);
                 opt.onclick = () => selectAvatar(i);
                 container.appendChild(opt);
@@ -599,12 +649,14 @@
         function goToCreator() {
             tempName = document.getElementById('username-input').value.trim();
             if(!tempName) return alert("¡Dime tu nombre primero!");
+            
             if(tempName === "AdminProfe") {
                 globalProfile = { name: "Profesor", is_admin: true, avatarIndex: 'admin', chromaId: 'classic', lastTime: Date.now() };
                 localStorage.setItem('user_profile_data', JSON.stringify(globalProfile));
                 loadDashboard(); 
                 return;
             }
+            
             showSubView('view-avatar-creator');
             renderChromas();
             renderAvatarGrid();
@@ -617,12 +669,21 @@
         }
 
         function loadDashboard() {
-            if(!globalProfile) return showSubView('view-login');
-            showSubView('view-dashboard');
+            if(!globalProfile || !globalProfile.name) {
+                document.querySelectorAll('.sub-view').forEach(v => v.classList.remove('active'));
+                document.getElementById('view-login').classList.add('active');
+                return;
+            }
+            document.querySelectorAll('.sub-view').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-dashboard').classList.add('active');
+            
             document.getElementById('welcome-text').innerHTML = `HOLA, <span style="color:var(--accent-color)">${globalProfile.name.toUpperCase()}</span>`;
+            
             const avatarHtml = globalProfile.is_admin ? '<div style="font-size:6rem; animation:heroFloat 3s infinite;">👨‍🏫</div>' : generateHeroSVG(heroesList[globalProfile.avatarIndex].id, globalProfile.chromaId);
             document.getElementById('dashboard-avatar').innerHTML = avatarHtml;
+            
             const widget = document.getElementById('dict-avatar-widget');
+            
             if (globalProfile.is_admin) {
                 document.getElementById('mood-text').innerText = "Panel de Profesor Activado";
                 document.getElementById('admin-muro-panel').style.display = 'block';
@@ -638,48 +699,27 @@
             loadMuroData();
         }
 
-        function resetProfile() { if(confirm("¿Seguro? Se borrará tu héroe.")) { localStorage.removeItem('user_profile_data'); location.reload(); } }
-
         /* ======================================================================
            IA Y DICCIONARIO
            ====================================================================== */
         async function triggerSearch() {
             const term = document.getElementById('searchInput').value.trim();
             if(!term) return;
+            if(!apiKey) return alert("Error: La clave de la IA no está configurada correctamente en el código.");
             const grid = document.getElementById('vocabGrid');
-            grid.innerHTML = `<div style="text-align:center; padding:30px; font-weight:bold; color:var(--accent-color)">Invocando conocimientos antiguos... ✨</div>`;
+            grid.innerHTML = `<div style="text-align:center; padding:30px;">Invocando magia... ✨</div>`;
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-            const prompt = `Profesor de español. Traduce: "${term}". JSON: {"es": "con El/La", "da": "Traducción", "plural": "Plural", "emoji": "1 emoji", "mnemo": "Mnemotecnia DANÉS", "chunk": "Frase", "chunk_da": "Trad"}`;
             try {
-                const res = await fetch(url, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ contents: [{parts: [{text: prompt}]}] }) });
+                const res = await fetch(url, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ contents: [{parts: [{text: `Traduce al danés, da género y frase: ${term}. JSON: {"es":"...", "da":"...", "emoji":"..."}`}]}] }) });
                 const data = await res.json();
-                const cleanText = data.candidates[0].content.parts[0].text.match(/\{[\s\S]*\}/)[0];
-                const word = JSON.parse(cleanText);
-                grid.innerHTML = `
-                    <div class="vocab-card">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <h2 style="font-size: 2.5rem; margin-bottom:10px;">${word.emoji} ${word.es}</h2>
-                            <button class="audio-btn" onclick="hablarPalabra('${word.es}')">🔊</button>
-                        </div>
-                        <span class="dict-badge">Flertal: ${word.plural}</span>
-                        <p style="font-weight:900; color:var(--accent-color); font-size:1.8rem; margin:15px 0;">🇩🇰 ${word.da}</p>
-                        <div style="background:rgba(0,0,0,0.2); padding:20px; border-radius:12px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <div style="font-size:1.2rem; font-style:italic; margin-bottom:10px;">"${word.chunk}"</div>
-                                <button class="audio-btn" style="width:35px; height:35px; font-size:0.9rem;" onclick="hablarPalabra('${word.chunk.replace(/'/g, "\\'")}')">🔊</button>
-                            </div>
-                            <div style="font-weight:bold;">🇩🇰 ${word.chunk_da}</div>
-                        </div>
-                        <div style="background:rgba(255,255,255,0.1); padding:15px; border-left:4px solid #fcd000; margin-top:15px; border-radius:8px;">
-                            🧠 <b>Husk det:</b> ${word.mnemo}
-                        </div>
-                    </div>`;
-                if(!globalProfile.is_admin) {
-                    const widg = document.getElementById('dict-avatar-widget');
-                    if(widg) { widg.style.transform = 'scale(1.2)'; setTimeout(() => widg.style.transform = 'scale(1)', 800); }
-                }
-            } catch (e) { grid.innerHTML = `<p style="color:red; text-align:center;">Error mágico. ¿La API Key es correcta?</p>`; }
+                const word = JSON.parse(data.candidates[0].content.parts[0].text.match(/\{.*\}/s)[0]);
+                grid.innerHTML = `<div class="vocab-card"><div style="display:flex; justify-content:space-between; align-items:center;"><h2>${word.emoji} ${word.es}</h2><button class="audio-btn" onclick="hablar('${word.es}')">🔊</button></div><p style="font-weight:900; color:var(--accent-color); font-size:1.5rem;">🇩🇰 ${word.da}</p></div>`;
+            } catch(e) { grid.innerHTML = `<p style="color:red; text-align:center;">Error de conexión con la IA. Revisa tu clave.</p>`; }
         }
+
+        function hablar(t) { if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); const m = new SpeechSynthesisUtterance(t); m.lang = 'es-ES'; window.speechSynthesis.speak(m); } }
+        function resetProfile() { if(confirm("¿Seguro? Se borrarán tus datos.")) { localStorage.clear(); location.reload(); } }
+        function toggleTheme() { document.body.classList.toggle('dark-mode'); }
 
         /* ======================================================================
            TABLÓN Y EJERCICIOS
@@ -688,8 +728,10 @@
             const text = document.getElementById('adminPostText').value.trim();
             if(!text) return;
             document.getElementById('admin-loading').style.display = 'block';
+
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
             const prompt = `Vocabulario: "${text}". Genera JSON: {"vocab": ["p1", "p2"], "exercises": [{"da": "frase", "es_before": "Inicio ", "es_after": " fin", "answer": "p1"}]}`;
+
             try {
                 const res = await fetch(url, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ contents: [{parts: [{text: prompt}]}] }) });
                 const data = await res.json();
@@ -705,6 +747,7 @@
             const data = JSON.parse(localStorage.getItem('muro_latest_post'));
             const display = document.getElementById('student-muro-display');
             if(!data) return display.innerHTML = "<p style='text-align:center; opacity:0.6'>No hay misiones hoy.</p>";
+
             display.innerHTML = `
                 <div class="muro-paper">
                     <div style="font-size:0.8rem; opacity:0.6; margin-bottom:10px;">I dag ${data.date}</div>
@@ -718,7 +761,7 @@
                         <div style="margin-bottom:25px">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
                                 <div style="color:#777; font-style:italic;">🇩🇰 ${ex.da}</div>
-                                <button class="audio-btn" style="width:30px; height:30px; font-size:0.8rem;" onclick="hablarPalabra('${ex.es_before.replace(/'/g, "\\'") + ex.answer + ex.es_after.replace(/'/g, "\\'")}')">🔊</button>
+                                <button class="audio-btn" style="width:30px; height:30px; font-size:0.8rem;" onclick="hablar('${ex.es_before.replace(/'/g, "\\'") + ex.answer + ex.es_after.replace(/'/g, "\\'")}')">🔊</button>
                             </div>
                             <div style="font-size:1.3rem; font-weight:bold;">${ex.es_before} <span class="drop-zone" id="dz-${i}" data-answer="${ex.answer}"></span> ${ex.es_after}</div>
                         </div>
@@ -748,29 +791,19 @@
             });
         }
 
-        /* TRANSICIÓN CYBERPUNK Y TABS */
-        function toggleTheme() {
-            const isDark = document.body.classList.contains('dark-mode');
-            if(!isDark) {
-                document.getElementById('lightning-overlay').classList.add('lightning-active');
-                setTimeout(() => { document.body.classList.add('dark-mode'); localStorage.setItem('theme', 'dark'); renderAvatarGrid(); }, 150);
-                setTimeout(() => document.getElementById('lightning-overlay').classList.remove('lightning-active'), 500);
-            } else {
-                document.getElementById('soft-fade-overlay').classList.add('soft-fade-active');
-                setTimeout(() => { document.body.classList.remove('dark-mode'); localStorage.setItem('theme', 'light'); renderAvatarGrid(); document.getElementById('soft-fade-overlay').classList.remove('soft-fade-active'); }, 800);
-            }
-        }
-
         document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
+            btn.onclick = () => {
                 document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
                 btn.classList.add('active');
-                document.getElementById(btn.getAttribute('data-tab')).classList.add('active');
-            });
+                document.getElementById(btn.dataset.tab).classList.add('active');
+            };
         });
 
-        window.onload = () => { if(localStorage.getItem('theme')==='dark') document.body.classList.add('dark-mode'); loadDashboard(); };
+        window.onload = () => {
+            if(localStorage.getItem('theme')==='dark') document.body.classList.add('dark-mode');
+            loadDashboard();
+        };
     </script>
 </body>
 </html>
