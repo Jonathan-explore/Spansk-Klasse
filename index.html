@@ -195,23 +195,20 @@
             .search-container button { width: 100%; }
             .dict-avatar { margin: 10px auto; }
             
-            /* Ajuste del Tablón en móvil */
             .muro-layout { flex-direction: column; align-items: center; text-align: center; }
             .muro-avatar-wrapper { margin: 0 auto; width: 100px; height: 100px; }
-            .muro-paper::before { display: none; } /* Quitamos la línea roja lateral en móvil */
+            .muro-paper::before { display: none; }
         }
     </style>
 </head>
 <body id="main-body">
 
-    <!-- CAPAS PARA LAS ANIMACIONES DE TRANSICIÓN -->
     <div id="lightning-overlay" class="lightning-overlay"></div>
     <div id="soft-fade-overlay" class="soft-fade-overlay"></div>
 
     <div class="top-banner">
         <span>CYBERPUNK MODE:</span>
         <div class="theme-switch" onclick="toggleTheme()"></div>
-        <!-- BOTÓN DE REINICIO OCULTO POR DEFECTO (SOLO PARA PROFE) -->
         <button id="top-reset-btn" onclick="resetProfile()" style="display:none; font-size:0.8rem; color:#ff4444; border:1px solid #ff4444; border-radius:10px; padding: 4px 8px; background:rgba(255,0,0,0.1); cursor:pointer; font-weight:bold; margin-left: 10px;">REINICIAR SISTEMA</button>
     </div>
 
@@ -258,20 +255,19 @@
             </div>
         </div>
 
-        <!-- DICCIONARIO -->
+        <!-- DICCIONARIO HÍBRIDO (OFFLINE + IA DE RESPALDO) -->
         <div id="diccionario" class="tab-content">
             <h1 class="main-title">SMART ORDBOG</h1>
             <p style="text-align:center; margin-bottom:20px; font-weight:bold; font-size:1.2rem;">Gør din avatar glad ved at søge <span class="emoji-interactive">📖</span></p>
             <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Buscar palabra / Søg..." onkeyup="if(event.key==='Enter') triggerSearch()">
+                <input type="text" id="searchInput" placeholder="Buscar palabra / Søg (Ej: Hola, Perro)..." onkeyup="if(event.key==='Enter') triggerSearch()">
                 <button class="footer-pill" onclick="triggerSearch()" style="width:auto; padding: 12px 30px;">BUSCAR</button>
                 <div id="dict-avatar-widget" class="dict-avatar" style="display: none;"></div>
             </div>
-            <!-- CUADRÍCULA DE CARTAS (AQUÍ SE APILARÁN LAS BÚSQUEDAS) -->
             <div id="vocabGrid" class="vocab-grid"></div>
         </div>
 
-        <!-- TABLÓN -->
+        <!-- TABLÓN (USA IA SOLO PARA EL PROFESOR) -->
         <div id="notas" class="tab-content">
             <h1 class="main-title">EL TABLÓN</h1>
             <div id="admin-muro-panel" class="admin-panel" style="display:none; margin-bottom: 30px;">
@@ -297,13 +293,10 @@
 
     <script>
         // ======================================================================
-        // CONFIGURACIÓN DE LA CLAVE API (DIVIDIDA PARA ENGAÑAR A GITHUB)
-        // Instrucciones:
-        // 1. Pon las primeras letras de tu clave en la variable parte1.
-        // 2. Pon el resto de tu clave en la variable parte2.
+        // CONFIGURACI ( A GITHUB)
         // ======================================================================
-        const parte1 = "AIzaSyBg6S"; // <-- Pega aquí el inicio de tu clave
-        const parte2 = "cdadvvls1rwTw1ubwcTKPS6F0QRPA"; // <-- Pega aquí el resto de tu clave
+        const parte1 = "AIzaSyBg6S"; // <-- P
+        const parte2 = "cdadvvls1rwTw1ubwcTKPS6F0QRPA"; // <-- Pega aqu
         const apiKey = parte1 + parte2; 
 
         /* ======================================================================
@@ -691,7 +684,7 @@
             
             document.getElementById('welcome-text').innerHTML = `HOLA, <span style="color:var(--accent-color)">${globalProfile.name.toUpperCase()}</span>`;
             
-            const avatarHtml = globalProfile.is_admin ? '<div style="font-size:6rem; animation:heroFloat 3s infinite;">👨‍🏫</div>' : generateHeroSVG(heroesList[globalProfile.avatarIndex].id, globalProfile.chromaId);
+            const avatarHtml = (globalProfile && globalProfile.is_admin) ? '<div style="font-size:6rem; animation:heroFloat 3s infinite;">👨‍🏫</div>' : (globalProfile ? generateHeroSVG(heroesList[globalProfile.avatarIndex].id, globalProfile.chromaId) : '');
             document.getElementById('dashboard-avatar').innerHTML = avatarHtml;
             
             const widget = document.getElementById('dict-avatar-widget');
@@ -714,31 +707,159 @@
         }
 
         /* ======================================================================
-           IA Y DICCIONARIO - APILAMIENTO REPARADO
+           BASE DE DATOS LOCAL DEL DICCIONARIO (OFFLINE, INSTANTÁNEA, CERO COSTES)
+           Añade aquí las palabras que quieras que tus alumnos aprendan.
+           ====================================================================== */
+        const baseDeDatosDiccionario = {
+            "hola": { es: "Hola", da: "Hej", plural: "N/A", emoji: "👋", mnemo: "Piensa en 'hey' en inglés, pero con una 'j' suave.", chunk: "Hola, ¿cómo estás?", chunk_da: "Hej, hvordan går det?" },
+            "adiós": { es: "Adiós", da: "Farvel", plural: "N/A", emoji: "👋", mnemo: "Suena un poco como 'a Dios'.", chunk: "Adiós, nos vemos mañana.", chunk_da: "Farvel, vi ses i morgen." },
+            "gracias": { es: "Gracias", da: "Tak", plural: "N/A", emoji: "🙏", mnemo: "Como la 'gracia' o ser amable.", chunk: "Muchas gracias por tu ayuda.", chunk_da: "Mange tak for din hjælp." },
+            "por favor": { es: "Por favor", da: "Venligst / Be' om", plural: "N/A", emoji: "🥺", mnemo: "Literalmente 'for favor' (como hacer un favor).", chunk: "Un café, por favor.", chunk_da: "En kaffe, tak." },
+            "sí": { es: "Sí", da: "Ja", plural: "N/A", emoji: "👍", mnemo: "Fácil, igual que la 'C' en inglés.", chunk: "Sí, quiero ir.", chunk_da: "Ja, jeg vil gerne med." },
+            "no": { es: "No", da: "Nej", plural: "N/A", emoji: "👎", mnemo: "Se escribe igual pero se pronuncia un poco diferente.", chunk: "No, no lo sé.", chunk_da: "Nej, jeg ved det ikke." },
+            "bien": { es: "Bien", da: "Godt", plural: "N/A", emoji: "✅", mnemo: "Suena como 'bien' (good) en otros idiomas latinos.", chunk: "Estoy muy bien.", chunk_da: "Jeg har det meget godt." },
+            "mal": { es: "Mal", da: "Dårligt", plural: "N/A", emoji: "❌", mnemo: "Piensa en 'malicious' o 'malware'.", chunk: "Me siento mal.", chunk_da: "Jeg har det dårligt." },
+            
+            // VERBOS ESENCIALES
+            "ser": { es: "Ser", da: "At være (permanent)", plural: "N/A", emoji: "👤", mnemo: "Verbo para descripciones permanentes.", chunk: "Yo soy estudiante.", chunk_da: "Jeg er studerende." },
+            "estar": { es: "Estar", da: "At være (midlertidig/sted)", plural: "N/A", emoji: "📍", mnemo: "Verbo para ubicaciones y emociones temporales.", chunk: "Yo estoy en la escuela.", chunk_da: "Jeg er i skolen." },
+            "tener": { es: "Tener", da: "At have", plural: "N/A", emoji: "🤲", mnemo: "Piensa en 'ten' dedos en las manos para agarrar.", chunk: "Yo tengo un perro.", chunk_da: "Jeg har en hund." },
+            "hacer": { es: "Hacer", da: "At gøre/lave", plural: "N/A", emoji: "🛠️", mnemo: "Suena como 'hacker', alguien que hace cosas.", chunk: "¿Qué vamos a hacer?", chunk_da: "Hvad skal vi lave?" },
+            "ir": { es: "Ir", da: "At gå/tage afsted", plural: "N/A", emoji: "🚶", mnemo: "Una palabra súper corta, como ir rápido.", chunk: "Quiero ir al cine.", chunk_da: "Jeg vil gerne i biografen." },
+            "comer": { es: "Comer", da: "At spise", plural: "N/A", emoji: "🍽️", mnemo: "C-O-M-E-R, fácil de recordar.", chunk: "Me gusta comer pizza.", chunk_da: "Jeg kan lide at spise pizza." },
+            "beber": { es: "Beber", da: "At drikke", plural: "N/A", emoji: "🥤", mnemo: "Piensa en un 'bebé' que necesita beber leche.", chunk: "Necesito beber agua.", chunk_da: "Jeg har brug for at drikke vand." },
+            "vivir": { es: "Vivir", da: "At bo/leve", plural: "N/A", emoji: "🌍", mnemo: "Suena como 'vital' o 'viva'.", chunk: "Yo vivo en Dinamarca.", chunk_da: "Jeg bor i Danmark." },
+            "hablar": { es: "Hablar", da: "At tale", plural: "N/A", emoji: "🗣️", mnemo: "La 'h' es muda, no se pronuncia.", chunk: "Yo hablo un poco de español.", chunk_da: "Jeg taler lidt spansk." },
+            "querer": { es: "Querer", da: "At ville have/elske", plural: "N/A", emoji: "❤️", mnemo: "Empieza con Q, como en 'quest' (búsqueda de lo que quieres).", chunk: "Yo quiero un helado.", chunk_da: "Jeg vil gerne have en is." },
+            "saber": { es: "Saber", da: "At vide/kunne", plural: "N/A", emoji: "🧠", mnemo: "Saber = Savvy (inteligente).", chunk: "No sé la respuesta.", chunk_da: "Jeg ved ikke svaret." },
+            "poder": { es: "Poder", da: "At kunne", plural: "N/A", emoji: "💪", mnemo: "Tener el 'poder' (power).", chunk: "¿Puedo ir al baño?", chunk_da: "Må jeg gå på toilettet?" },
+
+            // PARTES DEL CUERPO
+            "cabeza": { es: "La cabeza", da: "Hovedet", plural: "hoveder", emoji: "🗣️", mnemo: "Piensa en una gorra (cap) que va en la cabeza.", chunk: "Me duele la cabeza.", chunk_da: "Jeg har ondt i hovedet." },
+            "mano": { es: "La mano", da: "Hånden", plural: "hænder", emoji: "🖐️", mnemo: "La 'mano' es femenina aunque acabe en 'o'.", chunk: "Dame la mano.", chunk_da: "Giv mig hånden." },
+            "pie": { es: "El pie", da: "Foden", plural: "fødder", emoji: "🦶", mnemo: "Suena como 'pi' en matemáticas, pero caminas con él.", chunk: "Me duele el pie.", chunk_da: "Min fod gør ondt." },
+            "ojo": { es: "El ojo", da: "Øjet", plural: "øjne", emoji: "👁️", mnemo: "La palabra O-J-O parece una cara con dos ojos y la nariz (J).", chunk: "Abre un ojo.", chunk_da: "Åbn et øje." },
+            "pelo": { es: "El pelo", da: "Håret", plural: "hår", emoji: "💇", mnemo: "Pelo rima con 'velo'.", chunk: "Tengo el pelo corto.", chunk_da: "Jeg har kort hår." },
+            "brazo": { es: "El brazo", da: "Armen", plural: "arme", emoji: "💪", mnemo: "Brazo suena como 'brace' (abrazar).", chunk: "Levanta el brazo.", chunk_da: "Løft armen." },
+            "pierna": { es: "La pierna", da: "Benet", plural: "ben", emoji: "🦵", mnemo: "Para jugar al fútbol necesitas las piernas.", chunk: "Tengo piernas largas.", chunk_da: "Jeg har lange ben." },
+
+            // ALIMENTOS Y BEBIDAS
+            "agua": { es: "El agua", da: "Vandet", plural: "vande", emoji: "💧", mnemo: "Suena como 'aqua'.", chunk: "Quiero beber agua.", chunk_da: "Jeg vil gerne drikke vand." },
+            "pan": { es: "El pan", da: "Brødet", plural: "brød", emoji: "🥖", mnemo: "Pan es como 'pan' en la cocina para freír.", chunk: "Compro pan en la panadería.", chunk_da: "Jeg køber brød hos bageren." },
+            "leche": { es: "La leche", da: "Mælken", plural: "mælk", emoji: "🥛", mnemo: "Se usa para hacer café con leche.", chunk: "Bebo leche cada mañana.", chunk_da: "Jeg drikker mælk hver morgen." },
+            "carne": { es: "La carne", da: "Kødet", plural: "kød", emoji: "🥩", mnemo: "Piensa en un 'carnívoro'.", chunk: "Me gusta la carne asada.", chunk_da: "Jeg kan lide stegt kød." },
+            "pescado": { es: "El pescado", da: "Fisken", plural: "fisk", emoji: "🐟", mnemo: "Viene del pez (fish).", chunk: "Hoy comemos pescado.", chunk_da: "I dag spiser vi fisk." },
+            "manzana": { es: "La manzana", da: "Æblet", plural: "æbler", emoji: "🍎", mnemo: "Es la fruta típica roja o verde.", chunk: "Una manzana al día es sana.", chunk_da: "Et æble om dagen er sundt." },
+            "queso": { es: "El queso", da: "Osten", plural: "oste", emoji: "🧀", mnemo: "Queso suena un poco a 'kiss' pero con Q.", chunk: "Me encanta el queso con pan.", chunk_da: "Jeg elsker ost med brød." },
+            "pollo": { es: "El pollo", da: "Kyllingen", plural: "kyllinger", emoji: "🍗", mnemo: "Pollo frito = Fried chicken.", chunk: "Pollo con patatas.", chunk_da: "Kylling med kartofler." },
+
+            // ANIMALES
+            "perro": { es: "El perro", da: "Hunden", plural: "hunde", emoji: "🐶", mnemo: "Haz rodar la 'rr' como un gruñido.", chunk: "Mi perro es muy grande.", chunk_da: "Min hund er meget stor." },
+            "gato": { es: "El gato", da: "Katten", plural: "katte", emoji: "🐱", mnemo: "Imagina un gato diciendo 'Gaaato'.", chunk: "El gato duerme en el sofá.", chunk_da: "Katten sover på sofaen." },
+            "pájaro": { es: "El pájaro", da: "Fuglen", plural: "fugle", emoji: "🐦", mnemo: "Tiene acento en la primera 'á'.", chunk: "El pájaro vuela alto.", chunk_da: "Fuglen flyver højt." },
+            "caballo": { es: "El caballo", da: "Hesten", plural: "heste", emoji: "🐴", mnemo: "Doble L se pronuncia como una 'y'.", chunk: "Me gusta montar a caballo.", chunk_da: "Jeg kan lide at ride på hest." },
+            "cerdo": { es: "El cerdo", da: "Grisen", plural: "grise", emoji: "🐷", mnemo: "Doble L = 'y'.", chunk: "El cerdo es rosa.", chunk_da: "Grisen er lyserød." },
+            "vaca": { es: "La vaca", da: "Koen", plural: "køer", emoji: "🐮", mnemo: "Hace 'Muu'.", chunk: "La vaca da leche.", chunk_da: "Koen giver mælk." },
+
+            // FAMILIA
+            "padre": { es: "El padre", da: "Faderen", plural: "fædre", emoji: "👨", mnemo: "Padre = Papá.", chunk: "Mi padre trabaja mucho.", chunk_da: "Min far arbejder meget." },
+            "madre": { es: "La madre", da: "Moderen", plural: "mødre", emoji: "👩", mnemo: "Madre = Mamá.", chunk: "Mi madre es muy amable.", chunk_da: "Min mor er meget venlig." },
+            "hermano": { es: "El hermano", da: "Broderen", plural: "brødre", emoji: "👦", mnemo: "La 'h' es muda.", chunk: "Tengo un hermano mayor.", chunk_da: "Jeg har en storebror." },
+            "hermana": { es: "La hermana", da: "Søsteren", plural: "søstre", emoji: "👧", mnemo: "Termina en 'a' para femenino.", chunk: "Mi hermana juega al fútbol.", chunk_da: "Min søster spiller fodbold." },
+            "abuelo": { es: "El abuelo", da: "Bedstefaderen", plural: "bedstefædre", emoji: "👴", mnemo: "El padre de tu padre.", chunk: "Mi abuelo tiene gafas.", chunk_da: "Min bedstefar har briller." },
+            "abuela": { es: "La abuela", da: "Bedstemoderen", plural: "bedstemødre", emoji: "👵", mnemo: "La madre de tu madre.", chunk: "Mi abuela cocina bien.", chunk_da: "Min bedstemor laver god mad." },
+
+            // DÍAS, TIEMPO Y CALENDARIO
+            "año": { es: "El año", da: "Året", plural: "år", emoji: "📅", mnemo: "No te olvides de la 'ñ', suena 'nyo'.", chunk: "Feliz año nuevo.", chunk_da: "Godt nytår." },
+            "día": { es: "El día", da: "Dagen", plural: "dage", emoji: "☀️", mnemo: "Buenos días = Godmorgen.", chunk: "Hoy es un buen día.", chunk_da: "I dag er en god dag." },
+            "mes": { es: "El mes", da: "Måneden", plural: "måneder", emoji: "📆", mnemo: "Hay 12 meses en un año.", chunk: "El mes que viene.", chunk_da: "Næste måned." },
+            "semana": { es: "La semana", da: "Ugen", plural: "uger", emoji: "🗓️", mnemo: "Fines de semana = Weekend.", chunk: "La próxima semana.", chunk_da: "Næste uge." },
+            "hoy": { es: "Hoy", da: "I dag", plural: "N/A", emoji: "👇", mnemo: "La 'h' es muda.", chunk: "Hoy tengo clase de español.", chunk_da: "I dag har jeg spanskundervisning." },
+            "mañana": { es: "Mañana", da: "I morgen", plural: "morgener", emoji: "🌅", mnemo: "Puede ser el momento (morning) o el día (tomorrow).", chunk: "Nos vemos mañana.", chunk_da: "Vi ses i morgen." },
+            "ayer": { es: "Ayer", da: "I går", plural: "N/A", emoji: "⏪", mnemo: "El día anterior.", chunk: "Ayer fui al parque.", chunk_da: "I går tog jeg i parken." },
+            "siempre": { es: "Siempre", da: "Altid", plural: "N/A", emoji: "♾️", mnemo: "Para siempre = Forever.", chunk: "Yo siempre estudio.", chunk_da: "Jeg studerer altid." },
+            "nunca": { es: "Nunca", da: "Aldrig", plural: "N/A", emoji: "🚫", mnemo: "Nunca digas nunca.", chunk: "Él nunca come verduras.", chunk_da: "Han spiser aldrig grøntsager." },
+
+            // LUGARES Y COSAS
+            "casa": { es: "La casa", da: "Huset", plural: "huse", emoji: "🏠", mnemo: "Tu 'casa' es tu castillo.", chunk: "Mi casa es hermosa.", chunk_da: "Mit hus er smukt." },
+            "escuela": { es: "La escuela", da: "Skolen", plural: "skoler", emoji: "🏫", mnemo: "Suena como 'school'.", chunk: "Voy a la escuela en bici.", chunk_da: "Jeg cykler i skole." },
+            "calle": { es: "La calle", da: "Gaden", plural: "gader", emoji: "🛣️", mnemo: "Doble L = 'y'.", chunk: "Yo vivo en esta calle.", chunk_da: "Jeg bor i denne gade." },
+            "coche": { es: "El coche", da: "Bilen", plural: "biler", emoji: "🚗", mnemo: "En otros sitios dicen 'auto' o 'carro'.", chunk: "El coche es rápido.", chunk_da: "Bilen er hurtig." },
+            "libro": { es: "El libro", da: "Bogen", plural: "bøger", emoji: "📖", mnemo: "Libro -> Library (biblioteca).", chunk: "Estoy leyendo un buen libro.", chunk_da: "Jeg læser en god bog." },
+            "mesa": { es: "La mesa", da: "Bordet", plural: "borde", emoji: "🪑", mnemo: "Donde comes o estudias.", chunk: "El libro está en la mesa.", chunk_da: "Bogen ligger på bordet." },
+            "silla": { es: "La silla", da: "Stolen", plural: "stole", emoji: "🪑", mnemo: "Silla para sentarse.", chunk: "Siéntate en esta silla.", chunk_da: "Sæt dig på denne stol." },
+
+            // ADJETIVOS COMUNES
+            "bueno": { es: "Bueno / Buena", da: "God", plural: "gode", emoji: "👍", mnemo: "Buenos días.", chunk: "El libro es muy bueno.", chunk_da: "Bogen er meget god." },
+            "malo": { es: "Malo / Mala", da: "Dårlig", plural: "dårlige", emoji: "👎", mnemo: "Un villano es malo.", chunk: "Hace mal tiempo.", chunk_da: "Det er dårligt vejr." },
+            "grande": { es: "Grande", da: "Stor", plural: "store", emoji: "🐘", mnemo: "Como un café 'grande' en Starbucks.", chunk: "El elefante es grande.", chunk_da: "Elefanten er stor." },
+            "pequeño": { es: "Pequeño / Pequeña", da: "Lille", plural: "små", emoji: "🐁", mnemo: "No olvides la 'ñ'.", chunk: "El ratón es pequeño.", chunk_da: "Musen er lille." },
+            "alto": { es: "Alto / Alta", da: "Høj", plural: "høje", emoji: "🦒", mnemo: "Suena como 'altitude' (altitud).", chunk: "Mi hermano es alto.", chunk_da: "Min bror er høj." },
+            "bajo": { es: "Bajo / Baja", da: "Lav", plural: "lave", emoji: "🐧", mnemo: "Lo contrario de alto.", chunk: "El techo es bajo.", chunk_da: "Loftet er lavt." },
+            "feliz": { es: "Feliz", da: "Lykkelig / Glad", plural: "felices", emoji: "😀", mnemo: "Feliz cumpleaños.", chunk: "Yo estoy muy feliz hoy.", chunk_da: "Jeg er meget glad i dag." },
+            "triste": { es: "Triste", da: "Trist", plural: "tristes", emoji: "😢", mnemo: "Se escribe exactamente igual que en danés.", chunk: "Él está triste.", chunk_da: "Han er trist." },
+            "nuevo": { es: "Nuevo / Nueva", da: "Ny", plural: "nye", emoji: "✨", mnemo: "Suena como 'new'.", chunk: "Tengo un coche nuevo.", chunk_da: "Jeg har en ny bil." },
+            "viejo": { es: "Viejo / Vieja", da: "Gammel", plural: "gamle", emoji: "🏚️", mnemo: "Para cosas antiguas.", chunk: "El edificio es viejo.", chunk_da: "Bygningen er gammel." },
+            "bonito": { es: "Bonito / Bonita", da: "Pæn / Smuk", plural: "bonitos", emoji: "🌸", mnemo: "Suena a algo lindo.", chunk: "Qué vestido tan bonito.", chunk_da: "Sikke en smuk kjole." },
+            "feo": { es: "Feo / Fea", da: "Grim", plural: "feos", emoji: "👹", mnemo: "Lo contrario de bonito.", chunk: "El monstruo es feo.", chunk_da: "Monsteret er grimt." },
+
+            // INTERROGATIVOS
+            "qué": { es: "¿Qué?", da: "Hvad?", plural: "N/A", emoji: "❓", mnemo: "Lleva tilde cuando es pregunta.", chunk: "¿Qué es esto?", chunk_da: "Hvad er det her?" },
+            "quién": { es: "¿Quién?", da: "Hvem?", plural: "quiénes", emoji: "🤷", mnemo: "Para preguntar por personas.", chunk: "¿Quién es él?", chunk_da: "Hvem er han?" },
+            "cómo": { es: "¿Cómo?", da: "Hvordan?", plural: "N/A", emoji: "🤔", mnemo: "¿Cómo estás?", chunk: "¿Cómo te llamas?", chunk_da: "Hvad hedder du?" },
+            "dónde": { es: "¿Dónde?", da: "Hvor?", plural: "N/A", emoji: "🗺️", mnemo: "Para preguntar lugares.", chunk: "¿Dónde vives?", chunk_da: "Hvor bor du?" },
+            "cuándo": { es: "¿Cuándo?", da: "Hvornår?", plural: "N/A", emoji: "⏰", mnemo: "Para preguntar tiempo.", chunk: "¿Cuándo es tu cumpleaños?", chunk_da: "Hvornår har du fødselsdag?" },
+            "cuánto": { es: "¿Cuánto?", da: "Hvor meget / Hvor mange?", plural: "cuántos", emoji: "💰", mnemo: "Para cantidades.", chunk: "¿Cuánto cuesta?", chunk_da: "Hvor meget koster det?" }
+        };
+
+        /* ======================================================================
+           NUEVO MOTOR DEL DICCIONARIO: BÚSQUEDA EN BASE DE DATOS LOCAL + IA
            ====================================================================== */
         async function triggerSearch() {
-            const term = document.getElementById('searchInput').value.trim();
+            let term = document.getElementById('searchInput').value.trim().toLowerCase();
             if(!term) return;
-            if(!apiKey) return alert("Error: La clave de la IA no está configurada en el código.");
             
             const grid = document.getElementById('vocabGrid');
-            
-            // Usamos afterbegin para que las cartas nuevas se pongan ARRIBA de las antiguas
             const loadingId = 'loading-' + Date.now();
-            const loadingHtml = `<div id="${loadingId}" class="vocab-card" style="text-align:center;">Invocando magia para "<b>${term}</b>"... ✨</div>`;
-            grid.insertAdjacentHTML('afterbegin', loadingHtml);
             
+            // Mostrar tarjeta de búsqueda visual
+            const loadingHtml = `<div id="${loadingId}" class="vocab-card" style="text-align:center;">Søger efter "<b>${term}</b>"... 📚✨</div>`;
+            grid.insertAdjacentHTML('afterbegin', loadingHtml);
             document.getElementById('searchInput').value = '';
             
+            const normalizedTerm = term.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+            // PASO 1: BÚSQUEDA LOCAL (INSTANTÁNEA)
+            let dbKey = Object.keys(baseDeDatosDiccionario).find(k =>
+                k.normalize("NFD").replace(/[\u0300-\u036f]/g, "") === normalizedTerm ||
+                baseDeDatosDiccionario[k].es.toLowerCase().includes(term) ||
+                baseDeDatosDiccionario[k].da.toLowerCase().includes(term)
+            );
+
+            if (dbKey) {
+                setTimeout(() => renderDictCard(baseDeDatosDiccionario[dbKey], loadingId), 300);
+                return; // Cortamos aquí si la encontró en local
+            }
+
+            // PASO 2: BÚSQUEDA EN CACHÉ (Palabras que la IA ya buscó antes)
             let cache = JSON.parse(localStorage.getItem('dict_cache') || '{}');
-            const cacheKey = term.toLowerCase();
-            if (cache[cacheKey]) {
-                renderDictCard(cache[cacheKey], loadingId);
+            if (cache[normalizedTerm]) {
+                setTimeout(() => renderDictCard(cache[normalizedTerm], loadingId), 300);
+                return;
+            }
+
+            // PASO 3: BÚSQUEDA EN IA (Para palabras nuevas como "zapato")
+            if(!apiKey) {
+                document.getElementById(loadingId).outerHTML = `
+                    <div class="vocab-card" style="background:rgba(255,255,255,0.1); border-color:#ff9800;">
+                        <p style="color:#ff9800; text-align:center; font-weight:bold; font-size:1.2rem; margin-bottom:10px;">🤔 ORD IKKE FUNDET (Palabra no encontrada)</p>
+                        <p style="text-align:center; font-size:1.1rem;">No se encontró "<b>${term}</b>".</p>
+                        <p style="text-align:center; font-size:0.9rem; margin-top:10px; opacity:0.8;">La API de inteligencia artificial no está configurada para buscarla en internet.</p>
+                    </div>`; 
                 return;
             }
 
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-            
             try {
                 const res = await fetch(url, { 
                     method: 'POST', 
@@ -751,26 +872,27 @@
                 });
                 
                 const data = await res.json();
-                if (!res.ok) throw new Error(data.error?.message || "La petición fue rechazada.");
+                if (!res.ok) throw new Error(data.error?.message || "La petición fue rechazada por Google.");
                 if (!data.candidates) throw new Error("No hay respuesta válida de la IA.");
-
+                
                 const word = JSON.parse(data.candidates[0].content.parts[0].text);
-                cache[cacheKey] = word;
+                
+                // Guardar la palabra nueva en la caché para el futuro
+                cache[normalizedTerm] = word;
                 localStorage.setItem('dict_cache', JSON.stringify(cache));
 
                 renderDictCard(word, loadingId);
-                
             } catch(e) { 
                 document.getElementById(loadingId).outerHTML = `
                     <div class="vocab-card" style="background:rgba(255,0,0,0.1); border-color:#ff4444;">
-                        <p style="color:#ff4444; text-align:center; font-weight:bold;">⚠️ ERROR DE CONEXIÓN</p>
-                        <p style="text-align:center; font-size:0.9rem;">Revisa tu clave o asegúrate de estar en GitHub.</p>
+                        <p style="color:#ff4444; text-align:center; font-weight:bold; font-size:1.2rem; margin-bottom:10px;">⚠️ ERROR DE IA</p>
+                        <p style="text-align:center; font-size:0.9rem;">No se pudo traducir "<b>${term}</b>" con la IA.</p>
                         <p style="text-align:center; font-size:0.8rem; margin-top:10px; color:#aaa;">Detalle: ${e.message}</p>
                     </div>`; 
             }
         }
 
-        // Función que dibuja la carta y sustituye al "Cargando..."
+        // Función que dibuja la carta
         function renderDictCard(word, loadingId) {
             const cardHtml = `
                 <div class="vocab-card">
@@ -794,7 +916,7 @@
                 
             document.getElementById(loadingId).outerHTML = cardHtml;
             
-            if(!globalProfile.is_admin) {
+            if(!globalProfile || !globalProfile.is_admin) {
                 const widg = document.getElementById('dict-avatar-widget');
                 if(widg) {
                     widg.style.transform = 'scale(1.3) rotate(5deg)';
@@ -818,11 +940,12 @@
         }
 
         /* ======================================================================
-           TABLÓN Y EJERCICIOS (DRAG & DROP TÁCTIL, AVATAR, CORAZONES Y MÁS)
+           TABLÓN Y EJERCICIOS (SOLO EL PROFESOR USA LA IA AQUÍ)
            ====================================================================== */
         async function publishMuroPost() {
             const text = document.getElementById('adminPostText').value.trim();
             if(!text) return;
+            if(!apiKey) return alert("Falta la clave API del profesor en el código.");
             document.getElementById('admin-loading').style.display = 'block';
 
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
@@ -861,7 +984,7 @@
             }
 
             // Generamos el Avatar del usuario para que lo acompañe (O el del profe)
-            const avatarSvg = globalProfile.is_admin ? '<div style="font-size:5rem; text-align:center; line-height:100px;">👨‍🏫</div>' : generateHeroSVG(heroesList[globalProfile.avatarIndex].id, globalProfile.chromaId);
+            const avatarSvg = (globalProfile && globalProfile.is_admin) ? '<div style="font-size:5rem; text-align:center; line-height:100px;">👨‍🏫</div>' : (globalProfile ? generateHeroSVG(heroesList[globalProfile.avatarIndex].id, globalProfile.chromaId) : '');
 
             display.innerHTML = `
                 <div class="muro-layout">
@@ -1002,7 +1125,7 @@
         /* GENERAR MÁS EJERCICIOS */
         async function generateMoreExercises() {
             const data = JSON.parse(localStorage.getItem('muro_latest_post'));
-            if(!data || !data.vocab || !apiKey) return;
+            if(!data || !data.vocab || !apiKey) return alert("Falta la API Key o no hay vocabulario.");
             
             const btn = document.getElementById('btn-more-ex');
             btn.innerText = "Henter... ⏳ (Cargando...)";
