@@ -68,12 +68,13 @@
 
         .footer-pill { background: var(--accent-color); color: white; padding: 15px 35px; border-radius: 50px; font-weight: 800; text-transform: uppercase; box-shadow: 0 6px 20px rgba(229, 89, 52, 0.4); width: 100%; border: none; font-size: 1.1rem; cursor: pointer; transition: transform 0.2s; }
         .footer-pill:active { transform: scale(0.95); }
+        .footer-pill:disabled { opacity: 0.5; cursor: not-allowed; }
         
         .audio-btn { background: var(--light-color); color: var(--bg-color); border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; box-shadow: var(--soft-shadow); transition: transform 0.2s; }
         .audio-btn:hover { transform: scale(1.1); }
 
         /* ==========================================================================
-           ANIMACIONES INTERNAS DE LOS AVATARES SVG
+           ANIMACIONES INTERNAS DE LOS AVATARES SVG Y CORAZONES
            ========================================================================== */
         .hero-float { animation: heroFloat 4s ease-in-out infinite; transform-origin: center; }
         .hero-float-fast { animation: heroFloat 2s ease-in-out infinite; transform-origin: center; }
@@ -86,24 +87,19 @@
         @keyframes heroPulse { 0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 2px currentColor); } 50% { opacity: 1; filter: drop-shadow(0 0 12px currentColor); } }
         @keyframes heroBlink { 0%, 96%, 98%, 100% { transform: scaleY(1); } 97% { transform: scaleY(0.1); } }
 
-        /* Selector de Avatares (Grid de Opciones SVG) */
+        .heart { position: absolute; font-size: 2rem; pointer-events: none; z-index: 100; animation: floatHeart 1.5s ease-out forwards; text-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        @keyframes floatHeart { 0% { opacity: 1; transform: translateY(0) scale(0.5); } 50% { transform: translateY(-50px) scale(1.2); } 100% { opacity: 0; transform: translateY(-100px) scale(1); } }
+
+        /* Selector de Avatares */
         .avatar-creator-grid { display: flex; flex-direction: column; gap: 20px; align-items: center; width: 100%; }
         .avatar-preview-container { width: 220px; height: 220px; border-radius: 30px; overflow: visible; background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%); display: flex; justify-content: center; align-items: center; position: relative; }
         
-        .avatar-selection-list {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; width: 100%;
-            background: rgba(0,0,0,0.2); padding: 20px; border-radius: 20px; max-height: 40vh; overflow-y: auto; border: var(--card-border);
-        }
-        
+        .avatar-selection-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; width: 100%; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 20px; max-height: 40vh; overflow-y: auto; border: var(--card-border); }
         .avatar-selection-list::-webkit-scrollbar { width: 8px; }
         .avatar-selection-list::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 4px; }
         .avatar-selection-list::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 4px; }
 
-        .avatar-option {
-            width: 100%; aspect-ratio: 1/1; border-radius: 16px; background: rgba(255,255,255,0.1); overflow: visible;
-            cursor: pointer; border: 3px solid transparent; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
+        .avatar-option { width: 100%; aspect-ratio: 1/1; border-radius: 16px; background: rgba(255,255,255,0.1); overflow: visible; cursor: pointer; border: 3px solid transparent; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .avatar-option-name { font-size: 0.75rem; font-weight: bold; margin-top: 5px; opacity: 0.8; text-transform: uppercase; text-align: center; }
         .avatar-option:hover { transform: scale(1.1); background: rgba(255,255,255,0.2); }
         .avatar-option.selected { border-color: var(--accent-color); background: rgba(255,255,255,0.25); transform: scale(1.15); box-shadow: 0 0 20px var(--accent-color); z-index: 11; }
@@ -141,18 +137,26 @@
 
         .vocab-grid { display: flex; flex-direction: column; gap: 20px; width: 100%; }
         .vocab-card { background: var(--card-bg); border: var(--card-border); padding: 30px; border-radius: 24px; width: 100%; text-align: left; backdrop-filter: blur(10px); animation: slideUpFade 0.4s forwards; }
-        .dict-badge { display: inline-block; padding: 5px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; margin-right: 5px; background: rgba(255,255,255,0.2); }
+        .dict-badge { display: inline-block; padding: 5px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; margin-right: 5px; background: rgba(255,255,255,0.2); color: #fff; }
         
-        .muro-paper { background: #fdfbf7; color: #2c2c2c; padding: 40px; border-radius: 12px; box-shadow: var(--soft-shadow); width: 100%; position: relative; }
+        .muro-layout { display: flex; gap: 20px; align-items: flex-start; width: 100%; }
+        .muro-avatar-wrapper { width: 120px; height: 120px; flex-shrink: 0; position: relative; background: var(--card-bg); border: var(--card-border); border-radius: 20px; display: flex; justify-content: center; align-items: center; padding: 10px; box-shadow: var(--soft-shadow); }
+        .muro-avatar-wrapper svg { width: 100%; height: 100%; }
+        .muro-paper { background: #fdfbf7; color: #2c2c2c; padding: 40px; border-radius: 12px; box-shadow: var(--soft-shadow); width: 100%; position: relative; flex: 1; }
         body.dark-mode .muro-paper { background: #1a1a2e; color: #e0e0e0; border: var(--card-border); }
         .muro-paper::before { content: ''; position: absolute; top: 0; bottom: 0; left: 25px; width: 2px; background: rgba(229, 89, 52, 0.3); }
         
         .admin-panel { border: 2px dashed #ff0055; background: rgba(255, 0, 85, 0.05); padding: 30px; border-radius: 16px; width: 100%; text-align: left; }
         
-        .word-bank { display: flex; flex-wrap: wrap; gap: 10px; padding: 20px; background: rgba(0,0,0,0.05); border-radius: 12px; border: 2px dashed rgba(0,0,0,0.2); justify-content: center; }
-        .draggable-word { background: var(--accent-color); color: white; padding: 8px 16px; border-radius: 20px; cursor: grab; font-weight: bold; }
-        .drop-zone { display: inline-flex; min-width: 100px; height: 35px; background: rgba(0,0,0,0.1); border-radius: 8px; margin: 0 5px; vertical-align: middle; }
-        .drop-zone.filled { background: transparent; }
+        .word-bank { display: flex; flex-wrap: wrap; gap: 10px; padding: 20px; background: rgba(0,0,0,0.05); border-radius: 12px; border: 2px dashed rgba(0,0,0,0.2); justify-content: center; min-height: 80px; }
+        
+        /* ESTILOS DE ARRASTRAR Y SOLTAR MEJORADOS */
+        .draggable-word { background: var(--accent-color); color: white; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: transform 0.2s, box-shadow 0.2s; user-select: none; }
+        .word-selected { box-shadow: 0 0 0 3px #fff, 0 0 15px var(--accent-color) !important; transform: scale(1.15); z-index: 10; }
+        .drop-zone { display: inline-flex; min-width: 120px; height: 38px; background: rgba(0,0,0,0.1); border-radius: 8px; margin: 0 5px; vertical-align: middle; cursor: pointer; transition: background 0.2s, border 0.2s; border: 2px dashed rgba(0,0,0,0.2); justify-content: center; align-items: center; }
+        body.dark-mode .drop-zone { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+        .drop-zone:hover { background: rgba(229, 89, 52, 0.2) !important; border-color: var(--accent-color); }
+        .drop-zone.filled { background: transparent; border-style: solid; border-color: transparent; }
 
         /* ==========================================================================
            ANIMACIONES GENERALES
@@ -165,14 +169,11 @@
         .lightning-active { animation: lightningFlash 0.5s forwards; }
         @keyframes lightningFlash { 0%, 100% { background: transparent; } 10% { background: rgba(0, 242, 255, 0.8); } 25% { background: rgba(255, 0, 85, 0.7); } }
         
-        .glitch-active { animation: glitch 0.3s both; filter: drop-shadow(3px 0 0 #00f2ff) drop-shadow(-3px 0 0 #ff0055); }
-        @keyframes glitch { 0%, 100% { transform: translate(0) } 20% { transform: translate(-5px, 2px) skewX(2deg); } 60% { transform: translate(5px, -2px) skewX(-2deg); } }
-        
         .soft-fade-overlay { position: fixed; top:0; left:0; width:100vw; height:100vh; pointer-events: none; z-index: 9999; background: #b28cd6; opacity: 0; transition: opacity 0.8s; }
         .soft-fade-active { opacity: 1; }
 
         /* ==========================================================================
-           RESPONSIVE MOBILE - ARREGLADO AL 100% PARA QUE NO QUEDE APRETADO
+           RESPONSIVE MOBILE
            ========================================================================== */
         @media (max-width: 768px) {
             .main-title { font-size: 3.5rem; margin-top: 10px; }
@@ -189,11 +190,15 @@
             .circle-btn { width: 45px; height: 45px; background: #f0f0f0; }
             .circle-btn:hover { transform: scale(1.1) !important; }
 
-            /* ESTA ES LA CORRECCIÓN DE LA BARRA APRETADA EN EL MÓVIL */
             .search-container { flex-direction: column; width: 100%; gap: 10px; }
             .search-container input { width: 100%; margin-bottom: 5px !important; }
             .search-container button { width: 100%; }
             .dict-avatar { margin: 10px auto; }
+            
+            /* Ajuste del Tablón en móvil */
+            .muro-layout { flex-direction: column; align-items: center; text-align: center; }
+            .muro-avatar-wrapper { margin: 0 auto; width: 100px; height: 100px; }
+            .muro-paper::before { display: none; } /* Quitamos la línea roja lateral en móvil */
         }
     </style>
 </head>
@@ -230,29 +235,21 @@
                 </div>
             </div>
 
-            <!-- SELECCIÓN AVATARES FLAT VECTOR -->
             <div id="view-avatar-creator" class="sub-view">
                 <div class="avatar-creator-box">
                     <h2 style="font-family: var(--font-title); font-size: 3rem; margin-bottom: 20px;">ELIGE TU HÉROE</h2>
-                    
                     <div class="avatar-creator-grid">
                         <div class="avatar-preview-container" id="live-avatar-preview"></div>
-                        
-                        <!-- SELECTOR DE CHROMAS -->
                         <div class="chroma-container">
                             <div class="chroma-title" id="chroma-name-display">Skin: Original</div>
-                            <div class="chroma-list" id="chroma-list-container">
-                                <!-- Botones inyectados por JS -->
-                            </div>
+                            <div class="chroma-list" id="chroma-list-container"></div>
                         </div>
-
                         <div class="avatar-selection-list" id="avatar-grid-container"></div>
                         <button class="footer-pill" style="margin-top:10px; font-size:1.2rem; background:#4caf50;" onclick="saveProfile()">ENTRAR AL JUEGO ⚔️</button>
                     </div>
                 </div>
             </div>
 
-            <!-- DASHBOARD -->
             <div id="view-dashboard" class="sub-view">
                 <div class="avatar-preview-container" id="dashboard-avatar" style="border:none; width: 250px; height: 250px; background:none;"></div>
                 <h1 class="main-title" id="welcome-text" style="margin-top:20px;">HOLA</h1>
@@ -270,7 +267,7 @@
                 <button class="footer-pill" onclick="triggerSearch()" style="width:auto; padding: 12px 30px;">BUSCAR</button>
                 <div id="dict-avatar-widget" class="dict-avatar" style="display: none;"></div>
             </div>
-            <!-- CUADRÍCULA DE CARTAS (AQUÍ SE APILARÁN) -->
+            <!-- CUADRÍCULA DE CARTAS (AQUÍ SE APILARÁN LAS BÚSQUEDAS) -->
             <div id="vocabGrid" class="vocab-grid"></div>
         </div>
 
@@ -305,8 +302,8 @@
         // 1. Pon las primeras letras de tu clave en la variable parte1.
         // 2. Pon el resto de tu clave en la variable parte2.
         // ======================================================================
-        const parte1 = "AIzaSyBg6S"; // <-- EJEMPLO: "AIzaSyD5"
-        const parte2 = "cdadvvls1rwTw1ubwcTKPS6F0QRPA"; // <-- EJEMPLO: "eTOiaxaltAW..."
+        const parte1 = "AIzaSyBg6S"; // <-- Pega aquí el inicio de tu clave
+        const parte2 = "cdadvvls1rwTw1ubwcTKPS6F0QRPA"; // <-- Pega aquí el resto de tu clave
         const apiKey = parte1 + parte2; 
 
         /* ======================================================================
@@ -354,7 +351,8 @@
 
         function generateHeroSVG(id, chromaId = 'classic') {
             const hero = heroesList.find(h => h.id === id);
-            const chroma = chromas.find(c => c.id === chromaId);
+            if(!hero) return `<div style="font-size:3rem; text-align:center;">👨‍🏫</div>`;
+            const chroma = chromas.find(c => c.id === chromaId) || chromas[0];
             
             let style = "";
             if (chromaId !== 'classic') {
@@ -716,7 +714,7 @@
         }
 
         /* ======================================================================
-           IA Y DICCIONARIO CON APILADO DE CARTAS Y MODELO ACTUALIZADO
+           IA Y DICCIONARIO - APILAMIENTO REPARADO
            ====================================================================== */
         async function triggerSearch() {
             const term = document.getElementById('searchInput').value.trim();
@@ -725,93 +723,102 @@
             
             const grid = document.getElementById('vocabGrid');
             
-            // Creamos una tarjeta de carga temporal con un ID único
+            // Usamos afterbegin para que las cartas nuevas se pongan ARRIBA de las antiguas
             const loadingId = 'loading-' + Date.now();
             const loadingHtml = `<div id="${loadingId}" class="vocab-card" style="text-align:center;">Invocando magia para "<b>${term}</b>"... ✨</div>`;
-            
-            // Insertamos la tarjeta AL PRINCIPIO de la cuadrícula
             grid.insertAdjacentHTML('afterbegin', loadingHtml);
-            document.getElementById('searchInput').value = ''; // Limpiar input
             
+            document.getElementById('searchInput').value = '';
+            
+            let cache = JSON.parse(localStorage.getItem('dict_cache') || '{}');
+            const cacheKey = term.toLowerCase();
+            if (cache[cacheKey]) {
+                renderDictCard(cache[cacheKey], loadingId);
+                return;
+            }
+
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-            const prompt = `Profesor de español. Traduce: "${term}". JSON: {"es": "con El/La", "da": "Traducción", "plural": "Plural", "emoji": "1 emoji", "mnemo": "Mnemotecnia DANÉS", "chunk": "Frase", "chunk_da": "Trad"}`;
             
             try {
                 const res = await fetch(url, { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
-                    body: JSON.stringify({ contents: [{parts: [{text: prompt}]}] }) 
+                    body: JSON.stringify({ 
+                        contents: [{parts: [{text: `Palabra a traducir: ${term}`}]}],
+                        systemInstruction: { parts: [{ text: "Eres un profesor de español para estudiantes daneses. Responde estricta y ÚNICAMENTE con un JSON válido usando estas claves exactas: 'es' (palabra en español con artículo El/La), 'da' (traducción al danés), 'plural' (plural en danés), 'emoji' (1 solo emoji representativo), 'mnemo' (mnemotecnia o truco en danés para recordar la palabra), 'chunk' (frase corta de ejemplo en español), 'chunk_da' (traducción de la frase al danés)." }]},
+                        generationConfig: { responseMimeType: "application/json", temperature: 0.2 }
+                    }) 
                 });
                 
                 const data = await res.json();
-                
-                if (!res.ok) {
-                    throw new Error(data.error?.message || "La petición fue rechazada por los servidores de Google.");
-                }
-                
-                if (!data.candidates) {
-                    throw new Error("No hay respuesta válida de la IA.");
-                }
+                if (!res.ok) throw new Error(data.error?.message || "La petición fue rechazada.");
+                if (!data.candidates) throw new Error("No hay respuesta válida de la IA.");
 
-                const word = JSON.parse(data.candidates[0].content.parts[0].text.match(/\{[\s\S]*\}/)[0]);
+                const word = JSON.parse(data.candidates[0].content.parts[0].text);
+                cache[cacheKey] = word;
+                localStorage.setItem('dict_cache', JSON.stringify(cache));
+
+                renderDictCard(word, loadingId);
                 
-                // Reemplazamos SOLO la tarjeta de carga temporal por el resultado real
-                document.getElementById(loadingId).outerHTML = `
-                    <div class="vocab-card">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <h2 style="font-size: 2.5rem; margin-bottom:10px;">${word.emoji} ${word.es}</h2>
-                            <button class="audio-btn" onclick="hablarPalabra('${word.es}')">🔊</button>
-                        </div>
-                        <span class="dict-badge">Flertal: ${word.plural}</span>
-                        <p style="font-weight:900; color:var(--accent-color); font-size:1.8rem; margin:15px 0;">🇩🇰 ${word.da}</p>
-                        <div style="background:rgba(0,0,0,0.2); padding:20px; border-radius:12px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <div style="font-size:1.2rem; font-style:italic; margin-bottom:10px;">"${word.chunk}"</div>
-                                <button class="audio-btn" style="width:35px; height:35px; font-size:0.9rem;" onclick="hablarPalabra('${word.chunk.replace(/'/g, "\\'")}')">🔊</button>
-                            </div>
-                            <div style="font-weight:bold;">🇩🇰 ${word.chunk_da}</div>
-                        </div>
-                        <div style="background:rgba(255,255,255,0.1); padding:15px; border-left:4px solid #fcd000; margin-top:15px; border-radius:8px;">
-                            🧠 <b>Husk det:</b> ${word.mnemo}
-                        </div>
-                    </div>`;
             } catch(e) { 
-                // Reemplazamos la tarjeta de carga temporal por el error
                 document.getElementById(loadingId).outerHTML = `
                     <div class="vocab-card" style="background:rgba(255,0,0,0.1); border-color:#ff4444;">
-                        <p style="color:#ff4444; text-align:center; font-weight:bold; font-size:1.2rem; margin-bottom:10px;">⚠️ CONEXIÓN BLOQUEADA</p>
-                        <p style="text-align:center; font-size:0.9rem;">No se pudo traducir "<b>${term}</b>". Asegúrate de estar probando la web en tu enlace de <b>GitHub</b>.</p>
-                        <p style="text-align:center; font-size:0.8rem; margin-top:10px; color:#aaa;">Motivo técnico: ${e.message}</p>
+                        <p style="color:#ff4444; text-align:center; font-weight:bold;">⚠️ ERROR DE CONEXIÓN</p>
+                        <p style="text-align:center; font-size:0.9rem;">Revisa tu clave o asegúrate de estar en GitHub.</p>
+                        <p style="text-align:center; font-size:0.8rem; margin-top:10px; color:#aaa;">Detalle: ${e.message}</p>
                     </div>`; 
+            }
+        }
+
+        // Función que dibuja la carta y sustituye al "Cargando..."
+        function renderDictCard(word, loadingId) {
+            const cardHtml = `
+                <div class="vocab-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <h2 style="font-size: 2.5rem; margin-bottom:10px;">${word.emoji} ${word.es}</h2>
+                        <button class="audio-btn" onclick="hablarPalabra('${word.es}')">🔊</button>
+                    </div>
+                    <span class="dict-badge">Flertal: ${word.plural}</span>
+                    <p style="font-weight:900; color:var(--accent-color); font-size:1.8rem; margin:15px 0;">🇩🇰 ${word.da}</p>
+                    <div style="background:rgba(0,0,0,0.2); padding:20px; border-radius:12px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="font-size:1.2rem; font-style:italic; margin-bottom:10px;">"${word.chunk}"</div>
+                            <button class="audio-btn" style="width:35px; height:35px; font-size:0.9rem;" onclick="hablarPalabra('${word.chunk.replace(/'/g, "\\'")}')">🔊</button>
+                        </div>
+                        <div style="font-weight:bold;">🇩🇰 ${word.chunk_da}</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.1); padding:15px; border-left:4px solid #fcd000; margin-top:15px; border-radius:8px;">
+                        🧠 <b>Husk det:</b> ${word.mnemo}
+                    </div>
+                </div>`;
+                
+            document.getElementById(loadingId).outerHTML = cardHtml;
+            
+            if(!globalProfile.is_admin) {
+                const widg = document.getElementById('dict-avatar-widget');
+                if(widg) {
+                    widg.style.transform = 'scale(1.3) rotate(5deg)';
+                    setTimeout(() => widg.style.transform = '', 800);
+                }
             }
         }
 
         function resetProfile() { if(confirm("¿Seguro? Se borrarán tus datos y tu personaje.")) { localStorage.clear(); location.reload(); } }
         
-        /* FUNCION DE ANIMACION RESTAURADA */
         function toggleTheme() {
             const isDark = document.body.classList.contains('dark-mode');
             if(!isDark) {
                 document.getElementById('lightning-overlay').classList.add('lightning-active');
-                setTimeout(() => { 
-                    document.body.classList.add('dark-mode'); 
-                    localStorage.setItem('theme', 'dark'); 
-                    renderAvatarGrid(); 
-                }, 150);
+                setTimeout(() => { document.body.classList.add('dark-mode'); localStorage.setItem('theme', 'dark'); renderAvatarGrid(); }, 150);
                 setTimeout(() => document.getElementById('lightning-overlay').classList.remove('lightning-active'), 500);
             } else {
                 document.getElementById('soft-fade-overlay').classList.add('soft-fade-active');
-                setTimeout(() => { 
-                    document.body.classList.remove('dark-mode'); 
-                    localStorage.setItem('theme', 'light'); 
-                    renderAvatarGrid(); 
-                    document.getElementById('soft-fade-overlay').classList.remove('soft-fade-active'); 
-                }, 800);
+                setTimeout(() => { document.body.classList.remove('dark-mode'); localStorage.setItem('theme', 'light'); renderAvatarGrid(); document.getElementById('soft-fade-overlay').classList.remove('soft-fade-active'); }, 800);
             }
         }
 
         /* ======================================================================
-           TABLÓN Y EJERCICIOS (MODELO ACTUALIZADO Y SEGURO)
+           TABLÓN Y EJERCICIOS (DRAG & DROP TÁCTIL, AVATAR, CORAZONES Y MÁS)
            ====================================================================== */
         async function publishMuroPost() {
             const text = document.getElementById('adminPostText').value.trim();
@@ -819,14 +826,22 @@
             document.getElementById('admin-loading').style.display = 'block';
 
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-            const prompt = `Vocabulario: "${text}". Genera JSON: {"vocab": ["p1", "p2"], "exercises": [{"da": "frase", "es_before": "Inicio ", "es_after": " fin", "answer": "p1"}]}`;
 
             try {
-                const res = await fetch(url, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ contents: [{parts: [{text: prompt}]}] }) });
+                const res = await fetch(url, { 
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'}, 
+                    body: JSON.stringify({ 
+                        contents: [{parts: [{text: `Vocabulario: ${text}`}]}],
+                        systemInstruction: { parts: [{text: "Crea 4 ejercicios para aprender español. Genera ÚNICAMENTE un JSON válido con esta estructura: {'vocab': ['palabra1', 'palabra2'], 'exercises': [{'da': 'frase en danés', 'es_before': 'inicio de frase ', 'es_after': ' fin de frase', 'answer': 'palabra1'}]}"}]},
+                        generationConfig: { responseMimeType: "application/json", temperature: 0.2 }
+                    }) 
+                });
+                
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error?.message || "La petición fue rechazada.");
                 
-                const aiData = JSON.parse(data.candidates[0].content.parts[0].text.match(/\{[\s\S]*\}/)[0]);
+                const aiData = JSON.parse(data.candidates[0].content.parts[0].text);
                 localStorage.setItem('muro_latest_post', JSON.stringify({ ...aiData, date: new Date().toLocaleDateString() }));
                 document.getElementById('adminPostText').value = '';
                 document.getElementById('admin-loading').style.display = 'none';
@@ -836,52 +851,189 @@
             }
         }
 
+        // Función para cargar los ejercicios guardados o los nuevos
         function loadMuroData() {
             const data = JSON.parse(localStorage.getItem('muro_latest_post'));
             const display = document.getElementById('student-muro-display');
-            if(!data) return display.innerHTML = "<p style='text-align:center; opacity:0.6'>No hay misiones hoy.</p>";
+            if(!data || !data.vocab) {
+                display.innerHTML = "<p style='text-align:center; opacity:0.6'>Der er ingen opgaver i dag. (No hay tareas hoy)</p>";
+                return;
+            }
+
+            // Generamos el Avatar del usuario para que lo acompañe (O el del profe)
+            const avatarSvg = globalProfile.is_admin ? '<div style="font-size:5rem; text-align:center; line-height:100px;">👨‍🏫</div>' : generateHeroSVG(heroesList[globalProfile.avatarIndex].id, globalProfile.chromaId);
 
             display.innerHTML = `
-                <div class="muro-paper">
-                    <div style="font-size:0.8rem; opacity:0.6; margin-bottom:10px;">I dag ${data.date}</div>
-                    <p style="font-size:1.5rem; font-weight:bold; margin-bottom:20px;">Tak for i dag! I er meget dygtige 🌟</p>
-                    <div style="margin-bottom:30px">${data.vocab.map(v => `<div style="font-size:1.2rem; font-weight:bold; margin-bottom:10px;">✓ ${v}</div>`).join('')}</div>
-                    <h4 style="margin-top: 40px; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 20px; font-size: 1.5rem;">🎮 Træk og slip</h4>
-                    <div class="word-bank" id="word-bank">
-                        ${data.vocab.sort(() => Math.random()-0.5).map((v, i) => `<span class="draggable-word" onclick="handleWordClick(event)" id="w-${i}">${v}</span>`).join('')}
+                <div class="muro-layout">
+                    <!-- AVATAR AL LADO DEL TABLÓN -->
+                    <div class="muro-avatar-wrapper" id="muro-avatar-container">
+                        ${avatarSvg}
                     </div>
-                    ${data.exercises.map((ex, i) => `
-                        <div style="margin-bottom:25px">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-                                <div style="color:#777; font-style:italic;">🇩🇰 ${ex.da}</div>
-                                <button class="audio-btn" style="width:30px; height:30px; font-size:0.8rem;" onclick="hablarPalabra('${ex.es_before.replace(/'/g, "\\'") + ex.answer + ex.es_after.replace(/'/g, "\\'")}')">🔊</button>
-                            </div>
-                            <div style="font-size:1.3rem; font-weight:bold;">${ex.es_before} <span class="drop-zone" id="dz-${i}" data-answer="${ex.answer}"></span> ${ex.es_after}</div>
+
+                    <!-- TABLÓN PRINCIPAL -->
+                    <div class="muro-paper">
+                        <div style="font-size:0.8rem; opacity:0.6; margin-bottom:10px;">I dag ${data.date}</div>
+                        <p style="font-size:1.5rem; font-weight:bold; margin-bottom:20px;">Tak for i dag! I er meget dygtige 🌟</p>
+                        
+                        <div style="margin-bottom:30px">${data.vocab.map(v => `<div style="font-size:1.2rem; font-weight:bold; margin-bottom:10px;">✓ ${v}</div>`).join('')}</div>
+                        
+                        <h4 style="margin-top: 40px; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 20px; font-size: 1.5rem;">🎮 Træk og slip (Toca para mover)</h4>
+                        <p style="font-size:0.9rem; opacity:0.7; margin-bottom:15px;">Tryk på et ord, og tryk derefter på en tom plads.</p>
+                        
+                        <!-- BANCO DE PALABRAS -->
+                        <div class="word-bank" id="word-bank">
+                            ${data.vocab.sort(() => Math.random()-0.5).map((v, i) => `<span class="draggable-word" onclick="handleWordClick(event)" id="w-${i}">${v}</span>`).join('')}
                         </div>
-                    `).join('')}
-                    <button class="footer-pill" style="margin-top:20px;" onclick="checkMuro()">COMPLETAR MISIÓN ✅</button>
+                        
+                        <!-- EJERCICIOS -->
+                        <div id="exercises-container">
+                            ${data.exercises.map((ex, i) => `
+                                <div style="margin-bottom:25px">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                                        <div style="color:#777; font-style:italic;">🇩🇰 ${ex.da}</div>
+                                        <button class="audio-btn" style="width:30px; height:30px; font-size:0.8rem;" onclick="hablarPalabra('${ex.es_before.replace(/'/g, "\\'") + ex.answer + ex.es_after.replace(/'/g, "\\'")}')">🔊</button>
+                                    </div>
+                                    <div style="font-size:1.3rem; font-weight:bold;">
+                                        ${ex.es_before} 
+                                        <span class="drop-zone" onclick="handleZoneClick(event)" data-answer="${ex.answer}"></span> 
+                                        ${ex.es_after}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <!-- ZONA DE FEEDBACK Y BOTONES -->
+                        <div id="muro-feedback" style="margin: 20px 0; font-weight: bold; font-size: 1.2rem; text-align: center;"></div>
+                        
+                        <div style="display:flex; gap:10px; flex-direction:column;">
+                            <button class="footer-pill" onclick="checkMuro()">COMPLETAR MISIÓN ✅</button>
+                            <button id="btn-more-ex" class="footer-pill" style="background:#555; font-size:0.9rem;" onclick="generateMoreExercises()">➕ FLERE OPGAVER (Más Ejercicios)</button>
+                        </div>
+                    </div>
                 </div>`;
         }
 
+        /* LÓGICA DE TOCAR Y MOVER (PERFECTO PARA MÓVILES) */
+        let selectedWordElement = null;
+
         function handleWordClick(ev) {
             const word = ev.target;
+            // Si la palabra ya está en un hueco, la devolvemos al banco
             if(word.parentElement.classList.contains('drop-zone')) {
                 document.getElementById('word-bank').appendChild(word);
                 word.parentElement.classList.remove('filled');
+                word.classList.remove('word-selected');
+                selectedWordElement = null;
             } else {
-                const empty = Array.from(document.querySelectorAll('.drop-zone')).find(z => z.children.length === 0);
-                if(empty) { empty.appendChild(word); empty.classList.add('filled'); }
+                // Si está en el banco, la seleccionamos
+                if (selectedWordElement) selectedWordElement.classList.remove('word-selected');
+                selectedWordElement = word;
+                word.classList.add('word-selected');
             }
         }
 
+        function handleZoneClick(ev) {
+            const zone = ev.currentTarget;
+            // Si hemos seleccionado una palabra y el hueco está vacío, la metemos
+            if (selectedWordElement && !zone.classList.contains('filled')) {
+                zone.appendChild(selectedWordElement);
+                zone.classList.add('filled');
+                selectedWordElement.classList.remove('word-selected');
+                selectedWordElement = null;
+            } else if (zone.children.length > 0) {
+                // Si tocamos un hueco lleno sin tener nada seleccionado, sacamos la palabra
+                const word = zone.children[0];
+                document.getElementById('word-bank').appendChild(word);
+                zone.classList.remove('filled');
+            }
+        }
+
+        /* COMPROBAR RESPUESTAS Y ANIMAR CORAZONES */
         function checkMuro() {
-            document.querySelectorAll('.drop-zone').forEach(z => {
+            let allCorrect = true;
+            let answered = 0;
+            const zones = document.querySelectorAll('.drop-zone');
+            if(zones.length === 0) return;
+
+            zones.forEach(z => {
                 if(z.children.length > 0) {
-                    const ok = z.children[0].innerText.toLowerCase() === z.getAttribute('data-answer').toLowerCase();
-                    z.children[0].style.border = ok ? "2px solid #4caf50" : "2px solid #ff0055";
-                    z.children[0].style.background = ok ? "#4caf50" : "#ff0055";
+                    answered++;
+                    const wordEl = z.children[0];
+                    const ok = wordEl.innerText.toLowerCase() === z.getAttribute('data-answer').toLowerCase();
+                    wordEl.style.border = ok ? "2px solid #4caf50" : "2px solid #ff0055";
+                    wordEl.style.background = ok ? "#4caf50" : "#ff0055";
+                    if(!ok) allCorrect = false;
+                } else {
+                    allCorrect = false;
                 }
             });
+
+            const feedback = document.getElementById('muro-feedback');
+            
+            if (answered < zones.length) {
+                feedback.innerHTML = "<span style='color:#ff9800;'>Udfyld alle felterne først! (Rellena todos los huecos)</span>";
+                return;
+            }
+
+            if(allCorrect) {
+                feedback.innerHTML = "<span style='color:#4caf50;'>Fantastisk! Det er helt rigtigt! 🌟💖</span>";
+                spawnHearts(); // Dispara los corazones
+            } else {
+                feedback.innerHTML = "<span style='color:#ff0055;'>Næsten! Prøv igen. 💪 (Casi, inténtalo de nuevo)</span>";
+            }
+        }
+
+        function spawnHearts() {
+            const container = document.getElementById('muro-avatar-container');
+            if(!container) return;
+            for(let i=0; i<6; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.innerText = '💖';
+                    heart.style.left = (Math.random() * 80) + '%';
+                    heart.style.bottom = '20px';
+                    container.appendChild(heart);
+                    setTimeout(() => heart.remove(), 1500); // Se borran solos
+                }, i * 200);
+            }
+        }
+
+        /* GENERAR MÁS EJERCICIOS */
+        async function generateMoreExercises() {
+            const data = JSON.parse(localStorage.getItem('muro_latest_post'));
+            if(!data || !data.vocab || !apiKey) return;
+            
+            const btn = document.getElementById('btn-more-ex');
+            btn.innerText = "Henter... ⏳ (Cargando...)";
+            btn.disabled = true;
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+            const prompt = `Crea 3 nuevos ejercicios de rellenar huecos para aprender español usando SOLO estas palabras: ${data.vocab.join(', ')}. Formato JSON estricto: {"exercises": [{"da": "frase en danés", "es_before": "inicio de frase ", "es_after": " fin de frase", "answer": "palabra"}]}`;
+
+            try {
+                const res = await fetch(url, { 
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'}, 
+                    body: JSON.stringify({ 
+                        contents: [{parts: [{text: prompt}]}],
+                        generationConfig: { responseMimeType: "application/json", temperature: 0.7 }
+                    }) 
+                });
+                
+                const responseData = await res.json();
+                if (!res.ok) throw new Error("API error");
+                
+                const newEx = JSON.parse(responseData.candidates[0].content.parts[0].text);
+                data.exercises = data.exercises.concat(newEx.exercises); // Junta los viejos con los nuevos
+                localStorage.setItem('muro_latest_post', JSON.stringify(data));
+                
+                loadMuroData(); // Recarga todo el tablón visualmente
+            } catch (e) {
+                alert("Kunne ikke hente flere opgaver. (No se pudieron cargar).");
+                btn.innerText = "➕ FLERE OPGAVER";
+                btn.disabled = false;
+            }
         }
 
         document.querySelectorAll('.nav-btn').forEach(btn => {
