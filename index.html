@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Español para Jóvenes | Edición Cyberpunk</title>
-    <!-- Fuentes de Google -->
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         /* ==========================================================================
@@ -38,11 +37,7 @@
             --card-border: 1px solid rgba(0, 242, 255, 0.3);
         }
 
-        /* ==========================================================================
-           SCROLL NATIVO Y CONFIGURACIÓN BASE
-           ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease; }
-        
         html, body { min-height: 100%; overflow-x: hidden; overflow-y: auto; scroll-behavior: smooth; }
         body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-body); display: flex; flex-direction: column; }
         button { cursor: pointer; border: none; outline: none; background: none; font-family: inherit; }
@@ -54,9 +49,6 @@
         .sub-view { display: none; width: 100%; flex-direction: column; align-items: center; }
         .sub-view.active { display: flex; animation: slideUpFade 0.5s forwards; }
 
-        /* ==========================================================================
-           ESTILOS GENERALES
-           ========================================================================== */
         .main-title { font-family: var(--font-title); font-size: 5rem; letter-spacing: 4px; margin-bottom: 20px; text-transform: uppercase; text-align: center; line-height: 1; }
         body.dark-mode .main-title { text-shadow: var(--neon-glow); }
 
@@ -68,10 +60,10 @@
 
         .footer-pill { background: var(--accent-color); color: white; padding: 15px 35px; border-radius: 50px; font-weight: 800; text-transform: uppercase; box-shadow: 0 6px 20px rgba(229, 89, 52, 0.4); width: 100%; border: none; font-size: 1.1rem; cursor: pointer; transition: transform 0.2s; }
         .footer-pill:active { transform: scale(0.95); }
+        .audio-btn { background: var(--light-color); color: var(--bg-color); border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; box-shadow: var(--soft-shadow); transition: transform 0.2s; }
+        .audio-btn:hover { transform: scale(1.1); }
 
-        /* ==========================================================================
-           ANIMACIONES INTERNAS DE LOS AVATARES SVG (ESTILO FLAT VECTOR)
-           ========================================================================== */
+        /* ANIMACIONES AVATARES */
         .hero-float { animation: heroFloat 4s ease-in-out infinite; transform-origin: center; }
         .hero-float-fast { animation: heroFloat 2s ease-in-out infinite; transform-origin: center; }
         .hero-breathe { animation: heroBreathe 3s ease-in-out infinite; transform-origin: bottom center; }
@@ -83,49 +75,20 @@
         @keyframes heroPulse { 0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 2px currentColor); } 50% { opacity: 1; filter: drop-shadow(0 0 12px currentColor); } }
         @keyframes heroBlink { 0%, 96%, 98%, 100% { transform: scaleY(1); } 97% { transform: scaleY(0.1); } }
 
-        /* Selector de Avatares (Grid de Opciones SVG) */
         .avatar-creator-grid { display: flex; flex-direction: column; gap: 20px; align-items: center; width: 100%; }
         .avatar-preview-container { width: 220px; height: 220px; border-radius: 30px; overflow: visible; background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%); display: flex; justify-content: center; align-items: center; position: relative; }
         
-        .avatar-selection-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 15px;
-            width: 100%;
-            background: rgba(0,0,0,0.2);
-            padding: 20px;
-            border-radius: 20px;
-            max-height: 40vh;
-            overflow-y: auto;
-            border: var(--card-border);
-        }
-        
+        .avatar-selection-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; width: 100%; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 20px; max-height: 40vh; overflow-y: auto; border: var(--card-border); }
         .avatar-selection-list::-webkit-scrollbar { width: 8px; }
         .avatar-selection-list::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 4px; }
         .avatar-selection-list::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 4px; }
 
-        .avatar-option {
-            width: 100%;
-            aspect-ratio: 1/1;
-            border-radius: 16px;
-            background: rgba(255,255,255,0.1);
-            overflow: visible;
-            cursor: pointer;
-            border: 3px solid transparent;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+        .avatar-option { width: 100%; aspect-ratio: 1/1; border-radius: 16px; background: rgba(255,255,255,0.1); overflow: visible; cursor: pointer; border: 3px solid transparent; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .avatar-option-name { font-size: 0.75rem; font-weight: bold; margin-top: 5px; opacity: 0.8; text-transform: uppercase; text-align: center; }
         .avatar-option:hover { transform: scale(1.1); background: rgba(255,255,255,0.2); }
         .avatar-option.selected { border-color: var(--accent-color); background: rgba(255,255,255,0.25); transform: scale(1.15); box-shadow: 0 0 20px var(--accent-color); z-index: 11; }
 
-        /* ==========================================================================
-           SISTEMA DE CHROMAS (SKINS)
-           ========================================================================== */
+        /* CHROMAS */
         .chroma-container { display: flex; flex-direction: column; align-items: center; background: rgba(0,0,0,0.3); padding: 15px 25px; border-radius: 20px; width: 100%; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px; }
         .chroma-title { font-size: 0.9rem; text-transform: uppercase; font-weight: bold; margin-bottom: 10px; color: var(--accent-color); letter-spacing: 1px; }
         .chroma-list { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
@@ -133,9 +96,7 @@
         .chroma-btn:hover { transform: scale(1.2); }
         .chroma-btn.selected { border-color: #ffffff; box-shadow: 0 0 15px currentColor; transform: scale(1.2); z-index: 5; }
 
-        /* ==========================================================================
-           NAVEGACIÓN Y TOP BANNER
-           ========================================================================== */
+        /* NAVBAR Y BANNER */
         .top-banner { position: fixed; top: 20px; right: 20px; background: rgba(30, 30, 30, 0.85); color: #fff; padding: 10px 20px; border-radius: 30px; z-index: 1000; display: flex; align-items: center; gap: 15px; border-left: 4px solid var(--accent-color); backdrop-filter: blur(10px); }
         .theme-switch { width: 44px; height: 22px; background: #555; border-radius: 20px; position: relative; cursor: pointer; }
         .theme-switch::before { content: ''; position: absolute; width: 18px; height: 18px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; }
@@ -147,9 +108,7 @@
         .circle-btn:hover { transform: scale(1.3); z-index: 10; }
         .circle-btn.active { background-color: var(--accent-color); color: white; transform: scale(1.1); }
 
-        /* ==========================================================================
-           DICCIONARIO, TABLÓN Y MINI-AVATARES
-           ========================================================================== */
+        /* DICCIONARIO Y TABLÓN */
         .search-container { display: flex; gap: 15px; width: 100%; margin-bottom: 30px; align-items: center; }
         .dict-avatar { width: 75px; height: 75px; border-radius: 50%; padding: 5px; border: 2px solid var(--accent-color); flex-shrink: 0; box-shadow: var(--soft-shadow); transition: transform 0.3s; background: var(--card-bg); display: flex; justify-content: center; align-items: center; }
         .dict-avatar svg { width: 100%; height: 100%; }
@@ -157,8 +116,6 @@
         .vocab-grid { display: flex; flex-direction: column; gap: 20px; width: 100%; }
         .vocab-card { background: var(--card-bg); border: var(--card-border); padding: 30px; border-radius: 24px; width: 100%; text-align: left; backdrop-filter: blur(10px); }
         .dict-badge { display: inline-block; padding: 5px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; margin-right: 5px; background: rgba(255,255,255,0.2); }
-        .gender-m { border-left: 8px solid #4ea8de; }
-        .gender-f { border-left: 8px solid #ff7b9c; }
         
         .muro-paper { background: #fdfbf7; color: #2c2c2c; padding: 40px; border-radius: 12px; box-shadow: var(--soft-shadow); width: 100%; position: relative; }
         body.dark-mode .muro-paper { background: #1a1a2e; color: #e0e0e0; border: var(--card-border); }
@@ -171,9 +128,7 @@
         .drop-zone { display: inline-flex; min-width: 100px; height: 35px; background: rgba(0,0,0,0.1); border-radius: 8px; margin: 0 5px; vertical-align: middle; }
         .drop-zone.filled { background: transparent; }
 
-        /* ==========================================================================
-           ANIMACIONES GENERALES
-           ========================================================================== */
+        /* ANIMACIONES Y EFECTOS CYBERPUNK */
         @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
         .emoji-interactive { display: inline-block; transition: transform 0.3s; }
         .emoji-interactive:hover { transform: scale(1.3) rotate(10deg); cursor: pointer; }
@@ -186,19 +141,13 @@
         .soft-fade-overlay { position: fixed; top:0; left:0; width:100vw; height:100vh; pointer-events: none; z-index: 9999; background: #b28cd6; opacity: 0; transition: opacity 0.8s; }
         .soft-fade-active { opacity: 1; }
 
-        /* ==========================================================================
-           RESPONSIVE MOBILE
-           ========================================================================== */
         @media (max-width: 768px) {
             .main-title { font-size: 3.5rem; margin-top: 10px; }
             .avatar-preview-container { width: 160px; height: 160px; }
-            .avatar-selection-list { grid-template-columns: repeat(3, 1fr); padding: 15px; gap: 10px; max-height: 40vh; }
-            
+            .avatar-selection-list { grid-template-columns: repeat(3, 1fr); padding: 15px; gap: 10px; max-height: 50vh; }
             .top-banner { position: fixed; top: 0; left: 0; width: 100%; border-radius: 0; justify-content: space-between; padding: 12px 20px; border-left: none; border-bottom: 2px solid var(--accent-color); }
             .top-banner span:last-child { display: none; }
-            
             main { padding: 80px 15px 120px 15px; } 
-
             .nav-left { position: fixed; bottom: 0; top: auto; left: 0; width: 100%; transform: none; flex-direction: row; justify-content: space-evenly; background: rgba(255, 255, 255, 0.95); padding: 15px 10px; border-top: 1px solid rgba(0,0,0,0.1); box-shadow: 0 -5px 10px rgba(0,0,0,0.1); backdrop-filter: blur(10px); }
             body.dark-mode .nav-left { background: rgba(26, 26, 46, 0.98); border-top-color: #333; }
             .circle-btn { width: 45px; height: 45px; background: #f0f0f0; }
@@ -226,7 +175,6 @@
 
     <main id="main-content">
         
-        <!-- INICIO -->
         <div id="inicio" class="tab-content active">
             <div id="view-login" class="sub-view active">
                 <div class="auth-box">
@@ -237,29 +185,22 @@
                 </div>
             </div>
 
-            <!-- SELECCIÓN AVATARES FLAT VECTOR -->
             <div id="view-avatar-creator" class="sub-view">
                 <div class="avatar-creator-box">
                     <h2 style="font-family: var(--font-title); font-size: 3rem; margin-bottom: 20px;">ELIGE TU HÉROE</h2>
                     
                     <div class="avatar-creator-grid">
                         <div class="avatar-preview-container" id="live-avatar-preview"></div>
-                        
-                        <!-- SELECTOR DE CHROMAS -->
                         <div class="chroma-container">
                             <div class="chroma-title" id="chroma-name-display">Skin: Original</div>
-                            <div class="chroma-list" id="chroma-list-container">
-                                <!-- Botones inyectados por JS -->
-                            </div>
+                            <div class="chroma-list" id="chroma-list-container"></div>
                         </div>
-
                         <div class="avatar-selection-list" id="avatar-grid-container"></div>
                         <button class="footer-pill" style="margin-top:10px; font-size:1.2rem; background:#4caf50;" onclick="saveProfile()">ENTRAR AL JUEGO ⚔️</button>
                     </div>
                 </div>
             </div>
 
-            <!-- DASHBOARD -->
             <div id="view-dashboard" class="sub-view">
                 <div class="avatar-preview-container" id="dashboard-avatar" style="border:none; width: 250px; height: 250px; background:none;"></div>
                 <h1 class="main-title" id="welcome-text" style="margin-top:20px;">HOLA</h1>
@@ -268,7 +209,6 @@
             </div>
         </div>
 
-        <!-- DICCIONARIO -->
         <div id="diccionario" class="tab-content">
             <h1 class="main-title">SMART ORDBOG</h1>
             <p style="text-align:center; margin-bottom:20px; font-weight:bold; font-size:1.2rem;">Gør din avatar glad ved at søge <span class="emoji-interactive">📖</span></p>
@@ -280,7 +220,6 @@
             <div id="vocabGrid" class="vocab-grid"></div>
         </div>
 
-        <!-- TABLÓN -->
         <div id="notas" class="tab-content">
             <h1 class="main-title">EL TABLÓN</h1>
             <div id="admin-muro-panel" class="admin-panel" style="display:none; margin-bottom: 30px;">
@@ -292,7 +231,6 @@
             <div id="student-muro-display" style="width:100%"></div>
         </div>
 
-        <!-- JUEGOS -->
         <div id="juegos" class="tab-content">
             <h1 class="main-title">SPIL / JUEGOS <span class="emoji-interactive">🎮</span></h1>
             <div class="auth-box" style="padding:60px">
@@ -306,12 +244,29 @@
 
     <script>
         // ======================================================================
-        // ATENCIÓN PROFESOR: API KEY 
+        // <!-- EDITAR CONTENIDO AQUÍ -->
+        // ATENCIÓN PROFESOR: PEGA TU NUEVA API KEY AQUÍ ABAJO
+        // Recuerda haberla restringido a tu web en Google Cloud antes de subirla
         // ======================================================================
-        const apiKey = "AIzaSyD5eTOiaxaltAW-3pBUrl2f7oCz0ARFKeQ"; 
+        const apiKey = "AIzaSyDePpe7khGEtz9T99BeyQPXpUBuMfnzbbc"; 
 
         /* ======================================================================
-           SISTEMA DE CHROMAS (SKINS TIPO LOL) Y MOTOR VECTORIAL
+           PRONUNCIACIÓN (Web Speech API)
+           ====================================================================== */
+        function hablarPalabra(texto) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); 
+                const mensaje = new SpeechSynthesisUtterance(texto);
+                mensaje.lang = 'es-ES';
+                mensaje.rate = 0.9; // Hablar un poco más lento para los estudiantes
+                window.speechSynthesis.speak(mensaje);
+            } else {
+                alert("Tu navegador no soporta lectura de voz.");
+            }
+        }
+
+        /* ======================================================================
+           SISTEMA DE CHROMAS (SKINS) Y MOTOR VECTORIAL
            ====================================================================== */
         const chromas = [
             { id: 'classic', name: 'Original', bg: 'conic-gradient(#ccc, #fff)' },
@@ -342,7 +297,6 @@
             const hero = heroesList.find(h => h.id === id);
             const chroma = chromas.find(c => c.id === chromaId);
             
-            // Inyectamos las variables de color por CSS. Si es Classic, usa las base del personaje.
             let style = "";
             if (chromaId !== 'classic') {
                 style = `style="--m: ${chroma.main}; --md: ${chroma.mainDark}; --s: ${chroma.sec}; --sd: ${chroma.secDark};"`;
@@ -517,7 +471,7 @@
                             <circle cx="50" cy="20" r="4" fill="var(--s)"/>
                         </g>`;
                     break;
-                case 'bruja':
+                case 'bruja': 
                     svg += `
                         <g class="hero-float">
                             <path d="M 30 40 C 20 55, 15 75, 25 80" stroke="var(--s)" stroke-width="6" fill="none" stroke-linecap="round"/>
@@ -581,7 +535,7 @@
         }
 
         /* ======================================================================
-           MANEJO DE SELECCIÓN, CHROMAS Y UI
+           MANEJO DE SELECCIÓN Y UI
            ====================================================================== */
         let tempName = "";
         let selectedAvatarIndex = 0;
@@ -594,13 +548,11 @@
             heroesList.forEach((h, i) => {
                 const opt = document.createElement('div');
                 opt.className = 'avatar-option' + (i === selectedAvatarIndex ? ' selected' : '');
-                // Reflejamos el chroma actual en toda la cuadrícula (se ve increíble)
                 opt.innerHTML = generateHeroSVG(h.id, selectedChromaId);
                 const name = document.createElement('div');
                 name.className = 'avatar-option-name';
                 name.innerText = h.name;
                 
-                // Color del texto según chroma
                 const ch = chromas.find(c => c.id === selectedChromaId);
                 name.style.color = ch.id === 'classic' ? h.c.m : ch.main;
                 
@@ -719,13 +671,20 @@
                 const cleanText = data.candidates[0].content.parts[0].text.match(/\{[\s\S]*\}/)[0];
                 const word = JSON.parse(cleanText);
                 
+                // Botón de audio insertado aquí
                 grid.innerHTML = `
                     <div class="vocab-card">
-                        <h2 style="font-size: 2.5rem; margin-bottom:10px;">${word.emoji} ${word.es}</h2>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <h2 style="font-size: 2.5rem; margin-bottom:10px;">${word.emoji} ${word.es}</h2>
+                            <button class="audio-btn" onclick="hablarPalabra('${word.es}')">🔊</button>
+                        </div>
                         <span class="dict-badge">Flertal: ${word.plural}</span>
                         <p style="font-weight:900; color:var(--accent-color); font-size:1.8rem; margin:15px 0;">🇩🇰 ${word.da}</p>
                         <div style="background:rgba(0,0,0,0.2); padding:20px; border-radius:12px;">
-                            <div style="font-size:1.2rem; font-style:italic; margin-bottom:10px;">"${word.chunk}"</div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div style="font-size:1.2rem; font-style:italic; margin-bottom:10px;">"${word.chunk}"</div>
+                                <button class="audio-btn" style="width:35px; height:35px; font-size:0.9rem;" onclick="hablarPalabra('${word.chunk.replace(/'/g, "\\'")}')">🔊</button>
+                            </div>
                             <div style="font-weight:bold;">🇩🇰 ${word.chunk_da}</div>
                         </div>
                         <div style="background:rgba(255,255,255,0.1); padding:15px; border-left:4px solid #fcd000; margin-top:15px; border-radius:8px;">
@@ -781,7 +740,10 @@
                     </div>
                     ${data.exercises.map((ex, i) => `
                         <div style="margin-bottom:25px">
-                            <div style="color:#777; font-style:italic; margin-bottom:5px;">🇩🇰 ${ex.da}</div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                                <div style="color:#777; font-style:italic;">🇩🇰 ${ex.da}</div>
+                                <button class="audio-btn" style="width:30px; height:30px; font-size:0.8rem;" onclick="hablarPalabra('${ex.es_before.replace(/'/g, "\\'") + ex.answer + ex.es_after.replace(/'/g, "\\'")}')">🔊</button>
+                            </div>
                             <div style="font-size:1.3rem; font-weight:bold;">${ex.es_before} <span class="drop-zone" id="dz-${i}" data-answer="${ex.answer}"></span> ${ex.es_after}</div>
                         </div>
                     `).join('')}
@@ -815,11 +777,11 @@
             const isDark = document.body.classList.contains('dark-mode');
             if(!isDark) {
                 document.getElementById('lightning-overlay').classList.add('lightning-active');
-                setTimeout(() => { document.body.classList.add('dark-mode'); localStorage.setItem('theme', 'dark'); }, 150);
+                setTimeout(() => { document.body.classList.add('dark-mode'); localStorage.setItem('theme', 'dark'); renderAvatarGrid(); }, 150);
                 setTimeout(() => document.getElementById('lightning-overlay').classList.remove('lightning-active'), 500);
             } else {
                 document.getElementById('soft-fade-overlay').classList.add('soft-fade-active');
-                setTimeout(() => { document.body.classList.remove('dark-mode'); localStorage.setItem('theme', 'light'); document.getElementById('soft-fade-overlay').classList.remove('soft-fade-active'); }, 800);
+                setTimeout(() => { document.body.classList.remove('dark-mode'); localStorage.setItem('theme', 'light'); renderAvatarGrid(); document.getElementById('soft-fade-overlay').classList.remove('soft-fade-active'); }, 800);
             }
         }
 
