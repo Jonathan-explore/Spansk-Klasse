@@ -38,9 +38,6 @@
             --card-border: 1px solid rgba(0, 242, 255, 0.3);
         }
 
-        /* ==========================================================================
-           SCROLL NATIVO Y CONFIGURACIÓN BASE
-           ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease; }
         
         html, body { min-height: 100%; overflow-x: hidden; overflow-y: auto; scroll-behavior: smooth; }
@@ -135,7 +132,7 @@
         /* ==========================================================================
            DICCIONARIO, TABLÓN Y MINI-AVATARES
            ========================================================================== */
-        .search-container { display: flex; gap: 15px; width: 100%; margin-bottom: 30px; align-items: center; }
+        .search-container { display: flex; gap: 15px; width: 100%; margin-bottom: 30px; align-items: center; flex-wrap: wrap; }
         .dict-avatar { width: 75px; height: 75px; border-radius: 50%; padding: 5px; border: 2px solid var(--accent-color); flex-shrink: 0; box-shadow: var(--soft-shadow); transition: transform 0.3s; background: var(--card-bg); display: flex; justify-content: center; align-items: center; }
         .dict-avatar svg { width: 100%; height: 100%; }
 
@@ -155,7 +152,7 @@
         .drop-zone.filled { background: transparent; }
 
         /* ==========================================================================
-           ANIMACIONES GENERALES RESTAURADAS (MODO OSCURO / CLARO)
+           ANIMACIONES GENERALES
            ========================================================================== */
         @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
         .emoji-interactive { display: inline-block; transition: transform 0.3s; }
@@ -172,7 +169,7 @@
         .soft-fade-active { opacity: 1; }
 
         /* ==========================================================================
-           RESPONSIVE MOBILE
+           RESPONSIVE MOBILE - ARREGLADO
            ========================================================================== */
         @media (max-width: 768px) {
             .main-title { font-size: 3.5rem; margin-top: 10px; }
@@ -188,6 +185,11 @@
             body.dark-mode .nav-left { background: rgba(26, 26, 46, 0.98); border-top-color: #333; }
             .circle-btn { width: 45px; height: 45px; background: #f0f0f0; }
             .circle-btn:hover { transform: scale(1.1) !important; }
+
+            /* ARREGLO DE LA BARRA DE BÚSQUEDA EN MÓVIL */
+            .search-container { flex-wrap: wrap; gap: 10px; justify-content: center; }
+            #searchInput { width: 100%; margin-bottom: 5px !important; }
+            .search-container > button { flex: 1; }
         }
     </style>
 </head>
@@ -200,7 +202,6 @@
     <div class="top-banner">
         <span>CYBERPUNK MODE:</span>
         <div class="theme-switch" onclick="toggleTheme()"></div>
-        <!-- BOTÓN DE REINICIO OCULTO POR DEFECTO (SOLO PARA PROFE) -->
         <button id="top-reset-btn" onclick="resetProfile()" style="display:none; font-size:0.8rem; color:#ff4444; border:1px solid #ff4444; border-radius:10px; padding: 4px 8px; background:rgba(255,0,0,0.1); cursor:pointer; font-weight:bold; margin-left: 10px;">REINICIAR SISTEMA</button>
     </div>
 
@@ -295,13 +296,11 @@
         // ======================================================================
         // CONFIGURACIÓN DE LA CLAVE API (DIVIDIDA PARA ENGAÑAR A GITHUB)
         // Instrucciones:
-        // 1. Pon las primeras 10 letras de tu clave en la variable parte1.
+        // 1. Pon las primeras letras de tu clave en la variable parte1.
         // 2. Pon el resto de tu clave en la variable parte2.
-        // Ejemplo: Si tu clave es "AIzaSyD5eTOiaxaltA", 
-        // pon parte1 = "AIzaSyD5eT" y parte2 = "OiaxaltA"
         // ======================================================================
-        const parte1 = "AIzaSyBg6S"; // <-- Pega aquí las primeras letras de tu clave
-        const parte2 = "cdadvvls1rwTw1ubwcTKPS6F0QRPA"; // <-- Pega aquí el resto de tu clave
+        const parte1 = "AIzaSyBg6S"; // <-- EJEMPLO: "AIzaSyD5"
+        const parte2 = "cdadvvls1rwTw1ubwcTKPS6F0QRPA"; // <-- EJEMPLO: "eTOiaxaltAW..."
         const apiKey = parte1 + parte2; 
 
         /* ======================================================================
@@ -320,7 +319,7 @@
         }
 
         /* ======================================================================
-           MOTOR VECTORIAL: FLAT MINIMALIST PROFESSIONAL (ESTILO INDIE GAME 2D)
+           MOTOR VECTORIAL: FLAT MINIMALIST PROFESSIONAL
            ====================================================================== */
         const chromas = [
             { id: 'classic', name: 'Original', bg: 'conic-gradient(#ccc, #fff)' },
@@ -423,6 +422,7 @@
                             <path d="M 38 42 Q 42 40 45 42 L 44 44 Q 42 42 39 44 Z" fill="var(--s)" class="hero-pulse"/>
                             <circle cx="57" cy="42" r="5.5" fill="#263238" stroke="var(--sd)" stroke-width="1.5"/>
                             <circle cx="57" cy="42" r="2" fill="var(--sd)" class="hero-pulse hero-blink"/>
+                            <path d="M 45 52 Q 50 56 55 52" stroke="var(--sd)" stroke-width="2" fill="none" stroke-linecap="round"/>
                         </g>`;
                     break;
                 case 'caballero':
@@ -436,6 +436,7 @@
                             <path d="M 50 20 C 68 20, 68 45, 60 62 L 50 62 Z" fill="var(--md)"/>
                             <path d="M 38 42 L 62 42 L 50 54 Z" fill="#212121"/>
                             <circle cx="50" cy="46" r="3.5" fill="var(--sd)" class="hero-pulse"/>
+                            <path d="M 45 54 Q 50 58 55 54" stroke="var(--sd)" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
                             <path d="M 50 20 C 50 -10, 80 0, 80 20 C 70 30, 50 25, 50 20 Z" fill="var(--s)"/>
                         </g>`;
                     break;
@@ -578,6 +579,7 @@
                             <path d="M 32 85 C 32 65, 60 65, 60 40 C 60 35, 55 35, 50 40 C 50 55, 42 60, 32 85 Z" fill="var(--sd)"/>
                             <polygon points="38,28 45,25 42,32" fill="var(--s)"/>
                             <circle cx="42" cy="28" r="1.5" fill="#111"/>
+                            <path d="M 45 42 Q 50 46 55 42" stroke="var(--sd)" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
                             <path d="M 55 25 C 75 5, 85 15, 75 25 Z" fill="#fff9c4"/>
                             <path d="M 52 20 C 65 0, 75 10, 65 20 Z" fill="#fff9c4"/>
                         </g>`;
@@ -693,12 +695,12 @@
             if (globalProfile.is_admin) {
                 document.getElementById('mood-text').innerText = "Panel de Profesor Activado";
                 document.getElementById('admin-muro-panel').style.display = 'block';
-                document.getElementById('top-reset-btn').style.display = 'block'; // Muestra el botón al profe
+                document.getElementById('top-reset-btn').style.display = 'block';
                 if(widget) widget.style.display = 'none';
             } else {
                 document.getElementById('mood-text').innerText = "¡Listo para la aventura! ⚔️";
                 document.getElementById('admin-muro-panel').style.display = 'none';
-                document.getElementById('top-reset-btn').style.display = 'none'; // Oculta el botón a los niños
+                document.getElementById('top-reset-btn').style.display = 'none';
                 if(widget) {
                     widget.style.display = 'flex';
                     widget.innerHTML = generateHeroSVG(heroesList[globalProfile.avatarIndex].id, globalProfile.chromaId);
@@ -708,23 +710,51 @@
         }
 
         /* ======================================================================
-           IA Y DICCIONARIO
+           IA Y DICCIONARIO CON MEJOR CONTROL DE ERRORES
            ====================================================================== */
         async function triggerSearch() {
             const term = document.getElementById('searchInput').value.trim();
             if(!term) return;
-            if(!apiKey) return alert("Error: La clave de la IA no está configurada correctamente en el código.");
+            if(!apiKey) return alert("Error: La clave de la IA no está configurada en el código.");
+            
             const grid = document.getElementById('vocabGrid');
             grid.innerHTML = `<div style="text-align:center; padding:30px;">Invocando magia... ✨</div>`;
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            
             try {
-                const res = await fetch(url, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ contents: [{parts: [{text: `Traduce al danés, da género y frase: ${term}. JSON: {"es":"...", "da":"...", "emoji":"..."}`}]}] }) });
+                const res = await fetch(url, { 
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'}, 
+                    body: JSON.stringify({ contents: [{parts: [{text: `Traduce al danés, da género y frase: ${term}. JSON: {"es":"...", "da":"...", "emoji":"..."}`}]}] }) 
+                });
+                
                 const data = await res.json();
+                
+                // Si la API devuelve error en lugar de la palabra (Ej: "reading 0")
+                if (!res.ok) {
+                    throw new Error(data.error?.message || "La petición fue rechazada.");
+                }
+                
+                if (!data.candidates) {
+                    throw new Error("No hay respuesta válida de la IA.");
+                }
+
                 const word = JSON.parse(data.candidates[0].content.parts[0].text.match(/\{.*\}/s)[0]);
-                grid.innerHTML = `<div class="vocab-card"><div style="display:flex; justify-content:space-between; align-items:center;"><h2>${word.emoji} ${word.es}</h2><button class="audio-btn" onclick="hablarPalabra('${word.es}')">🔊</button></div><p style="font-weight:900; color:var(--accent-color); font-size:1.5rem;">🇩🇰 ${word.da}</p></div>`;
+                grid.innerHTML = `
+                    <div class="vocab-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <h2 style="font-size: 2.5rem; margin-bottom:10px;">${word.emoji} ${word.es}</h2>
+                            <button class="audio-btn" onclick="hablarPalabra('${word.es}')">🔊</button>
+                        </div>
+                        <p style="font-weight:900; color:var(--accent-color); font-size:1.8rem; margin:15px 0;">🇩🇰 ${word.da}</p>
+                    </div>`;
             } catch(e) { 
-                console.error(e);
-                grid.innerHTML = `<p style="color:red; text-align:center;">Error de conexión. Si has puesto el "candado" en Google, recuerda que <b>solo funcionará al subirlo a GitHub</b>, no en tu ordenador.<br><br><span style="font-size:0.8rem; color:#aaa;">Detalle: ${e.message}</span></p>`; 
+                grid.innerHTML = `
+                    <div style="background:rgba(255,0,0,0.1); padding:20px; border-radius:15px; border:2px solid #ff4444; margin-top:20px;">
+                        <p style="color:#ff4444; text-align:center; font-weight:bold; font-size:1.2rem; margin-bottom:10px;">⚠️ CONEXIÓN BLOQUEADA</p>
+                        <p style="text-align:center; font-size:0.9rem;">Si ves este mensaje, Google ha bloqueado la conexión. Asegúrate de estar probando la web en tu enlace de <b>GitHub</b> y no desde un archivo en tu ordenador.</p>
+                        <p style="text-align:center; font-size:0.8rem; margin-top:10px; color:#aaa;">Motivo técnico: ${e.message}</p>
+                    </div>`; 
             }
         }
 
@@ -734,7 +764,6 @@
         function toggleTheme() {
             const isDark = document.body.classList.contains('dark-mode');
             if(!isDark) {
-                // ANIMACIÓN DE RAYOS AL PASAR A MODO OSCURO (CYBERPUNK)
                 document.getElementById('lightning-overlay').classList.add('lightning-active');
                 setTimeout(() => { 
                     document.body.classList.add('dark-mode'); 
@@ -743,7 +772,6 @@
                 }, 150);
                 setTimeout(() => document.getElementById('lightning-overlay').classList.remove('lightning-active'), 500);
             } else {
-                // ANIMACIÓN DE FUNDIDO SUAVE AL VOLVER A MODO CLARO
                 document.getElementById('soft-fade-overlay').classList.add('soft-fade-active');
                 setTimeout(() => { 
                     document.body.classList.remove('dark-mode'); 
@@ -768,12 +796,16 @@
             try {
                 const res = await fetch(url, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ contents: [{parts: [{text: prompt}]}] }) });
                 const data = await res.json();
+                if (!res.ok) throw new Error(data.error?.message || "La petición fue rechazada.");
+                
                 const aiData = JSON.parse(data.candidates[0].content.parts[0].text.match(/\{[\s\S]*\}/)[0]);
                 localStorage.setItem('muro_latest_post', JSON.stringify({ ...aiData, date: new Date().toLocaleDateString() }));
                 document.getElementById('adminPostText').value = '';
                 document.getElementById('admin-loading').style.display = 'none';
                 loadMuroData();
-            } catch (e) { alert("Fallo al invocar la IA."); document.getElementById('admin-loading').style.display = 'none'; }
+            } catch (e) { 
+                document.getElementById('admin-loading').innerHTML = `<span style="color:#ff4444;">Error de IA: ${e.message}</span>`;
+            }
         }
 
         function loadMuroData() {
