@@ -38,6 +38,7 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease; }
+        
         html, body { min-height: 100%; overflow-x: hidden; overflow-y: auto; scroll-behavior: smooth; }
         body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-body); display: flex; flex-direction: column; }
         button { cursor: pointer; border: none; outline: none; background: none; font-family: inherit; }
@@ -244,11 +245,9 @@
 
     <script>
         // ======================================================================
-        // <!-- EDITAR CONTENIDO AQUÍ -->
-        // ATENCIÓN PROFESOR: PEGA TU NUEVA API KEY AQUÍ ABAJO
-        // Recuerda haberla restringido a tu web en Google Cloud antes de subirla
+        // PEGA TU NUEVA API KEY ENTRE LAS COMILLAS
         // ======================================================================
-        const apiKey = "AIzaSyDePpe7khGEtz9T99BeyQPXpUBuMfnzbbc"; 
+        const apiKey = "AIzaSyBMlbKQCACNh6WjqY9zf8uVumwX8zkC0TU"; 
 
         /* ======================================================================
            PRONUNCIACIÓN (Web Speech API)
@@ -258,10 +257,8 @@
                 window.speechSynthesis.cancel(); 
                 const mensaje = new SpeechSynthesisUtterance(texto);
                 mensaje.lang = 'es-ES';
-                mensaje.rate = 0.9; // Hablar un poco más lento para los estudiantes
+                mensaje.rate = 0.9;
                 window.speechSynthesis.speak(mensaje);
-            } else {
-                alert("Tu navegador no soporta lectura de voz.");
             }
         }
 
@@ -369,6 +366,7 @@
                             <path d="M 38 42 Q 42 40 45 42 L 44 44 Q 42 42 39 44 Z" fill="var(--s)" class="hero-pulse"/>
                             <circle cx="57" cy="42" r="5.5" fill="#263238" stroke="var(--sd)" stroke-width="1.5"/>
                             <circle cx="57" cy="42" r="2" fill="var(--sd)" class="hero-pulse hero-blink"/>
+                            <path d="M 45 52 Q 50 56 55 52" stroke="var(--sd)" stroke-width="2" fill="none" stroke-linecap="round"/>
                         </g>`;
                     break;
                 case 'caballero':
@@ -382,6 +380,7 @@
                             <path d="M 50 20 C 68 20, 68 45, 60 62 L 50 62 Z" fill="var(--md)"/>
                             <path d="M 38 42 L 62 42 L 50 54 Z" fill="#212121"/>
                             <circle cx="50" cy="46" r="3.5" fill="var(--sd)" class="hero-pulse"/>
+                            <path d="M 45 54 Q 50 58 55 54" stroke="var(--sd)" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
                             <path d="M 50 20 C 50 -10, 80 0, 80 20 C 70 30, 50 25, 50 20 Z" fill="var(--s)"/>
                         </g>`;
                     break;
@@ -524,6 +523,7 @@
                             <path d="M 32 85 C 32 65, 60 65, 60 40 C 60 35, 55 35, 50 40 C 50 55, 42 60, 32 85 Z" fill="var(--sd)"/>
                             <polygon points="38,28 45,25 42,32" fill="var(--s)"/>
                             <circle cx="42" cy="28" r="1.5" fill="#111"/>
+                            <path d="M 45 42 Q 50 46 55 42" stroke="var(--sd)" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
                             <path d="M 55 25 C 75 5, 85 15, 75 25 Z" fill="#fff9c4"/>
                             <path d="M 52 20 C 65 0, 75 10, 65 20 Z" fill="#fff9c4"/>
                         </g>`;
@@ -535,7 +535,7 @@
         }
 
         /* ======================================================================
-           MANEJO DE SELECCIÓN Y UI
+           MANEJO DE SELECCIÓN, CHROMAS Y UI
            ====================================================================== */
         let tempName = "";
         let selectedAvatarIndex = 0;
@@ -552,10 +552,8 @@
                 const name = document.createElement('div');
                 name.className = 'avatar-option-name';
                 name.innerText = h.name;
-                
                 const ch = chromas.find(c => c.id === selectedChromaId);
                 name.style.color = ch.id === 'classic' ? h.c.m : ch.main;
-                
                 opt.appendChild(name);
                 opt.onclick = () => selectAvatar(i);
                 container.appendChild(opt);
@@ -601,14 +599,12 @@
         function goToCreator() {
             tempName = document.getElementById('username-input').value.trim();
             if(!tempName) return alert("¡Dime tu nombre primero!");
-            
             if(tempName === "AdminProfe") {
                 globalProfile = { name: "Profesor", is_admin: true, avatarIndex: 'admin', chromaId: 'classic', lastTime: Date.now() };
                 localStorage.setItem('user_profile_data', JSON.stringify(globalProfile));
                 loadDashboard(); 
                 return;
             }
-            
             showSubView('view-avatar-creator');
             renderChromas();
             renderAvatarGrid();
@@ -623,14 +619,10 @@
         function loadDashboard() {
             if(!globalProfile) return showSubView('view-login');
             showSubView('view-dashboard');
-            
             document.getElementById('welcome-text').innerHTML = `HOLA, <span style="color:var(--accent-color)">${globalProfile.name.toUpperCase()}</span>`;
-            
             const avatarHtml = globalProfile.is_admin ? '<div style="font-size:6rem; animation:heroFloat 3s infinite;">👨‍🏫</div>' : generateHeroSVG(heroesList[globalProfile.avatarIndex].id, globalProfile.chromaId);
             document.getElementById('dashboard-avatar').innerHTML = avatarHtml;
-            
             const widget = document.getElementById('dict-avatar-widget');
-            
             if (globalProfile.is_admin) {
                 document.getElementById('mood-text').innerText = "Panel de Profesor Activado";
                 document.getElementById('admin-muro-panel').style.display = 'block';
@@ -646,12 +638,7 @@
             loadMuroData();
         }
 
-        function resetProfile() { 
-            if(confirm("¿Seguro? Se borrará tu héroe.")) { 
-                localStorage.removeItem('user_profile_data'); 
-                location.reload(); 
-            } 
-        }
+        function resetProfile() { if(confirm("¿Seguro? Se borrará tu héroe.")) { localStorage.removeItem('user_profile_data'); location.reload(); } }
 
         /* ======================================================================
            IA Y DICCIONARIO
@@ -661,17 +648,13 @@
             if(!term) return;
             const grid = document.getElementById('vocabGrid');
             grid.innerHTML = `<div style="text-align:center; padding:30px; font-weight:bold; color:var(--accent-color)">Invocando conocimientos antiguos... ✨</div>`;
-
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
             const prompt = `Profesor de español. Traduce: "${term}". JSON: {"es": "con El/La", "da": "Traducción", "plural": "Plural", "emoji": "1 emoji", "mnemo": "Mnemotecnia DANÉS", "chunk": "Frase", "chunk_da": "Trad"}`;
-
             try {
                 const res = await fetch(url, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ contents: [{parts: [{text: prompt}]}] }) });
                 const data = await res.json();
                 const cleanText = data.candidates[0].content.parts[0].text.match(/\{[\s\S]*\}/)[0];
                 const word = JSON.parse(cleanText);
-                
-                // Botón de audio insertado aquí
                 grid.innerHTML = `
                     <div class="vocab-card">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -691,13 +674,9 @@
                             🧠 <b>Husk det:</b> ${word.mnemo}
                         </div>
                     </div>`;
-                
                 if(!globalProfile.is_admin) {
                     const widg = document.getElementById('dict-avatar-widget');
-                    if(widg) {
-                        widg.style.transform = 'scale(1.2)';
-                        setTimeout(() => widg.style.transform = 'scale(1)', 800);
-                    }
+                    if(widg) { widg.style.transform = 'scale(1.2)'; setTimeout(() => widg.style.transform = 'scale(1)', 800); }
                 }
             } catch (e) { grid.innerHTML = `<p style="color:red; text-align:center;">Error mágico. ¿La API Key es correcta?</p>`; }
         }
@@ -709,10 +688,8 @@
             const text = document.getElementById('adminPostText').value.trim();
             if(!text) return;
             document.getElementById('admin-loading').style.display = 'block';
-
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
             const prompt = `Vocabulario: "${text}". Genera JSON: {"vocab": ["p1", "p2"], "exercises": [{"da": "frase", "es_before": "Inicio ", "es_after": " fin", "answer": "p1"}]}`;
-
             try {
                 const res = await fetch(url, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ contents: [{parts: [{text: prompt}]}] }) });
                 const data = await res.json();
@@ -728,7 +705,6 @@
             const data = JSON.parse(localStorage.getItem('muro_latest_post'));
             const display = document.getElementById('student-muro-display');
             if(!data) return display.innerHTML = "<p style='text-align:center; opacity:0.6'>No hay misiones hoy.</p>";
-
             display.innerHTML = `
                 <div class="muro-paper">
                     <div style="font-size:0.8rem; opacity:0.6; margin-bottom:10px;">I dag ${data.date}</div>
@@ -794,10 +770,7 @@
             });
         });
 
-        window.onload = () => { 
-            if(localStorage.getItem('theme')==='dark') document.body.classList.add('dark-mode'); 
-            loadDashboard(); 
-        };
+        window.onload = () => { if(localStorage.getItem('theme')==='dark') document.body.classList.add('dark-mode'); loadDashboard(); };
     </script>
 </body>
 </html>
