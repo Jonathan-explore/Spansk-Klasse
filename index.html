@@ -140,7 +140,7 @@
         .dict-avatar svg { width: 100%; height: 100%; }
 
         .vocab-grid { display: flex; flex-direction: column; gap: 20px; width: 100%; }
-        .vocab-card { background: var(--card-bg); border: var(--card-border); padding: 30px; border-radius: 24px; width: 100%; text-align: left; backdrop-filter: blur(10px); }
+        .vocab-card { background: var(--card-bg); border: var(--card-border); padding: 30px; border-radius: 24px; width: 100%; text-align: left; backdrop-filter: blur(10px); animation: slideUpFade 0.4s forwards; }
         .dict-badge { display: inline-block; padding: 5px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; margin-right: 5px; background: rgba(255,255,255,0.2); }
         
         .muro-paper { background: #fdfbf7; color: #2c2c2c; padding: 40px; border-radius: 12px; box-shadow: var(--soft-shadow); width: 100%; position: relative; }
@@ -270,6 +270,7 @@
                 <button class="footer-pill" onclick="triggerSearch()" style="width:auto; padding: 12px 30px;">BUSCAR</button>
                 <div id="dict-avatar-widget" class="dict-avatar" style="display: none;"></div>
             </div>
+            <!-- CUADRÍCULA DE CARTAS (AQUÍ SE APILARÁN) -->
             <div id="vocabGrid" class="vocab-grid"></div>
         </div>
 
@@ -715,7 +716,7 @@
         }
 
         /* ======================================================================
-           IA Y DICCIONARIO - MODELO ACTUALIZADO (gemini-2.5-flash)
+           IA Y DICCIONARIO CON APILADO DE CARTAS Y MODELO ACTUALIZADO
            ====================================================================== */
         async function triggerSearch() {
             const term = document.getElementById('searchInput').value.trim();
@@ -723,9 +724,15 @@
             if(!apiKey) return alert("Error: La clave de la IA no está configurada en el código.");
             
             const grid = document.getElementById('vocabGrid');
-            grid.innerHTML = `<div style="text-align:center; padding:30px;">Invocando magia... ✨</div>`;
             
-            // SE ACTUALIZA A GEMINI 2.5 FLASH PORQUE EL ANTIGUO YA NO EXISTE
+            // Creamos una tarjeta de carga temporal con un ID único
+            const loadingId = 'loading-' + Date.now();
+            const loadingHtml = `<div id="${loadingId}" class="vocab-card" style="text-align:center;">Invocando magia para "<b>${term}</b>"... ✨</div>`;
+            
+            // Insertamos la tarjeta AL PRINCIPIO de la cuadrícula
+            grid.insertAdjacentHTML('afterbegin', loadingHtml);
+            document.getElementById('searchInput').value = ''; // Limpiar input
+            
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
             const prompt = `Profesor de español. Traduce: "${term}". JSON: {"es": "con El/La", "da": "Traducción", "plural": "Plural", "emoji": "1 emoji", "mnemo": "Mnemotecnia DANÉS", "chunk": "Frase", "chunk_da": "Trad"}`;
             
@@ -746,8 +753,10 @@
                     throw new Error("No hay respuesta válida de la IA.");
                 }
 
-                const word = JSON.parse(data.candidates[0].content.parts[0].text.match(/\{.*\}/s)[0]);
-                grid.innerHTML = `
+                const word = JSON.parse(data.candidates[0].content.parts[0].text.match(/\{[\s\S]*\}/)[0]);
+                
+                // Reemplazamos SOLO la tarjeta de carga temporal por el resultado real
+                document.getElementById(loadingId).outerHTML = `
                     <div class="vocab-card">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <h2 style="font-size: 2.5rem; margin-bottom:10px;">${word.emoji} ${word.es}</h2>
@@ -767,10 +776,11 @@
                         </div>
                     </div>`;
             } catch(e) { 
-                grid.innerHTML = `
-                    <div style="background:rgba(255,0,0,0.1); padding:20px; border-radius:15px; border:2px solid #ff4444; margin-top:20px;">
+                // Reemplazamos la tarjeta de carga temporal por el error
+                document.getElementById(loadingId).outerHTML = `
+                    <div class="vocab-card" style="background:rgba(255,0,0,0.1); border-color:#ff4444;">
                         <p style="color:#ff4444; text-align:center; font-weight:bold; font-size:1.2rem; margin-bottom:10px;">⚠️ CONEXIÓN BLOQUEADA</p>
-                        <p style="text-align:center; font-size:0.9rem;">Si ves este mensaje, Google ha bloqueado la conexión. Asegúrate de estar probando la web en tu enlace de <b>GitHub</b> y no desde un archivo en tu ordenador.</p>
+                        <p style="text-align:center; font-size:0.9rem;">No se pudo traducir "<b>${term}</b>". Asegúrate de estar probando la web en tu enlace de <b>GitHub</b>.</p>
                         <p style="text-align:center; font-size:0.8rem; margin-top:10px; color:#aaa;">Motivo técnico: ${e.message}</p>
                     </div>`; 
             }
@@ -801,14 +811,13 @@
         }
 
         /* ======================================================================
-           TABLÓN Y EJERCICIOS (MODELO ACTUALIZADO)
+           TABLÓN Y EJERCICIOS (MODELO ACTUALIZADO Y SEGURO)
            ====================================================================== */
         async function publishMuroPost() {
             const text = document.getElementById('adminPostText').value.trim();
             if(!text) return;
             document.getElementById('admin-loading').style.display = 'block';
 
-            // SE ACTUALIZA A GEMINI 2.5 FLASH PORQUE EL ANTIGUO YA NO EXISTE
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
             const prompt = `Vocabulario: "${text}". Genera JSON: {"vocab": ["p1", "p2"], "exercises": [{"da": "frase", "es_before": "Inicio ", "es_after": " fin", "answer": "p1"}]}`;
 
