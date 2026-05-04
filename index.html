@@ -727,12 +727,13 @@
             
             // SE ACTUALIZA A GEMINI 2.5 FLASH PORQUE EL ANTIGUO YA NO EXISTE
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+            const prompt = `Profesor de español. Traduce: "${term}". JSON: {"es": "con El/La", "da": "Traducción", "plural": "Plural", "emoji": "1 emoji", "mnemo": "Mnemotecnia DANÉS", "chunk": "Frase", "chunk_da": "Trad"}`;
             
             try {
                 const res = await fetch(url, { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
-                    body: JSON.stringify({ contents: [{parts: [{text: `Traduce al danés, da género y frase: ${term}. JSON: {"es":"...", "da":"...", "emoji":"..."}`}]}] }) 
+                    body: JSON.stringify({ contents: [{parts: [{text: prompt}]}] }) 
                 });
                 
                 const data = await res.json();
@@ -752,7 +753,18 @@
                             <h2 style="font-size: 2.5rem; margin-bottom:10px;">${word.emoji} ${word.es}</h2>
                             <button class="audio-btn" onclick="hablarPalabra('${word.es}')">🔊</button>
                         </div>
+                        <span class="dict-badge">Flertal: ${word.plural}</span>
                         <p style="font-weight:900; color:var(--accent-color); font-size:1.8rem; margin:15px 0;">🇩🇰 ${word.da}</p>
+                        <div style="background:rgba(0,0,0,0.2); padding:20px; border-radius:12px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div style="font-size:1.2rem; font-style:italic; margin-bottom:10px;">"${word.chunk}"</div>
+                                <button class="audio-btn" style="width:35px; height:35px; font-size:0.9rem;" onclick="hablarPalabra('${word.chunk.replace(/'/g, "\\'")}')">🔊</button>
+                            </div>
+                            <div style="font-weight:bold;">🇩🇰 ${word.chunk_da}</div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.1); padding:15px; border-left:4px solid #fcd000; margin-top:15px; border-radius:8px;">
+                            🧠 <b>Husk det:</b> ${word.mnemo}
+                        </div>
                     </div>`;
             } catch(e) { 
                 grid.innerHTML = `
